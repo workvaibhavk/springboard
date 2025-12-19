@@ -1,0 +1,214 @@
+ useEffect running!
+ isLoaded: false
+:41 user: undefined
+:42 courseId: 26e07fe1-d15d-4eee-a954-69f4c549cb52
+:50 Not fetching because: {isLoaded: false, user: undefined, courseId: '26e07fe1-d15d-4eee-a954-69f4c549cb52'}
+:126 🎬 YouTube API Script Loading Effect
+:127 window.YT exists: false
+:130 Loading YouTube IFrame API script...
+:135 YouTube IFrame API script tag added
+:143 🎥 Player Initialization Effect Triggered
+:144 currentModule: null
+:145 window.YT exists: false
+:146 Existing player: null
+:149 ⚠️ Skipping player init - missing dependencies
+:507 🧹 Cleanup Effect Registered
+ useEffect running!
+ isLoaded: true
+:41 user: d {id: 'user_36WVSqBhSGV2pDKCOlpuBaBTWQB', pathRoot: '/me', externalId: null, username: null, emailAddresses: Array(1), …}
+:42 courseId: 26e07fe1-d15d-4eee-a954-69f4c549cb52
+:45 Calling fetchLearningData...
+:57 === fetchLearningData STARTED ===
+:62 Fetching course for ID: 26e07fe1-d15d-4eee-a954-69f4c549cb52
+:70 Course data: {id: '26e07fe1-d15d-4eee-a954-69f4c549cb52', title: 'Data Structures and Algorithms: DSA Mastery', description: 'This Algorithms and Data Structures course will te… the notes I have provided along with the course.', thumbnail_url: 'https://i.ytimg.com/vi/5_5oE5lgrhw/hqdefault.jpg', instructor: 'CodeWithHarry', …}
+:71 Course error: null
+:76 Fetching modules...
+:84 Modules data: (8) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+:85 Modules error: null
+:91 Setting current module to: {id: '7d893439-255e-47ba-bd05-a4e83a9f882d', course_id: '26e07fe1-d15d-4eee-a954-69f4c549cb52', title: 'Introduction to Data Structures & Algorithms', video_id: '5_5oE5lgrhw', duration_seconds: 1903, …}
+:96 Fetching progress...
+ true false
+ false false
+ false false
+ false false
+ false false
+ false false
+ false false
+ false false
+installHook.js:1 true false
+installHook.js:1 false false
+installHook.js:1 false false
+installHook.js:1 false false
+installHook.js:1 false false
+installHook.js:1 false false
+installHook.js:1 false false
+installHook.js:1 false false
+:143 🎥 Player Initialization Effect Triggered
+:144 currentModule: {id: '7d893439-255e-47ba-bd05-a4e83a9f882d', course_id: '26e07fe1-d15d-4eee-a954-69f4c549cb52', title: 'Introduction to Data Structures & Algorithms', video_id: '5_5oE5lgrhw', duration_seconds: 1903, …}
+:145 window.YT exists: true
+:146 Existing player: null
+:182 YT.Player available, initializing immediately
+:159 🎬 Initializing YouTube Player
+:160 Video ID: 5_5oE5lgrhw
+:176 ✅ Player object created: X {v: {…}, playerInfo: {…}, videoTitle: '', g: iframe#youtube-player, j: div#youtube-player, …}
+:178 Player state updated
+:189 Resetting watched percentage states
+:191 hasWatched90Percent set to: false
+:193 watchedPercentage set to: 0
+ true false
+ false false
+ false false
+ false false
+ false false
+ false false
+ false false
+ false false
+installHook.js:1 true false
+installHook.js:1 false false
+installHook.js:1 false false
+installHook.js:1 false false
+installHook.js:1 false false
+installHook.js:1 false false
+installHook.js:1 false false
+installHook.js:1 false false
+:510 🧹 Component Unmounting - Cleanup Started
+:522 🧹 Cleanup Complete
+:507 🧹 Cleanup Effect Registered
+www-widgetapi.js:194 Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://www.youtube.com') does not match the recipient window's origin ('http://localhost:3000').
+
+setInterval
+:197 ✅ Player Ready Event Fired!
+:198 Event: {target: X, data: null}
+:203 Video Duration: 1903
+:204 Video Volume: 100
+:207 Duration state updated to: 1903
+:210 Volume state updated to: 100
+ true false
+ false false
+ false false
+ false false
+ false false
+ false false
+ false false
+ false false
+
+:101 Progress data: {completedModules: Array(0)}
+:108 === fetchLearningData FINISHED ===
+:118 setted Loading == false
+:310 ⏯️ Toggle Play/Pause Called
+:311 Player exists: true
+:312 Current isPlaying state: false
+:323 Playing video...
+:214 🔄 Player State Change Event
+:215 Event data: -1
+:216 Event target (player): X {v: {…}, playerInfo: {…}, videoTitle: 'Introduction to Data Structures & Algorithms', g: iframe#youtube-player, j: div#youtube-player, …}
+:217 State codes: -1=unstarted, 0=ended, 1=playing, 2=paused, 3=buffering, 5=cued
+:226 ⏸️ Video is NOT PLAYING
+:228 isPlaying state set to: false
+:296 ⏹️ Stopping Time Tracking
+:297 Current tracking interval: null
+:305 No interval to clear
+:214 🔄 Player State Change Event
+:215 Event data: 3
+:216 Event target (player): X {v: {…}, playerInfo: {…}, videoTitle: 'Introduction to Data Structures & Algorithms', g: iframe#youtube-player, j: div#youtube-player, …}
+:217 State codes: -1=unstarted, 0=ended, 1=playing, 2=paused, 3=buffering, 5=cued
+:226 ⏸️ Video is NOT PLAYING
+:228 isPlaying state set to: false
+:296 ⏹️ Stopping Time Tracking
+:297 Current tracking interval: null
+:305 No interval to clear
+:214 🔄 Player State Change Event
+:215 Event data: 1
+:216 Event target (player): X {v: {…}, playerInfo: {…}, videoTitle: 'Introduction to Data Structures & Algorithms', g: iframe#youtube-player, j: div#youtube-player, …}
+:217 State codes: -1=unstarted, 0=ended, 1=playing, 2=paused, 3=buffering, 5=cued
+:220 ▶️ Video is PLAYING
+:222 isPlaying state set to: true
+:240 ⏱️ Starting Time Tracking
+:241 Player instance passed: true
+:242 Player state available: false
+:243 Existing tracking interval: null
+:291 ✅ Tracking interval created: 48
+ true false
+ false false
+ false false
+ false false
+ false false
+ false false
+ false false
+ false false
+installHook.js:1 true false
+installHook.js:1 false false
+installHook.js:1 false false
+installHook.js:1 false false
+installHook.js:1 false false
+installHook.js:1 false false
+installHook.js:1 false false
+installHook.js:1 false false
+:510 🧹 Component Unmounting - Cleanup Started
+:513 Destroying player on unmount
+:522 🧹 Cleanup Complete
+:507 🧹 Cleanup Effect Registered
+ ⏰ Time Update - Current: 1.01s, Total: 1903.00s
+ 📊 Watch Percentage: 0.05%
+ true false
+ false false
+ false false
+ false false
+ false false
+ false false
+ false false
+ false false
+
+ ⏰ Time Update - Current: 1.01s, Total: 1903.00s
+ 📊 Watch Percentage: 0.05%
+ true false
+ false false
+ false false
+ false false
+ false false
+ false false
+ false false
+ false false
+installHook.js:1 true false
+installHook.js:1 false false
+installHook.js:1 false false
+installHook.js:1 false false
+installHook.js:1 false false
+installHook.js:1 false false
+installHook.js:1 false false
+installHook.js:1 false false
+ ⏰ Time Update - Current: 1.01s, Total: 1903.00s
+ 📊 Watch Percentage: 0.05%
+ ⏰ Time Update - Current: 1.01s, Total: 1903.00s
+ 📊 Watch Percentage: 0.05%
+ ⏰ Time Update - Current: 1.01s, Total: 1903.00s
+ 📊 Watch Percentage: 0.05%
+ ⏰ Time Update - Current: 1.01s, Total: 1903.00s
+ 📊 Watch Percentage: 0.05%
+ ⏰ Time Update - Current: 1.01s, Total: 1903.00s
+ 📊 Watch Percentage: 0.05%
+ ⏰ Time Update - Current: 1.01s, Total: 1903.00s
+ 📊 Watch Percentage: 0.05%
+ ⏰ Time Update - Current: 1.01s, Total: 1903.00s
+ 📊 Watch Percentage: 0.05%
+ ⏰ Time Update - Current: 1.01s, Total: 1903.00s
+ 📊 Watch Percentage: 0.05%
+ ⏰ Time Update - Current: 1.01s, Total: 1903.00s
+ 📊 Watch Percentage: 0.05%
+ ⏰ Time Update - Current: 1.01s, Total: 1903.00s
+ 📊 Watch Percentage: 0.05%
+ ⏰ Time Update - Current: 1.01s, Total: 1903.00s
+ 📊 Watch Percentage: 0.05%
+ ⏰ Time Update - Current: 1.01s, Total: 1903.00s
+ 📊 Watch Percentage: 0.05%
+ ⏰ Time Update - Current: 1.01s, Total: 1903.00s
+ 📊 Watch Percentage: 0.05%
+ ⏰ Time Update - Current: 1.01s, Total: 1903.00s
+ 📊 Watch Percentage: 0.05%
+ ⏰ Time Update - Current: 1.01s, Total: 1903.00s
+ 📊 Watch Percentage: 0.05%
+ ⏰ Time Update - Current: 1.01s, Total: 1903.00s
+ 📊 Watch Percentage: 0.05%
+ ⏰ Time Update - Current: 1.01s, Total: 1903.00s
+ 📊 Watch Percentage: 0.05%
+ 

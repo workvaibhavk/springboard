@@ -34,7 +34,7 @@ export default function page() {
         <div className='bg-[#fff]'>
             <DNavbar />
             <div className='h-[50vh] justify-center items-center flex flex-col gap-6 text-center w-11/12 md:w-10/12 mx-auto mt-20'>
-                <h1 className='text-5xl font-semibold'>Which Skill To Conquer Today,  <span className='text-[#665bca]'> &Vaibhav&</span></h1>
+                <h1 className='text-5xl font-semibold'>Which Skill To Conquer Today,  <span className='text-[#665bca]'> {user?.firstName} </span></h1>
 
                 <p className='w-5/12'>Browse categories aII over the gIobe Lorem, ipsum dolor sit amet consectetur adipisicing elit. Natus ducimus dolore doloremque. Find the perfect course for you</p>
 

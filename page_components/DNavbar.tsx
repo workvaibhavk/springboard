@@ -6,113 +6,146 @@ import React, { useState } from 'react'
 import { Menu, Search, X } from 'lucide-react'
 import { SignInButton, UserButton, useUser } from '@clerk/nextjs'
 
-
 const DNavbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { isSignedIn, user } = useUser()
 
+    // Add a function to handle menu closure for click outside or link navigation
+    const closeMenu = () => setIsMenuOpen(false);
+
     return (
+        // The outer div should be the container for the entire fixed navbar space
+        <div className='w-full'>
 
-        <div className='bg-[#fff] w-[100vw]'>
+            {/* Main Navigation Container: Fixed, full-width, and elevated (z-50) */}
+            {/* <nav className='fixed top-0 left-0 right-0 z-50 bg-white shadow-md'> */}
+            <nav className='bg-white'>
 
-            <div className='bg-[#fff] w-[100vw]'>
+                {/* Inner Content Container: Centered and constrained width */}
+                <div className='flex items-center justify-between w-full max-w-7xl mx-auto py-3 px-4 sm:px-6 lg:px-8'>
 
-                <nav className='flex w-[100%] md:w-11/12 mx-auto justify-between items-center py-3 md:py-5 left-0 right-0 fixed top-0 bg-white z-50 '>
-                    <div className='block md:hidden px-4 ml-8'>
+                    {/* 1. Logo Section */}
+                    <div className='flex items-center space-x-2'>
+                        {/* Desktop Logo */}
                         <Image
-                            src="/brand-mini.png"
-                            alt='img'
-                            width={55}
-                            height={150}
-                        />
-                    </div>
-                    <div>
-                        <Image
-                            className='hidden md:flex'
+                            className='hidden md:block'
                             src="/brand.png"
-                            alt='img'
-                            width={220}
-                            height={500}
+                            alt='Brand Logo'
+                            width={180} // Adjusted size for better fit
+                            height={40}
+                        />
+                        {/* Mobile Logo */}
+                        <Image
+                            className='md:hidden'
+                            src="/brand-mini.png"
+                            alt='Brand Mini Logo'
+                            width={40} // Adjusted size
+                            height={40}
                         />
                     </div>
 
+                    {/* 2. Desktop Navigation Links */}
+                    <div className='hidden md:flex font-semibold text-base space-x-8 lg:space-x-12'>
+                        <NavLink href="/dashboard">Home</NavLink>
+                        <NavLink href="/courses">Courses</NavLink>
+                        <NavLink href="/learning">My Learning</NavLink>
+                    </div>
+
+                    {/* 3. Search and User Actions */}
+                    <div className='flex items-center space-x-4'>
+
+                        {/* Search Bar (Combined for better structure) */}
+                        <div className='hidden lg:flex items-center border border-gray-300 rounded-full px-4 py-2 bg-gray-50 transition-all focus-within:border-indigo-500'>
+                            <input
+                                type="search"
+                                name="Mysearch"
+                                id="search"
+                                placeholder="Search courses..."
+                                className="focus:outline-none bg-gray-50 w-40 text-sm"
+                            />
+                            <Search className="h-5 w-5 text-gray-500 ml-2 cursor-pointer" />
+                        </div>
 
 
+                        {/* Sign In/User Button */}
+                        <div className='hidden md:block'>
+                            {isSignedIn ? (
+                                <UserButton afterSignOutUrl="/" />
+                            ) : (
+                                <SignInButton mode="modal" forceRedirectUrl="/dashboard">
+                                    <button className='relative overflow-hidden bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2 transition-all duration-300 font-semibold text-sm shadow-md'>
+                                        Get Started
+                                    </button>
+                                </SignInButton>
+                            )}
+                        </div>
 
-                    <div className='hidden md:flex roboto-main font-semibold text-lg gap-10 flex w-120 justify-evenly'>
-
-                        <Link href="/xyz" className='relative text-gray-700 hover:text-black transition-colors duration-300 cursor-pointer group'>
-                            Home
-                            <span className='absolute bottom-0 left-1/2 w-0 h-[2px] bg-black transition-all duration-300 group-hover:w-full group-hover:left-0'></span>
-                        </Link><Link href="/xyz" className='relative text-gray-700 hover:text-black transition-colors duration-300 cursor-pointer group'>
-                            Courses
-                            <span className='absolute bottom-0 left-1/2 w-0 h-[2px] bg-black transition-all duration-300 group-hover:w-full group-hover:left-0'></span>
-                        </Link><Link href="/xyz" className='relative text-gray-700 hover:text-black transition-colors duration-300 cursor-pointer group'>
-
-                            My Learning
-                            <span className='absolute bottom-0 left-1/2 w-0 h-[2px] bg-black transition-all duration-300 group-hover:w-full group-hover:left-0'></span>
-                        </Link>
+                        {/* Mobile Menu Toggle Button */}
+                        <button
+                            onClick={() => setIsMenuOpen(!isMenuOpen)}
+                            className='block md:hidden p-1 text-gray-700 hover:text-black transition-colors'
+                            aria-label="Toggle Menu"
+                        >
+                            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                        </button>
 
                     </div>
-                    <input type="search" name="Mysearch" id="search" placeholder="search" />
-                    <button type="submit"> <Search /> </button>
 
+                </div>
+            </nav>
 
-                    <div className='hidden md:block'>
-                        {isSignedIn ? (
-                            <UserButton afterSignOutUrl="/" />
-                        ) : (
-                            <SignInButton mode="modal" forceRedirectUrl="/dashboard">
-                                <button className='relative overflow-hidden bg-[#111111] text-white rounded-full px-6 py-3 transition-all duration-300 cursor-pointer text-[17px] font-medium group'>
-                                    <span className='relative z-10'>Get Started</span>
-                                    <span className='absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out bg-gradient-to-r from-transparent via-white/30 to-transparent'></span>
-                                </button>
-                            </SignInButton>
+            {/* Mobile Menu Dropdown */}
+            {isMenuOpen && (
+                <div className='fixed top-[56px] sm:top-[64px] left-0 right-0 bg-white z-40 md:hidden shadow-xl border-t border-gray-100'>
+                    <div className='flex flex-col p-4'>
+                        {/* Search Bar for Mobile */}
+                        <div className='flex items-center border border-gray-300 rounded-lg px-3 py-2 bg-gray-50 mb-4'>
+                            <input
+                                type="search"
+                                placeholder="Search..."
+                                className="focus:outline-none bg-gray-50 w-full text-sm"
+                            />
+                            <Search className="h-5 w-5 text-gray-500 ml-2" />
+                        </div>
+
+                        <MobileNavLink href="/dashboard" onClick={closeMenu}>Home</MobileNavLink>
+                        <MobileNavLink href="/courses" onClick={closeMenu}>Courses</MobileNavLink>
+                        <MobileNavLink href="/learning" onClick={closeMenu}>My Learning</MobileNavLink>
+
+                        {/* Mobile Sign In Button */}
+                        {!isSignedIn && (
+                            <div className="pt-4 mt-4 border-t border-gray-200">
+                                <SignInButton mode="modal" forceRedirectUrl="/dashboard">
+                                    <button onClick={closeMenu} className='w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2 font-semibold transition-colors text-center'>
+                                        Get Started
+                                    </button>
+                                </SignInButton>
+                            </div>
                         )}
                     </div>
-
-                    {/* <SignInButton
-                    mode="modal"
-                    forceRedirectUrl="/dashboard"
-                >
-                    <button className='relative overflow-hidden bg-[#111111] text-white rounded-full px-6 py-3 transition-all duration-300 cursor-pointer text-[17px] font-medium group'>
-                        <span className='relative z-10'>Get Started</span>
-                        <span className='absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out bg-gradient-to-r from-transparent via-white/30 to-transparent'></span>
-                    </button>
-                </SignInButton> */}
-
-                    <button
-                        onClick={() => setIsMenuOpen(!isMenuOpen)}
-                        className='block md:hidden px-4'
-                    >
-                        {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
-                    </button>
-
-                </nav>
-                {/* Mobile Menu */}
-                {isMenuOpen && (
-                    <div className='fixed top-[80px] left-0 right-0 bg-white z-40 md:hidden shadow-lg transition-transform duration-300'>
-                        <div className='flex flex-col p-6 gap-4'>
-                            <Link onClick={() => setIsMenuOpen(false)} href="/xyz" className='text-gray-700 hover:text-black py-2 border-b border-gray-200'>
-                                About
-                            </Link>
-                            <Link onClick={() => setIsMenuOpen(false)} href="/xyz" className='text-gray-700 hover:text-black py-2 border-b border-gray-200'>
-                                Why Us?
-                            </Link>
-                            <Link onClick={() => setIsMenuOpen(false)} href="/xyz" className='text-gray-700 hover:text-black py-2 border-b border-gray-200'>
-                                Skills
-                            </Link>
-                            <Link onClick={() => setIsMenuOpen(false)} href="/xyz" className='text-gray-700 hover:text-black py-2 border-b border-gray-200'>
-                                Contact
-                            </Link>
-                        </div>
-                    </div>
-                )}
-
-            </div>
+                </div>
+            )}
         </div>
-
     )
 }
+
+// Helper component for Desktop Nav Links
+const NavLink = ({ href, children }) => (
+    <Link href={href} className='relative text-gray-700 hover:text-indigo-600 transition-colors duration-200 cursor-pointer group py-2'>
+        {children}
+        <span className='absolute bottom-0 left-1/2 w-0 h-[2px] bg-indigo-600 transition-all duration-300 group-hover:w-full group-hover:left-0'></span>
+    </Link>
+);
+
+// Helper component for Mobile Nav Links
+const MobileNavLink = ({ href, children, onClick }) => (
+    <Link
+        href={href}
+        onClick={onClick}
+        className='text-gray-700 hover:text-indigo-600 py-3 border-b border-gray-100 text-base font-medium transition-colors'
+    >
+        {children}
+    </Link>
+);
 
 export default DNavbar

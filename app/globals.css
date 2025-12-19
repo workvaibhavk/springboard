@@ -147,3 +147,50 @@ footer {
 footer * {
   color: inherit;
 }
+
+/* Add this to your main CSS file */
+.aspect-ratio-16-9 {
+  position: relative;
+  width: 100%;
+  /* The magic: vertical padding based on 56.25% of the width */
+  padding-bottom: 56.25%;
+  height: 0;
+  /* Set height to 0 to prevent issues */
+}
+
+/* This style is for the content (your Image component) */
+.aspect-ratio-16-9>* {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* 
+  #youtube-player {
+    pointer-events: none;
+  }
+  
+  #player-container {
+    pointer-events: auto;
+  }
+   */
+.ytp-pause-overlay,
+.ytp-scroll-min,
+.ytp-chrome-top,
+.ytp-show-cards-title,
+.ytp-title,
+.ytp-title-text,
+.ytp-watermark,
+.ytp-gradient-top,
+.ytp-chrome-top-buttons,
+.ytp-chrome-top,
+.ytp-show-cards-title {
+  display: none !important;
+}
+
+/*   
+  iframe {
+    pointer-events: none;
+  } */

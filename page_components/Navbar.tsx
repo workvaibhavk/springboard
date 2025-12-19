@@ -34,9 +34,6 @@ const Navbar = () => {
                     />
                 </div>
 
-
-
-
                 <div className='hidden md:flex roboto-main font-semibold text-lg gap-10 flex w-120 justify-evenly'>
 
                     <Link href="/xyz" className='relative text-gray-700 hover:text-black transition-colors duration-300 cursor-pointer group'>
@@ -67,16 +64,6 @@ const Navbar = () => {
                         </SignInButton>
                     )}
                 </div>
-
-                {/* <SignInButton
-                    mode="modal"
-                    forceRedirectUrl="/dashboard"
-                >
-                    <button className='relative overflow-hidden bg-[#111111] text-white rounded-full px-6 py-3 transition-all duration-300 cursor-pointer text-[17px] font-medium group'>
-                        <span className='relative z-10'>Get Started</span>
-                        <span className='absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out bg-gradient-to-r from-transparent via-white/30 to-transparent'></span>
-                    </button>
-                </SignInButton> */}
 
                 <button
                     onClick={() => setIsMenuOpen(!isMenuOpen)}

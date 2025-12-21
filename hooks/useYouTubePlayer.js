@@ -12,7 +12,8 @@ export function useYouTubePlayer(videoId, shouldInitialize = false) {
     const [playbackRate, setPlaybackRate] = useState(1);
     const [watchedPercentage, setWatchedPercentage] = useState(0);
     const [hasWatched90Percent, setHasWatched90Percent] = useState(false);
-    
+    const [playerLoading, setPlayerLoading] = useState(true)
+
     const trackingIntervalRef = useRef(null);
 
     // Load YouTube IFrame API
@@ -87,11 +88,53 @@ export function useYouTubePlayer(videoId, shouldInitialize = false) {
         };
     }, [videoId, shouldInitialize]);
 
+    useEffect(() => {
+        const handleKeyPress = (e) => {
+            if (!player) return;
+
+            switch (e.key) {
+                case ' ':
+                case 'p':
+                    e.preventDefault();
+                    togglePlayPause()
+                    break;
+
+                case 'f':
+                    e.preventDefault();
+                    toggleFullscreen()
+                    break;
+
+                case 'm':
+                    e.preventDefault();
+                    if (volume > 0) {
+                        player.setVolume(0)
+                        setVolume(0)
+                    }
+                    else {
+                        player.setVolume(100)
+                        setVolume(100)
+                    }
+                    break;
+
+            }
+        }
+
+        window.addEventListener('keydown', handleKeyPress)
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyPress)
+
+        }
+
+    }, [player, volume, isPlaying]);
+
+
     const onPlayerReady = (event) => {
         const videoDuration = event.target.getDuration();
         const videoVolume = event.target.getVolume();
         setDuration(videoDuration);
         setVolume(videoVolume);
+        setPlayerLoading(false)
     };
 
     const onPlayerStateChange = (event) => {
@@ -195,7 +238,7 @@ export function useYouTubePlayer(videoId, shouldInitialize = false) {
 
     const toggleFullscreen = useCallback(() => {
         const playerElement = document.getElementById('player-container');
-        
+
         if (!document.fullscreenElement) {
             playerElement?.requestFullscreen();
         } else {
@@ -208,6 +251,7 @@ export function useYouTubePlayer(videoId, shouldInitialize = false) {
         setWatchedPercentage(0);
         setCurrentTime(0);
         setIsPlaying(false);
+        setPlayerLoading(true);
     }, []);
 
     // Cleanup on unmount
@@ -243,6 +287,7 @@ export function useYouTubePlayer(videoId, shouldInitialize = false) {
         handleVolumeChange,
         handleSpeedChange,
         toggleFullscreen,
-        resetPlayer
+        resetPlayer,
+        playerLoading
     };
 }

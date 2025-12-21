@@ -22,6 +22,7 @@ export default function VideoPlayer({
         playbackRate,
         watchedPercentage,
         hasWatched90Percent,
+        playerLoading,
         togglePlayPause: playerTogglePlayPause,
         handleSeek,
         handleVolumeChange,
@@ -59,6 +60,46 @@ export default function VideoPlayer({
         playerTogglePlayPause();
     };
 
+    useEffect(() => {
+        const handleKeyPress = (e) => {
+            if (!player) return;
+
+            switch (e.key) {
+                case ' ':
+                case 'p':
+                    e.preventDefault();
+                    togglePlayPause()
+                    break;
+
+                case 'f':
+                    e.preventDefault();
+                    toggleFullscreen()
+                    break;
+
+                case 'm':
+                    e.preventDefault();
+                    if (volume > 0) {
+                        player.setVolume(0)
+                        setVolume(0)
+                    }
+                    else {
+                        player.setVolume(100)
+                        setVolume(100)
+                    }
+                    break;
+
+            }
+        }
+
+        window.addEventListener('keydown', handleKeyPress)
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyPress)
+
+        }
+
+    }, [player, volume, isPlaying]);
+
     const getThumbnailUrl = () => {
         if (currentModule?.thumbnail && currentModule.thumbnail.trim() !== '') {
             return currentModule.thumbnail;
@@ -72,6 +113,11 @@ export default function VideoPlayer({
     return (
         <div id="player-container" className="group relative w-full aspect-video bg-black overflow-hidden rounded-xl cursor-default">
             {/* YOUTUBE PLAYER CONTAINER - Always present in DOM */}
+            {playerLoading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black z-10">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+                </div>
+            )}
             <div
                 id="youtube-player"
                 className="w-full h-full"

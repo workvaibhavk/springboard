@@ -7,6 +7,7 @@ import { useUser } from '@clerk/nextjs'
 import VideoPlayer from '@/components/VideoPlayer'
 import ModuleList from '@/components/ModuleList'
 import { fetchCourseData, fetchModules, fetchProgress, markModuleComplete } from '@/lib/courseApi'
+import DNavbar from '@/page_components/DNavbar'
 
 export default function LearnPage() {
     const params = useParams();
@@ -107,16 +108,17 @@ export default function LearnPage() {
     }
 
     return (
-        <div className='flex flex-col mt-24 gap-8'>
+        <div className='flex flex-col gap-8 bg-gray-50'>
+            <DNavbar />
             <main className='flex gap-8 w-13/14 mx-auto'>
                 <div className='w-8/12 flex flex-col gap-6'>
                     {/* Course Header */}
-                    <div className='border p-6 rounded-xl'>
-                        <h2 className='text-3xl font-semibold'>
+                    <div className='bg-white border border-gray-200 p-6 rounded-xl shadow-sm'>
+                        <h2 className='text-3xl font-bold text-gray-900 mb-2'>
                             {course?.title.split(':')[0] || 'Loading...'}
                         </h2>
-                        <p>{course?.description.slice(0, 85)}..</p>
-
+                        <p className='text-gray-600 mb-4'>
+                            {course?.description.slice(0, 85)}..</p>
                         <div className='w-[100%] bg-gray-200 h-2 rounded-xl mt-2'>
                             <div
                                 className='bg-[#665bca] h-2 rounded-s-xl'
@@ -125,10 +127,13 @@ export default function LearnPage() {
                                 }}
                             ></div>
                         </div>
+                        <p className='mt-2' >{completedModules.length} of {modules.length} completed</p>
+
                     </div>
 
                     {/* Module Content */}
-                    <div className='border p-6 rounded-xl flex flex-col gap-6'>
+                    <div className='flex flex-col gap-6  bg-white border border-gray-200 p-6 rounded-xl shadow-sm
+'>
                         <h3 className='text-3xl font-semibold'>
                             {currentModuleIndex + 1} : {currentModule?.title || 'Loading...'}
                         </h3>

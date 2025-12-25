@@ -113,11 +113,7 @@ export default function VideoPlayer({
     return (
         <div id="player-container" className="group relative w-full aspect-video bg-black overflow-hidden rounded-xl cursor-default">
             {/* YOUTUBE PLAYER CONTAINER - Always present in DOM */}
-            {playerLoading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black z-10">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
-                </div>
-            )}
+
             <div
                 id="youtube-player"
                 className="w-full h-full"
@@ -126,7 +122,11 @@ export default function VideoPlayer({
                     pointerEvents: showPlayer ? 'none' : 'auto'
                 }}
             ></div>
-
+            {playerLoading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black z-10">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+                </div>
+            )}
             {/* THUMBNAIL OVERLAY - Shows when player is not initialized */}
             <div
                 className="absolute inset-0 z-30 transition-opacity duration-300"

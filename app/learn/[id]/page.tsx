@@ -78,6 +78,7 @@ export default function LearnPage() {
     const handleModuleSelect = (module, index) => {
         setCurrentModule(module);
         setCurrentModuleIndex(index);
+        setHasWatched90Percent(false)
     };
 
     const handleMarkComplete = async () => {
@@ -93,6 +94,7 @@ export default function LearnPage() {
             setTimeout(() => {
                 if (currentModuleIndex < modules.length - 1) {
                     goToNextModule();
+                    setHasWatched90Percent(false)
                 } else {
                     alert('🎉 Congratulations! You completed all modules!');
                 }
@@ -108,7 +110,7 @@ export default function LearnPage() {
     }
 
     return (
-        <div className='flex flex-col gap-8 bg-gray-50'>
+        <div className='flex flex-col gap-4 bg-gray-50'>
             <DNavbar />
             <main className='flex gap-8 w-13/14 mx-auto'>
                 <div className='w-8/12 flex flex-col gap-6'>
@@ -154,26 +156,26 @@ export default function LearnPage() {
                                 Previous Module
                             </button>
 
-                            <button
-                                onClick={handleMarkComplete}
-                                disabled={!hasWatched90Percent || completedModules.includes(currentModule?.id)}
-                                className='cursor-pointer py-3 px-6 rounded-lg border-[#e9e9e9] bg-[#e9e9e9] text-[#000] border-2 text-md flex-1 disabled:opacity-50 disabled:cursor-default'
-                            >
-                                {completedModules.includes(currentModule?.id)
-                                    ? 'Completed'
-                                    : hasWatched90Percent
-                                        ? 'Mark as Complete'
-                                        : `Watch ${90 - Math.floor(watchedPercentage)}% More to Complete`
-                                }
-                            </button>
-
-                            <button
+                            {completedModules.includes(currentModule?.id) ? (<button
                                 className='cursor-pointer py-3 px-6 rounded-lg bg-[#665bca] text-white text-md flex-1 disabled:opacity-50 disabled:cursor-default'
                                 onClick={goToNextModule}
                                 disabled={currentModuleIndex === modules.length - 1}
                             >
                                 Next Module
-                            </button>
+                            </button>) : (<button
+                                onClick={handleMarkComplete}
+                                disabled={!hasWatched90Percent}
+
+                                className='cursor-pointer py-3 px-6 rounded-lg border-[#e9e9e9]  bg-[#665bca] text-white border-2 text-md flex-1 disabled:opacity-50 disabled:cursor-default'
+                            >
+                                {hasWatched90Percent
+                                    ? 'Mark as Complete'
+                                    : `Watch More to Complete`
+                                }
+                            </button>)}
+
+
+
                         </div>
                     </div>
                 </div>
@@ -185,7 +187,7 @@ export default function LearnPage() {
                     completedModules={completedModules}
                     onModuleSelect={handleModuleSelect}
                 />
-            </main>
-        </div>
+            </main >
+        </div >
     );
 }

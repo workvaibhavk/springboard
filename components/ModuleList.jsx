@@ -14,7 +14,7 @@ export default function ModuleList({
         : 0;
 
     return (
-        <div className="flex flex-col w-4/12 bg-white border border-gray-200 p-6 rounded-xl shadow-sm
+        <div className="w-4/12 h-screen border-r flex flex-col bg-white border border-gray-200 p-6 rounded-xl shadow-sm
         ">
             <div className='flex justify-between'>
                 <h4 className='text-2xl font-semibold'>Course Modules</h4>
@@ -23,7 +23,7 @@ export default function ModuleList({
                 </span>
             </div>
 
-            <div className='flex flex-col gap-2 mt-4 '>
+            <div className='flex flex-1 overflow-y-auto pr-2 flex-col gap-2 mt-4 '>
                 {modules.map((module, index) => {
                     const isCurrent = currentModule?.id === module.id;
                     const isCompleted = completedModules.includes(module.id);

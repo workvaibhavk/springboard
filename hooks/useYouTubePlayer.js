@@ -26,6 +26,8 @@ export function useYouTubePlayer(videoId, shouldInitialize = false) {
         }
     }, []);
 
+
+
     // Initialize YouTube Player
     useEffect(() => {
         if (!videoId || !window.YT || !shouldInitialize) {
@@ -253,6 +255,13 @@ export function useYouTubePlayer(videoId, shouldInitialize = false) {
         setIsPlaying(false);
         setPlayerLoading(true);
     }, []);
+
+    useEffect(() => {
+        resetPlayer();
+    }, [videoId, resetPlayer])
+
+
+
 
     // Cleanup on unmount
     useEffect(() => {

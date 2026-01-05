@@ -4,34 +4,15 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'i.ytimg.com',
-        port: '',
-        pathname: '/**',
+        protocol: "https",
+        hostname: "i.ytimg.com",
+        pathname: "/**",
       },
     ],
-  }
-  ,
-  webpack: (config, { dev }) => {
-    if (dev) {
-      const currentIgnored = Array.isArray(config.watchOptions?.ignored)
-        ? config.watchOptions.ignored
-        : config.watchOptions?.ignored
-          ? [config.watchOptions.ignored]
-          : []
-      config.watchOptions = {
-        ...config.watchOptions,
-        ignored: [
-          '**/node_modules/**',
-          '**/.git/**',
-          '**/public/Thumbnails/**',
-          '**/public/vcs/**',
-          '**/trash/**'
-        ]
-      }
-    }
-    return config
-  }
+  },
+
+  // Explicit Turbopack config (prevents the error)
+  turbopack: {},
 };
 
 export default nextConfig;

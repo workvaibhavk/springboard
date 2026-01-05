@@ -36,7 +36,21 @@ export async function GET(request) {
             )
         }
 
-        const courseId = certData.course_id
+        const { data: courseData, error: courseErr } = await supabase
+            .from('courses')
+            .select('*')
+            .eq('id', certData.course_id)
+            .single()
+
+        if (!courseData || courseErr) {
+            return Response.json(
+                { error: 'Course Data Not Available' },
+                { status: 404 }
+            )
+        }
+
+        const courseId = courseData.id
+        const courseName = courseData.title
         const issuedDate = certData.issued_at
         const client = await clerkClient()
         const clerkUser = await client.users.getUser(userId)
@@ -45,6 +59,7 @@ export async function GET(request) {
 
         return Response.json({
             courseId: courseId,
+            courseName: courseName,
             username: username,
             issuedAt: issuedDate,
         })

@@ -256,9 +256,6 @@ export function useYouTubePlayer(videoId, shouldInitialize = false) {
         setPlayerLoading(true);
     }, []);
 
-
-
-
     useEffect(() => {
         resetPlayer();
     }, [videoId, resetPlayer])

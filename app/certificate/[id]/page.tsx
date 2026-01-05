@@ -5,6 +5,7 @@ import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react';
+import QRCode from 'react-qr-code'
 
 export default function Page() {
 
@@ -131,6 +132,16 @@ export default function Page() {
                                         <div className="absolute top-0 left-0 w-40 h-40 bg-[#665bca] rounded-full -translate-x-20 -translate-y-20"></div>
                                         <div className="absolute bottom-0 right-0 w-40 h-40 bg-[#665bca] rounded-full translate-x-20 translate-y-20"></div>
                                     </div>
+                                    <div className="absolute right-0 bottom-0">
+                                        <QRCode
+                                            size={200}
+                                            value={`https://supabase.com/verify/${certificate.certificate_number}`}
+                                            fgColor='#665bca'
+                                            className='rounded-2xl p-2 m-8'
+                                            level='H'
+                                            viewBox={`0 0 256 256`}
+                                        />
+                                    </div>
 
                                     <div className="relative z-10 text-center space-y-6">
                                         <div className="space-y-2">
@@ -171,7 +182,8 @@ export default function Page() {
                                             <div>
                                                 <p className="text-sm">Duration</p>
                                                 <p className="font-semibold">
-                                                    {Math.floor(course.total_duration_seconds / 3600)}hr {Math.floor(course.total_duration_seconds % 3600 / 60)}m
+                                                    {Math.floor(course.total_duration_seconds / 3600)}hr {Math.floor(course.total_duration_seconds % 3600 / 60)
+                                                    }m
                                                 </p>
                                             </div>
                                         </div>

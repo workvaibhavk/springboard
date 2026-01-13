@@ -62,6 +62,14 @@ export async function GET(request) {
             )
         }
 
+        // const clerkUser = await clerkClient.users.getUser(userId)
+        const client = await clerkClient()
+        const clerkUser = await client.users.getUser(userId)
+
+        const userName = clerkUser.firstName && clerkUser.lastName
+            ? `${clerkUser.firstName} ${clerkUser.lastName}`
+            : clerkUser.emailAddresses[0]?.emailAddress || "Student";
+
         let { data: certificate } = await supabase
             .from('certificates')
             .select('*')
@@ -94,6 +102,7 @@ export async function GET(request) {
                     user_id: userId,
                     course_id: courseId,
                     certificate_number: certificateNumber,
+                    user_name: userName, // to be updated later
                 }])
                 .select()
                 .single()
@@ -109,7 +118,8 @@ export async function GET(request) {
             const { data: issuing, error: issuingErr } = await supabase
                 .from('enrollments')
                 .update({
-                    completed_at: new Date().toISOString()
+                    completed_at: new Date().toISOString(),
+                    completed: true
                 })
                 .eq('course_id', courseId)
                 .eq('user_id', userId)
@@ -125,13 +135,7 @@ export async function GET(request) {
 
 
 
-        // const clerkUser = await clerkClient.users.getUser(userId)
-        const client = await clerkClient()
-        const clerkUser = await client.users.getUser(userId)
 
-        const userName = clerkUser.firstName && clerkUser.lastName
-            ? `${clerkUser.firstName} ${clerkUser.lastName}`
-            : clerkUser.emailAddresses[0]?.emailAddress || "Student";
 
         return Response.json({
             certificate: {

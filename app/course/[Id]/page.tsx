@@ -1,7 +1,7 @@
 "use client"
 
 import { supabase } from '@/lib/supabase';
-import { useUser, auth } from '@clerk/nextjs';
+import { useUser } from '@clerk/nextjs';
 import { ChevronLeft } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';

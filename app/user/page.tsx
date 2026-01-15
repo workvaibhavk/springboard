@@ -192,7 +192,7 @@ export default function Page() {
 
                                                 {/* Category Badge + Title + Instructor */}
                                                 <div className="flex flex-col space-y-1">
-                                                    <p className='text-sm font-medium text-indigo-700'> {/* Changed to indigo for better contrast */}
+                                                    <p className='text-sm font-medium text-indigo-700'>
                                                         {ecourse.category}
                                                     </p>
                                                     <p className='font-bold text-xl text-gray-800 line-clamp-2'>

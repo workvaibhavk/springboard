@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Menu, Search, X } from 'lucide-react'
 import { SignInButton, UserButton, useUser } from '@clerk/nextjs'
 
@@ -46,9 +46,9 @@ const DNavbar = () => {
 
                     {/* 2. Desktop Navigation Links */}
                     <div className='hidden md:flex font-semibold text-base space-x-8 lg:space-x-12'>
-                        <NavLink href="/dashboard">Home</NavLink>
-                        <NavLink href="/courses">Courses</NavLink>
-                        <NavLink href="/learning">My Learning</NavLink>
+                        <Link href="/dashboard">Home</Link>
+                        <Link href="/courses">Courses</Link>
+                        <Link href="/user">My Learning</Link>
                     </div>
 
                     {/* 3. Search and User Actions */}

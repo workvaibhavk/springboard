@@ -158,9 +158,14 @@ export default function Page() {
                                             has successfully completed the course
                                         </p>
 
-                                        <h3 className="text-3xl font-bold text-[#665bca] py-2">
-                                            {course.title}
+                                        <h3 className="text-3xl font-bold text-[#665bca] pt-2">
+                                            {course.title.split(':')[0]?.trim()}
+
+                                            <p className="text-xl font-bold text-[#665bca] opacity-85 pb-2">
+                                                (   {course.title.split(':')[1]?.trim()}  )
+                                            </p>
                                         </h3>
+
 
                                         <div className="flex justify-center gap-8 text-gray-600 pt-4">
                                             <div>

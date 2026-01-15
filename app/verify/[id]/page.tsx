@@ -1,6 +1,5 @@
 "use client"
 
-import { useUser } from '@clerk/nextjs';
 import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation'
@@ -10,46 +9,83 @@ export default function Page() {
 
     const params = useParams();
     const certificateId = params.id
-    const { user, isLoaded } = useUser();
+    // const { user, isLoaded } = useUser();
     const [courseId, setCourseId] = useState('');
     const [username, setUsername] = useState('');
     const [issuedAt, setIssuedAt] = useState('');
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     // const [error, setError] = useState(null);
     const [courseName, setCourseName] = useState('');
 
     useEffect(() => {
-        if (isLoaded && user && certificateId) {
+        console.log("useEffect triggered");
+        console.log("Current certificateId:", certificateId);
+
+        if (certificateId) {
+            console.log("Certificate ID is present. Calling verifyCertificateOwnership...");
             verifyCertificateOwnership();
-            console.log("User is loaded:", user);
-            console.log("Certificate ID:", certificateId);
+            console.log("Certificate ID (logged inside effect):", certificateId);
+        } else {
+            console.log("No certificateId provided. Skipping verification.");
         }
-    }, [user, isLoaded, certificateId]);
+    }, [certificateId]);
 
     const verifyCertificateOwnership = async () => {
+        console.log("verifyCertificateOwnership started");
+        console.log("Verifying ownership for certificateId:", certificateId);
 
         try {
+            console.log("Setting loading state to true");
             setLoading(true);
+
+            console.log("Making API request to /api/verify-certificate...");
             const response = await fetch(`/api/verify-certificate?certificateId=${certificateId}`);
+
+            console.log("API response received:", response);
+            console.log("Response status:", response.status);
+            console.log("Response ok:", response.ok);
+
+            // Check if response is JSON before parsing
+            const contentType = response.headers.get("content-type");
+            if (!contentType || !contentType.includes("application/json")) {
+                console.error("Response is not JSON. Content-Type:", contentType);
+                const text = await response.text();
+                console.error("Response body:", text);
+                return;
+            }
+
             const data = await response.json();
+            console.log("Parsed response data:", data);
 
             if (!response.ok) {
-                console.error("Failed to verify certificate ownership:", data);
-                return
+                console.error("Failed to verify certificate ownership. HTTP status:", response.status);
+                console.error("Error response body:", data);
+                return;
             }
+
+            console.log("Certificate ownership verified successfully!");
+            console.log("Setting courseId:", data.courseId);
+            console.log("Setting courseName:", data.courseName);
+            console.log("Setting username:", data.username);
+            console.log("Setting issuedAt:", data.issuedAt);
 
             setCourseId(data.courseId);
             setCourseName(data.courseName);
             setUsername(data.username);
             setIssuedAt(data.issuedAt);
-            console.log("Verification response:", data);
 
+            console.log("Verification response processed successfully:", data);
+        } catch (error) {
+            console.error("Exception occurred while verifying certificate ownership:", error);
+            console.error("Error name:", error.name);
+            console.error("Error message:", error.message);
+            console.error("Error stack:", error.stack);
+        } finally {
+            console.log("Setting loading state to false");
+            setLoading(false);
+            console.log("verifyCertificateOwnership completed");
         }
-        catch (error) {
-            console.error("Error verifying certificate ownership:", error);
-        }
-        setLoading(false);
-    }
+    };
     return (
         <div>
             {loading ? (

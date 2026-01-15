@@ -2,7 +2,7 @@
 
 import DNavbar from '@/page_components/DNavbar'
 import Footer from '@/page_components/Footer'
-import { Search } from 'lucide-react'
+// import { Search } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -25,7 +25,7 @@ function parsePostgresArray(pgArray) {
 
 }
 
-export default function page() {
+export default function Page() {
 
     const [courses, setCourses] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');

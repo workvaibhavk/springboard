@@ -1,4 +1,4 @@
-import { supabaseAdmin as supabase } from '@/lib/supabase-admin.js'
+import { supabaseAdmin as supabase } from '@/lib/supabase-admin'
 
 export async function GET(request) {
     console.log('[GET /api/verify] Request received:', request.url)

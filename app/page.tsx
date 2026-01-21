@@ -1,7 +1,5 @@
-'use client'
+"use client"
 
-import React from 'react'
-// import Link from 'next/link'
 import Image from 'next/image'
 import { MoveRight } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -13,7 +11,7 @@ import { useUser } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
-const page = () => {
+const Page = () => {
 
   const { isSignedIn, isLoaded } = useUser()
   const router = useRouter()
@@ -210,4 +208,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

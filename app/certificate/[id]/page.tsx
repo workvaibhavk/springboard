@@ -1,5 +1,6 @@
 "use client"
 
+import { Certificate, CertificateError, Course } from '@/types';
 import { useUser } from '@clerk/nextjs';
 import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
@@ -13,10 +14,11 @@ export default function Page() {
     const courseId = params.id
     const { user, isLoaded } = useUser();
 
-    const [certificate, setCertificate] = useState(null)
-    const [course, setCourse] = useState(null)
-    const [error, setError] = useState(null)
+    const [certificate, setCertificate] = useState<Certificate | null>(null)
+    const [course, setCourse] = useState<Course | null>(null)
+    const [error, setError] = useState<CertificateError | null>(null)
     const [loading, setLoading] = useState(false)
+    // const [error, setError] = useState('')
     // const [errorMessage, setErrorMessage] = useState('')
 
     useEffect(() => {
@@ -41,12 +43,13 @@ export default function Page() {
             }
 
             setCertificate(data.certificate)
+            console.log(data.certificate);
             setCourse(data.course)
         }
 
         catch (error) {
             console.error('Error fetching certificate:', error)
-            setError({ error: error.message })
+            // setError({ error: error.message })
         }
 
         finally {

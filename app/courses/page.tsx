@@ -7,27 +7,23 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase';
+import { Course } from '@/types';
 
 
-
-function parsePostgresArray(pgArray) {
+function parsePostgresArray(pgArray: string | string[] | null | undefined): string[] {
     if (!pgArray) return [];
-    if (Array.isArray(pgArray)) return pgArray; // Already an array
+    if (Array.isArray(pgArray)) return pgArray;
 
-    // Convert "{ReactJS,C++,Python}" to ["ReactJS", "C++", "Python"]
     return pgArray
-        // .replace(/[{}]/g, /["]/g, /[[]]/g '') // Remove { and }
-        // .replace(/[{}"[]\\]/g, '')
         .replace(/[{}\[\]"\\]/g, '')
         .split(',')
-        .map(item => item.trim());
-    // .filter(item => item.length > 0);
-
+        .map(item => item.trim())
+        .filter(item => item.length > 0); // Remove empty strings
 }
 
 export default function Page() {
 
-    const [courses, setCourses] = useState([]);
+    const [courses, setCourses] = useState<Course[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [selectedLevel, setSelectedLevel] = useState('All');

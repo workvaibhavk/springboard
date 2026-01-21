@@ -10,6 +10,7 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import { far } from '@fortawesome/free-regular-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons'
+import { FacebookIcon, InstagramIcon, LinkedinIcon, TwitchIcon, YoutubeIcon } from 'lucide-react';
 
 library.add(fas, far, fab)
 
@@ -39,19 +40,28 @@ const Footer = () => {
                         {/* Social Icons */}
                         <div className='flex gap-4 pt-2'>
                             <Link href="#" className="w-10 h-10 rounded-full bg-white/10 hover:bg-blue-600 flex items-center justify-center transition-all duration-300 hover:scale-110 backdrop-blur-sm">
-                                <FontAwesomeIcon className='w-5 h-5 text-white' icon="fa-brands fa-instagram" />
+                                {/* <FontAwesomeIcon className='w-5 h-5 text-white' icon="fa-brands fa-instagram" /> */}
+                                <InstagramIcon className='w-5 h-5 text-white' />
                             </Link>
                             <Link href="#" className="w-10 h-10 rounded-full bg-white/10 hover:bg-blue-700 flex items-center justify-center transition-all duration-300 hover:scale-110 backdrop-blur-sm">
-                                <FontAwesomeIcon className='w-5 h-5 text-white' icon="fa-brands fa-linkedin" />
+                                {/* <FontAwesomeIcon className='w-5 h-5 text-white' icon="fa-brands fa-linkedin" /> */}
+                                <LinkedinIcon className='w-5 h-5 text-white' />
                             </Link>
                             <Link href="#" className="w-10 h-10 rounded-full bg-white/10 hover:bg-red-600 flex items-center justify-center transition-all duration-300 hover:scale-110 backdrop-blur-sm">
-                                <FontAwesomeIcon className='w-5 h-5 text-white' icon="fa-brands fa-youtube" />
+                                {/* <FontAwesomeIcon className='w-5 h-5 text-white' icon="fa-brands fa-youtube" /> */}
+                                <YoutubeIcon className='w-5 h-5 text-white' />
+
                             </Link>
                             <Link href="#" className="w-10 h-10 rounded-full bg-white/10 hover:bg-blue-600 flex items-center justify-center transition-all duration-300 hover:scale-110 backdrop-blur-sm">
-                                <FontAwesomeIcon className='w-5 h-5 text-white' icon="fa-brands fa-facebook" />
+                                {/* <FontAwesomeIcon className='w-5 h-5 text-white' icon="fa-brands fa-facebook" />
+                                 */}
+                                <FacebookIcon className='w-5 h-5 text-white' />
+
                             </Link>
                             <Link href="#" className="w-10 h-10 rounded-full bg-white/10 hover:bg-sky-500 flex items-center justify-center transition-all duration-300 hover:scale-110 backdrop-blur-sm">
-                                <FontAwesomeIcon className='w-5 h-5 text-white' icon="fa-brands fa-twitter" />
+                                {/* <FontAwesomeIcon className='w-5 h-5 text-white' icon="fa-brands fa-twitter" /> */}
+                                <TwitchIcon className='w-5 h-5 text-white' />
+
                             </Link>
                         </div>
                     </div>

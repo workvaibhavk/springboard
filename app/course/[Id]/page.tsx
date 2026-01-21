@@ -7,27 +7,26 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react';
+import { Course, Module } from '@/types';
+// import { Course, EnrollmentData, CourseEnrollment, Module } from '@/types';
 
-function parsePostgresArray(pgArray) {
+
+function parsePostgresArray(pgArray: string | string[] | null | undefined): string[] {
     if (!pgArray) return [];
-    if (Array.isArray(pgArray)) return pgArray; // Already an array
+    if (Array.isArray(pgArray)) return pgArray;
 
-    // Convert "{ReactJS,C++,Python}" to ["ReactJS", "C++", "Python"]
     return pgArray
-        // .replace(/[{}]/g, /["]/g, /[[]]/g '') // Remove { and }
-        // .replace(/[{}"[]\\]/g, '')
         .replace(/[{}\[\]"\\]/g, '')
         .split(',')
-        .map(item => item.trim());
-    // .filter(item => item.length > 0);
-
+        .map(item => item.trim())
+        .filter(item => item.length > 0); // Remove empty strings
 }
 
 export default function CoursePreviewPage() {
     const params = useParams();
     const courseId = params.Id;
-    const [course, setCourse] = useState(null);
-    const [modules, setModules] = useState([]);
+    const [course, setCourse] = useState<Course | null>(null);
+    const [modules, setModules] = useState<Module[]>([]);
     const [isEnrolled, setIsEnrolled] = useState(false);
     const [loading, setLoading] = useState(true);
     const { user, isLoaded } = useUser();
@@ -143,16 +142,19 @@ export default function CoursePreviewPage() {
 
         catch (error) {
             console.error('Enrollment error:', error);
-            alert(error.message || 'Failed to enroll. Please try again.');
+            // alert(error.message || 'Failed to enroll. Please try again.');
         }
     }
 
+    if (!user) return;
+
+
     const checkEnrollmentStatus = async () => {
-        if (!user) return;
 
         try {
             const response = await fetch(`/api/check-enrollment?courseId=${courseId}`);
             const data = await response.json();
+            console.log('hii', data)
 
             if (data.isEnrolled) {
                 console.log('User is enrolled!');
@@ -258,7 +260,7 @@ export default function CoursePreviewPage() {
                             <h2 className="text-2xl font-bold mb-4">📚 Course Content ({modules.length} modules)</h2>
 
                             <div className="space-y-3">
-                                {modules.map((module, index) => (
+                                {modules.map((module: Module) => (
                                     <div
                                         key={module.id}
                                         className="flex items-center gap-4 p-4 bg-white rounded-lg border border-gray-200 hover:shadow-md transition-shadow"

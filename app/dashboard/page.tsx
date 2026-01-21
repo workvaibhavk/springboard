@@ -10,7 +10,7 @@ import DNavbar from '@/page_components/DNavbar'
 import Footer from '@/page_components/Footer'
 import { CircleDollarSign, CodeXml, Fingerprint, Sparkles, SplinePointer } from 'lucide-react'
 
-export default function page() {
+export default function Page() {
 
     const { user, isLoaded } = useUser();
     const router = useRouter();

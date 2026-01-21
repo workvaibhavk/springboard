@@ -27,7 +27,9 @@ export async function GET(request) {
             .single();
 
         return Response.json({
-            isEnrolled: !!data
+            success: true,
+            message: 'user is already enrolled successfully!',
+            isEnrolled: data
         })
     }
 

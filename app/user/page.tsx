@@ -8,32 +8,54 @@ import Image from "next/image";
 import Link from "next/link";
 // import { auth } from "@clerk/nextjs/server";
 import { useEffect, useState } from "react";
+import { Course, EnrollmentData, CourseEnrollment } from '@/types';
+
+// export interface Course {
+//     id: string;
+//     title: string;
+//     thumbnail_url: string;
+//     category: string;
+//     instructor: string;
+//     tags: string; // Postgres array as string
+//     total_duration_seconds: number;
+//     level: string;
+// }
 
 
-
-
-function parsePostgresArray(pgArray) {
+function parsePostgresArray(pgArray: string | string[] | null | undefined): string[] {
     if (!pgArray) return [];
-    if (Array.isArray(pgArray)) return pgArray; // Already an array
+    if (Array.isArray(pgArray)) return pgArray;
 
-    // Convert "{ReactJS,C++,Python}" to ["ReactJS", "C++", "Python"]
     return pgArray
-        // .replace(/[{}]/g, /["]/g, /[[]]/g '') // Remove { and }
-        // .replace(/[{}"[]\\]/g, '')
         .replace(/[{}\[\]"\\]/g, '')
         .split(',')
-        .map(item => item.trim());
-    // .filter(item => item.length > 0);
-
+        .map(item => item.trim())
+        .filter(item => item.length > 0); // Remove empty strings
 }
+
+// function parsePostgresArray(pgArray) {
+// if (!pgArray) return [];
+// if (Array.isArray(pgArray)) return pgArray; // Already an array
+
+// Convert "{ReactJS,C++,Python}" to ["ReactJS", "C++", "Python"]
+// return pgArray
+// .replace(/[{}]/g, /["]/g, /[[]]/g '') // Remove { and }
+// .replace(/[{}"[]\\]/g, '')
+// .replace(/[{}\[\]"\\]/g, '')
+// .split(',')
+// .map(item => item.trim());
+// .filter(item => item.length > 0);
+
+// }
+
 
 
 export default function Page() {
 
     const { user, isLoaded } = useUser();
     const [loading, setLoading] = useState(true);
-    const [enrolledCourses, setEnrolledCourses] = useState(null);
-    const [completedCourses, setCompletedCourses] = useState(null);
+    const [enrolledCourses, setEnrolledCourses] = useState<CourseEnrollment[]>([]);
+    const [completedCourses, setCompletedCourses] = useState<CourseEnrollment[]>([]);
 
     useEffect(() => {
         fetchEnrolledCourses();
@@ -44,7 +66,7 @@ export default function Page() {
         try {
             setLoading(true);
             const response = await fetch('/api/get-user-courses-data');
-            const data = await response.json();
+            const data: EnrollmentData = await response.json();
             console.log('Enrolled Courses:', data);
             setEnrolledCourses(data.userInprogressCourses);
             setCompletedCourses(data.userCompletedCourses);
@@ -90,18 +112,18 @@ export default function Page() {
 
 
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                                {enrolledCourses && enrolledCourses.map((course) => {
-                                    const ecourse = course.courses;
+                                {enrolledCourses && enrolledCourses.map((enrollment) => {
+                                    const course: Course = enrollment.courses;
                                     return (
                                         <div
-                                            key={ecourse.id}
+                                            key={enrollment.id}
                                             className='course-card w-full border border-gray-200 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300'
                                         >
                                             {/* Thumbnail */}
                                             <div className="aspect-ratio-16-9">
                                                 <Image
-                                                    src={ecourse.thumbnail_url}
-                                                    alt={ecourse.title}
+                                                    src={course.thumbnail_url}
+                                                    alt={course.title}
                                                     layout="fill"
                                                     objectFit="cover"
                                                     className='rounded-t-xl'
@@ -114,19 +136,19 @@ export default function Page() {
                                                 {/* Category Badge + Title + Instructor */}
                                                 <div className="flex flex-col space-y-1">
                                                     <p className='text-sm font-medium text-indigo-700'> {/* Changed to indigo for better contrast */}
-                                                        {ecourse.category}
+                                                        {course.category}
                                                     </p>
                                                     <p className='font-bold text-xl line-clamp-2 text-gray-800'>
-                                                        {ecourse.title}
+                                                        {course.title}
                                                     </p>
                                                     <p className='text-gray-500 text-sm'>
-                                                        {ecourse.instructor}
+                                                        {course.instructor}
                                                     </p>
                                                 </div>
 
                                                 {/* Tags */}
                                                 <div className='flex gap-2 text-xs font-medium flex-wrap mt-2'>
-                                                    {parsePostgresArray(ecourse.tags).slice(0, 3).map((tag, index) => (
+                                                    {parsePostgresArray(course.tags).slice(0, 3).map((tag, index) => (
                                                         <span
                                                             key={index}
                                                             className='bg-gray-100 py-1 px-3 rounded-full text-gray-600 whitespace-nowrap'
@@ -139,13 +161,13 @@ export default function Page() {
                                                 {/* Duration + Level */}
                                                 <div className='font-semibold text-sm text-gray-700 flex items-center pt-2 border-t border-gray-100'>
                                                     <svg className="w-4 h-4 mr-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                                    <span>{Math.floor(ecourse.total_duration_seconds / 3600)}hr {Math.floor((ecourse.total_duration_seconds % 3600) / 60)}min</span>
+                                                    <span>{Math.floor(course.total_duration_seconds / 3600)}hr {Math.floor((course.total_duration_seconds % 3600) / 60)}min</span>
                                                     <span className='mx-2 text-gray-400'>|</span>
-                                                    <span className='capitalize'>{ecourse.level}</span>
+                                                    <span className='capitalize'>{course.level}</span>
                                                 </div>
 
                                                 {/* Button */}
-                                                <Link href={`/course/${ecourse.id}`}>
+                                                <Link href={`/learn/${course.id}`}>
                                                     <button
                                                         className='w-full mt-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold transition-colors duration-150 cursor-pointer'
                                                     >
@@ -169,18 +191,18 @@ export default function Page() {
 
 
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-2 gap-6">
-                                {completedCourses && completedCourses.map((course) => {
-                                    const ecourse = course.courses;
+                                {completedCourses && completedCourses.map((enrollment) => {
+                                    const course = enrollment.courses;
                                     return (
                                         <div
-                                            key={ecourse.id}
+                                            key={enrollment.id}
                                             className='flex course-card w-full border border-gray-200 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300'
                                         >
                                             {/* Thumbnail */}
                                             <div className="p-8 w-[300px] h-[160px] relative flex-shrink-0">
                                                 <Image
-                                                    src={ecourse.thumbnail_url}
-                                                    alt={ecourse.title}
+                                                    src={course.thumbnail_url}
+                                                    alt={course.title}
                                                     layout="fill"
                                                     objectFit="cover"
                                                     className='rounded-t-xl'
@@ -193,19 +215,19 @@ export default function Page() {
                                                 {/* Category Badge + Title + Instructor */}
                                                 <div className="flex flex-col space-y-1">
                                                     <p className='text-sm font-medium text-indigo-700'>
-                                                        {ecourse.category}
+                                                        {course.category}
                                                     </p>
                                                     <p className='font-bold text-xl text-gray-800 line-clamp-2'>
-                                                        {ecourse.title}
+                                                        {course.title}
                                                     </p>
                                                     <p className='text-gray-600 text-md'>
-                                                        {ecourse.instructor}
+                                                        {course.instructor}
                                                     </p>
                                                 </div>
 
                                                 {/* Tags */}
                                                 <div className='hidden gap-2 text-xs font-medium flex-wrap mt-2'>
-                                                    {parsePostgresArray(ecourse.tags).slice(0, 3).map((tag, index) => (
+                                                    {parsePostgresArray(course.tags).slice(0, 3).map((tag, index) => (
                                                         <span
                                                             key={index}
                                                             className='bg-gray-100 py-1 px-3 rounded-full text-gray-600 whitespace-nowrap'
@@ -216,15 +238,15 @@ export default function Page() {
                                                 </div>
 
                                                 {/* Duration + Level */}
-                                                <div className='hidden font-semibold text-sm text-gray-700 flex items-center pt-2 border-t border-gray-100'>
+                                                <div className='hidden font-semibold text-sm text-gray-700  items-center pt-2 border-t border-gray-100'>
                                                     <svg className="w-4 h-4 mr-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                                    <span>{Math.floor(ecourse.total_duration_seconds / 3600)}hr {Math.floor((ecourse.total_duration_seconds % 3600) / 60)}min</span>
+                                                    <span>{Math.floor(course.total_duration_seconds / 3600)}hr {Math.floor((course.total_duration_seconds % 3600) / 60)}min</span>
                                                     <span className='mx-2 text-gray-400'>|</span>
-                                                    <span className='capitalize'>{ecourse.level}</span>
+                                                    <span className='capitalize'>{course.level}</span>
                                                 </div>
 
                                                 {/* Button */}
-                                                <Link href={`/certificate/${ecourse.id}`}>
+                                                <Link href={`/certificate/${course.id}`}>
                                                     <button
                                                         className='w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold transition-colors duration-150 cursor-pointer'
                                                     >

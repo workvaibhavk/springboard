@@ -138,7 +138,7 @@ export default function Page() {
                                     <div className="absolute right-0 bottom-0">
                                         <QRCode
                                             size={200}
-                                            value={`https://supabase.com/verify/${certificate.certificate_number}`}
+                                            value={`https://vspringboard.vercel.app/verify/${certificate.certificate_number}`}
                                             fgColor='#665bca'
                                             className='rounded-2xl p-2 m-8'
                                             level='H'

@@ -29,6 +29,7 @@ export default function Page() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!user) return;
         setLoading(true);
 
 

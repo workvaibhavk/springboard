@@ -9,7 +9,7 @@ import { SignInButton, UserButton, useUser } from '@clerk/nextjs'
 
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const { isSignedIn, user } = useUser()
+    const { isSignedIn } = useUser();
 
     return (
 

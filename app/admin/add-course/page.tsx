@@ -1,45 +1,64 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, FormEvent, ChangeEvent } from 'react';
 // import { useRouter } from 'next/navigation';
 import { CheckIcon } from 'lucide-react';
+import type {
+    DifficultyLevel,
+    CourseCategory,
+    CourseTag,
+    AddCourseApiRequest,
+    AddCourseApiResponse
+} from '@/types/course';
+
+// Constants
+const TAGS_OPTIONS: readonly CourseTag[] = [
+    'WebDev', 'FullStack', 'Frontend', 'Backend', 'JavaScript',
+    'Algorithms', 'DataStructures', 'Python', 'Java', 'CSharp',
+    'Ruby', 'PHP', 'GoLang', 'Rust', 'C++',
+    'DevOps', 'AWS', 'Azure', 'Docker', 'Kubernetes',
+    'MachineLearning', 'AI', 'DataScience', 'BigData', 'CloudComputing',
+    'ReactJS', 'NodeJS', 'MongoDB', 'MERN', 'HTMLCSS',
+    'Tailwind', 'Bootstrap', 'Django', 'Flutter',
+    'AndroidDev', 'AppDev', 'DSA', 'Coding', 'GitGitHub',
+    'API', 'StockMarket', 'Investing', 'Trading', 'Intraday',
+    'Options', 'MutualFund', 'SIP', 'MoneyTips', 'PassiveIncome',
+    'Finance', 'Nifty', 'BankNifty',
+    'GraphicDesign', 'UIUX', 'Figma', 'Canva', 'Photoshop',
+    'Illustrator', 'LogoDesign', 'WebDesign', 'UIDesign', 'Motion',
+    'AfterEffects', 'Business', 'Startup', 'Entrepreneur', 'SideHustle',
+    'Ecommerce', 'Dropship', 'DigitalMkt', 'MakeMoney', 'Freelance',
+    'BusinessIdea', 'Sales', 'Marketing', 'CyberSecurity', 'Eth Hacking', 'ComputerNetwork',
+    'Linux', 'IoT', 'Robotics', 'EmbeddedSystems',
+    'VideoEditing', 'FilmMaking', 'Storytelling',
+    'Communication',
+    'Governance', 'Civics', 'Law'
+] as const;
+
+const DIFFICULTY_LEVELS: readonly DifficultyLevel[] = ['beginner', 'intermediate', 'advanced'] as const;
+
+const CATEGORIES: readonly CourseCategory[] = [
+    'Programming',
+    'Web/App dev',
+    'Cyber Security',
+    'Computer Science',
+    'Tech',
+    'Creativity',
+    'General skills'
+] as const;
 
 export default function AddCoursePage() {
     // const router = useRouter();
-    const [playlistId, setPlaylistId] = useState('');
-    const [maxVideos, setMaxVideos] = useState('');
-    const [level, setLevel] = useState('beginner');
-    const [category, setCategory] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
+    const [playlistId, setPlaylistId] = useState<string>('');
+    const [maxVideos, setMaxVideos] = useState<string>('');
+    const [level, setLevel] = useState<DifficultyLevel>('beginner');
+    const [category, setCategory] = useState<CourseCategory>('Programming');
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string>('');
+    const [success, setSuccess] = useState<string>('');
+    const [selectedTags, setSelectedTags] = useState<CourseTag[]>([]);
 
-    const [selectedTags, setSelectedTags] = useState([]);
-
-    const tagsOptions = ['WebDev', 'FullStack', 'Frontend', 'Backend', 'JavaScript',
-        'Algorithms', 'DataStructures', 'Python', 'Java', 'CSharp',
-        'Ruby', 'PHP', 'GoLang', 'Rust', 'C++',
-        'DevOps', 'AWS', 'Azure', 'Docker', 'Kubernetes',
-        'MachineLearning', 'AI', 'DataScience', 'BigData', 'CloudComputing',
-        'ReactJS', 'NodeJS', 'MongoDB', 'MERN', 'HTMLCSS',
-        'Tailwind', 'Bootstrap', 'Django', 'Flutter',
-        'AndroidDev', 'AppDev', 'DSA', 'Coding', 'GitGitHub',
-        'API', 'StockMarket', 'Investing', 'Trading', 'Intraday',
-        'Options', 'MutualFund', 'SIP', 'MoneyTips', 'PassiveIncome',
-        'Finance', 'Nifty', 'BankNifty',
-        'GraphicDesign', 'UIUX', 'Figma', 'Canva', 'Photoshop',
-        'Illustrator', 'LogoDesign', 'WebDesign', 'UIDesign', 'Motion',
-        'AfterEffects', 'Business', 'Startup', 'Entrepreneur', 'SideHustle',
-        'Ecommerce', 'Dropship', 'DigitalMkt', 'MakeMoney', 'Freelance',
-        'BusinessIdea', 'Sales', 'Marketing', 'CyberSecurity', 'Eth Hacking', 'ComputerNetwork',
-        'Linux', 'IoT', 'Robotics', 'EmbeddedSystems',
-        'VideoEditing', 'FilmMaking', 'Storytelling',
-        'Communication',
-        'Governance', 'Civics', 'Law'
-    ];
-
-
-    const toggleTag = (tag) => {
+    const toggleTag = (tag: CourseTag): void => {
         setSelectedTags(prev =>
             prev.includes(tag)
                 ? prev.filter(item => item !== tag)
@@ -47,7 +66,7 @@ export default function AddCoursePage() {
         );
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
 
         // Reset messages
@@ -56,22 +75,24 @@ export default function AddCoursePage() {
         setLoading(true);
 
         try {
+            const requestBody: AddCourseApiRequest = {
+                playlistId: playlistId.trim(),
+                maxVideos: maxVideos ? parseInt(maxVideos, 10) : null,
+                level,
+                category,
+                tags: selectedTags
+            };
+
             // Call our API
             const response = await fetch('/api/add-course', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    playlistId: playlistId.trim(),
-                    maxVideos: maxVideos ? parseInt(maxVideos) : null,
-                    level: level,
-                    category: category,
-                    tags: selectedTags
-                }),
+                body: JSON.stringify(requestBody),
             });
 
-            const data = await response.json();
+            const data: AddCourseApiResponse = await response.json();
 
             if (!response.ok) {
                 throw new Error(data.error || 'Failed to add course');
@@ -82,7 +103,7 @@ export default function AddCoursePage() {
             setPlaylistId('');
             setMaxVideos('');
             setLevel('beginner');
-            setCategory('');
+            setCategory('Programming');
             setSelectedTags([]);
             window.scrollTo(0, 0);
 
@@ -92,10 +113,27 @@ export default function AddCoursePage() {
             // }, 2000);
 
         } catch (err) {
-            setError(err.message);
+            const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred';
+            setError(errorMessage);
         } finally {
             setLoading(false);
         }
+    };
+
+    const handlePlaylistIdChange = (e: ChangeEvent<HTMLInputElement>): void => {
+        setPlaylistId(e.target.value);
+    };
+
+    const handleMaxVideosChange = (e: ChangeEvent<HTMLInputElement>): void => {
+        setMaxVideos(e.target.value);
+    };
+
+    const handleLevelChange = (e: ChangeEvent<HTMLSelectElement>): void => {
+        setLevel(e.target.value as DifficultyLevel);
+    };
+
+    const handleCategoryChange = (e: ChangeEvent<HTMLSelectElement>): void => {
+        setCategory(e.target.value as CourseCategory);
     };
 
     return (
@@ -132,7 +170,7 @@ export default function AddCoursePage() {
                                 type="text"
                                 id="playlistId"
                                 value={playlistId}
-                                onChange={(e) => setPlaylistId(e.target.value)}
+                                onChange={handlePlaylistIdChange}
                                 placeholder="PLxxxxxxxxxxxxxxxxxxxxxx"
                                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#665bca] focus:border-[#665bca] outline-none transition"
                                 required
@@ -154,7 +192,7 @@ export default function AddCoursePage() {
                                 type="number"
                                 id="maxVideos"
                                 value={maxVideos}
-                                onChange={(e) => setMaxVideos(e.target.value)}
+                                onChange={handleMaxVideosChange}
                                 placeholder="Leave empty for all videos"
                                 min="1"
                                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#665bca] focus:border-[#665bca] outline-none transition"
@@ -176,20 +214,21 @@ export default function AddCoursePage() {
                             <select
                                 id="level"
                                 value={level}
-                                onChange={(e) => setLevel(e.target.value)}
-
+                                onChange={handleLevelChange}
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#665bca] focus:border-[#665bca] outline-none transition-all bg-white"
                             >
-                                <option value="beginner">Beginner</option>
-                                <option value="intermediate">Intermediate</option>
-                                <option value="advanced">Advanced</option>
+                                {DIFFICULTY_LEVELS.map((diffLevel) => (
+                                    <option key={diffLevel} value={diffLevel}>
+                                        {diffLevel.charAt(0).toUpperCase() + diffLevel.slice(1)}
+                                    </option>
+                                ))}
                             </select>
                             <p className="mt-1 text-xs text-gray-500">
                                 Select the course difficulty level.
                             </p>
                         </div>
 
-                        {/* Level Selection */}
+                        {/* Category Selection */}
                         <div>
                             <label
                                 htmlFor="category"
@@ -200,45 +239,45 @@ export default function AddCoursePage() {
                             <select
                                 id="category"
                                 value={category}
-                                onChange={(e) => setCategory(e.target.value)}
-
+                                onChange={handleCategoryChange}
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#665bca] focus:border-[#665bca] outline-none transition-all bg-white"
                             >
-                                <option value="Programming">Programming</option>
-                                <option value="Web/App dev">Web/App dev</option>
-                                <option value="Cyber Security">Cyber Security</option>
-                                <option value="Computer Science">Computer Science</option>
-                                <option value="Tech">Tech</option>
-                                <option value="Creativity">Creativity</option>
-                                <option value="General skills">General skills</option>
+                                {CATEGORIES.map((cat) => (
+                                    <option key={cat} value={cat}>
+                                        {cat}
+                                    </option>
+                                ))}
                             </select>
                             <p className="mt-1 text-xs text-gray-500">
                                 Select the course category.
                             </p>
                         </div>
 
-
-
-                        <div className="flex flex-row flex-wrap content-center items-center gap-1 text-sm">
-                            {tagsOptions.map(tags => (
-                                <button
-                                    key={tags}
-                                    onClick={() => toggleTag(tags)}
-                                    type="button"
-                                    className={`
-                                        py-[8px] px-[16px] border-[#ddd] rounded-[20px]  cursor-pointer inline-flex items-center gap-[6px] 
-                                        ${selectedTags.includes(tags)
-                                            ? 'bg-[#7b34ff] border-[#4caf50] text-[#ffffff]'
-                                            : 'bg-[#e6cefa]'} `}
-                                >
-                                    {selectedTags.includes(tags) && <CheckIcon />}
-                                    {tags}
-                                </button>
-                            ))}
+                        {/* Tags Selection */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Tags
+                            </label>
+                            <div className="flex flex-row flex-wrap content-center items-center gap-1 text-sm">
+                                {TAGS_OPTIONS.map((tag) => (
+                                    <button
+                                        key={tag}
+                                        onClick={() => toggleTag(tag)}
+                                        type="button"
+                                        className={`
+                      py-[8px] px-[16px] border-[#ddd] rounded-[20px] cursor-pointer inline-flex items-center gap-[6px] 
+                      ${selectedTags.includes(tag)
+                                                ? 'bg-[#7b34ff] border-[#4caf50] text-[#ffffff]'
+                                                : 'bg-[#e6cefa]'
+                                            }
+                    `}
+                                    >
+                                        {selectedTags.includes(tag) && <CheckIcon className="w-4 h-4" />}
+                                        {tag}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
-
-
-
 
                         <button
                             type="submit"
@@ -277,7 +316,7 @@ export default function AddCoursePage() {
                     <ol className="text-xs text-[#665bca] space-y-1 list-decimal list-inside">
                         <li>Go to the YouTube playlist</li>
                         <li>Copy the URL from your browser</li>
-                        <li>The ID is after "list=" in the URL</li>
+                        <li>The ID is after &quot;list=&quot; in the URL</li>
                         <li>Example: youtube.com/playlist?list=<strong>PLxxxxxx</strong></li>
                     </ol>
                 </div>

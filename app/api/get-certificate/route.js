@@ -1,4 +1,4 @@
-import { supabaseAdmin as supabase } from '@/lib/supabase-admin.js'
+import { supabaseAdmin as supabase } from '@/lib/supabase-admin'
 import { auth, clerkClient } from '@clerk/nextjs/server'
 // import { error } from 'console'
 

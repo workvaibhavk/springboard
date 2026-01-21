@@ -24,7 +24,7 @@ function parsePostgresArray(pgArray: string | string[] | null | undefined): stri
 
 export default function CoursePreviewPage() {
     const params = useParams();
-    const courseId = params.Id;
+    const courseId = params.Id ?? "";
     const [course, setCourse] = useState<Course | null>(null);
     const [modules, setModules] = useState<Module[]>([]);
     const [isEnrolled, setIsEnrolled] = useState(false);

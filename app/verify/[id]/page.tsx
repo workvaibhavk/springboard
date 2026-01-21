@@ -14,7 +14,7 @@ export default function Page() {
     const [username, setUsername] = useState('');
     const [issuedAt, setIssuedAt] = useState('');
     const [loading, setLoading] = useState(true);
-    // const [error, setError] = useState(null);
+    // // const [error, setError] = useState(null);
     const [courseName, setCourseName] = useState('');
 
     useEffect(() => {
@@ -77,9 +77,9 @@ export default function Page() {
             console.log("Verification response processed successfully:", data);
         } catch (error) {
             console.error("Exception occurred while verifying certificate ownership:", error);
-            console.error("Error name:", error.name);
-            console.error("Error message:", error.message);
-            console.error("Error stack:", error.stack);
+            // console.error("Error name:", error.name);
+            // console.error("Error message:", error.message);
+            // console.error("Error stack:", error.stack);
         } finally {
             console.log("Setting loading state to false");
             setLoading(false);

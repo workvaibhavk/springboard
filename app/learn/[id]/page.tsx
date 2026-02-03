@@ -9,7 +9,9 @@ import ModuleList from '@/components/ModuleList'
 import { fetchCourseData, fetchModules, fetchProgress, markModuleComplete } from '@/lib/courseApi'
 import DNavbar from '@/page_components/DNavbar'
 import type { Course, Module, ProgressData } from '@/types/learning'
-import { Link } from 'lucide-react'
+import Link from 'next/link'
+import { Download } from 'lucide-react'
+// import { Link } from 'lucide-react'
 
 export default function LearnPage() {
     const params = useParams<{ id: string }>();
@@ -22,11 +24,14 @@ export default function LearnPage() {
     const [currentModuleIndex, setCurrentModuleIndex] = useState<number>(0);
     const [completedModules, setCompletedModules] = useState<string[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    const [isCompleted, setIsCompleted] = useState<boolean>(false);
 
     // Video tracking states
     const [watchedPercentage, setWatchedPercentage] = useState<number>(0);
     const [hasWatched90Percent, setHasWatched90Percent] = useState<boolean>(false);
+
+    // FIX 2: Derive isCompleted from actual data instead of a one-time flag.
+    // This way it's true on page load if the user already finished everything.
+    const isCompleted = modules.length > 0 && completedModules.length >= modules.length;
 
     useEffect(() => {
         if (isLoaded && user && courseId) {
@@ -55,7 +60,10 @@ export default function LearnPage() {
             }
 
             if (progressData.completedModules) {
-                setCompletedModules(progressData.completedModules);
+                // FIX 1 (part A): Deduplicate whatever the DB returns,
+                // so even if duplicates already exist they won't inflate the count.
+                const unique = [...new Set(progressData.completedModules)];
+                setCompletedModules(unique);
             }
         } catch (error) {
             console.error('Error fetching learning data:', error);
@@ -91,19 +99,24 @@ export default function LearnPage() {
     const handleMarkComplete = async (): Promise<void> => {
         if (!currentModule || !courseId) return;
 
+        // FIX 1 (part B): If already completed, skip the API call entirely.
+        // This is the main reason duplicates were being written to the DB.
+        if (completedModules.includes(currentModule.id)) {
+            goToNextModule();
+            return;
+        }
+
         try {
             await markModuleComplete(courseId, currentModule.id);
 
-            if (!completedModules.includes(currentModule.id)) {
-                setCompletedModules([...completedModules, currentModule.id]);
-            }
+            setCompletedModules(prev => [...prev, currentModule.id]);
 
             setTimeout(() => {
                 if (currentModuleIndex < modules.length - 1) {
                     goToNextModule();
                 } else {
                     alert('🎉 Congratulations! You completed all modules!');
-                    setIsCompleted(true);
+                    // No need to setIsCompleted — it's now derived automatically.
                 }
             }, 500);
         } catch (error) {
@@ -116,8 +129,6 @@ export default function LearnPage() {
     const calculateProgress = (): number => {
         if (modules.length === 0) return 0;
         return (completedModules.length / modules.length) * 100;
-
-
     };
 
     const isLastModule = (): boolean => {
@@ -198,14 +209,17 @@ export default function LearnPage() {
                             </button>
 
                             {isModuleCompleted() ? (
-                                <button
-                                    className='cursor-pointer md:py-3 md:px-6 px-2 py-4  rounded-lg bg-[#665bca] text-white text-sm md:text-md flex-1 disabled:opacity-50 disabled:cursor-default transition-opacity'
-                                    onClick={goToNextModule}
-                                    disabled={isLastModule()}
-                                    type='button'
-                                >
-                                    Next Module
-                                </button>
+                                // Don't render Next Module at all on the last module — 
+                                // otherwise it sits there disabled and crowds out Get Certificate
+                                !isLastModule() && (
+                                    <button
+                                        className='cursor-pointer md:py-3 md:px-6 px-2 py-4  rounded-lg bg-[#665bca] text-white text-sm md:text-md flex-1 transition-opacity'
+                                        onClick={goToNextModule}
+                                        type='button'
+                                    >
+                                        Next Module
+                                    </button>
+                                )
                             ) : (
                                 <button
                                     onClick={handleMarkComplete}
@@ -220,17 +234,18 @@ export default function LearnPage() {
                                 </button>
                             )}
 
+
+
                             {isCompleted && (
                                 <Link href={`/certificate/${courseId}`}>
                                     <button
-                                        className='cursor-pointer md:py-3 md:px-6 px-2 py-4 rounded-lg bg-green-500 text-white text-sm md:text-md flex-1'
+                                        className='cursor-pointer md:py-3 md:px-6 px-2 py-4 rounded-lg bg-green-500 text-white text-sm md:text-md'
                                         type='button'
                                     >
-                                        Get Certificate
+                                        <Download className="mr-2 inline-block" />  Get Certificate
                                     </button>
                                 </Link>
-                            )}
-                        </div>
+                            )} </div>
                     </div>
                 </div>
 

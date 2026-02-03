@@ -23,7 +23,7 @@ export default function ResAuthenticate() {
             if (!phoneNumber || !enrNumber) {
                 router.push('/onboarding');
             } else {
-                router.push('/dashboard');
+                router.replace('/dashboard');
             }
         }
     }, [isLoaded, user, router]);

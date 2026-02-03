@@ -11,8 +11,8 @@ export default function Page() {
 
     useEffect(() => {
         if (isLoaded && user) {
-            const phoneNumber = user.unsafeMetadata.phoneNumber;
-            const enrNumber = user.unsafeMetadata.enrNumber;
+            const phoneNumber = user.publicMetadata.phoneNumber;
+            const enrNumber = user.publicMetadata.enrNumber;
 
             if (phoneNumber && enrNumber) {
                 router.push('/dashboard');
@@ -20,6 +20,14 @@ export default function Page() {
                 router.push('/onboarding');
             }
         }
+
+        else if (isLoaded && !user) {
+            // router.push('/');
+        }
+        else {
+            // Still loading
+        }
+
     }, [isLoaded, user, router]);
 
     return (

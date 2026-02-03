@@ -3,8 +3,9 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, MouseEvent } from 'react';
-import { Menu, Search, X } from 'lucide-react';
+import { InfoIcon, Menu, Search, X } from 'lucide-react';
 import { SignInButton, UserButton, useUser } from '@clerk/nextjs';
+import AdditionalInfoPage from "./addInfo";
 
 interface NavLinkProps {
     href: string;
@@ -107,6 +108,27 @@ const DNavbar = () => {
                         >
                             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
                         </button>
+
+                        {isSignedIn && (
+                            <button
+                                // onClick={toggleMenu}
+                                className='block md:hidden text-gray-700 hover:text-black transition-colors'
+                                // aria-label="Toggle Menu"
+                                // aria-expanded={isMenuOpen}
+                                type="button"
+                            >
+                                <UserButton
+                                    afterSignOutUrl="/">
+
+                                    <UserButton.UserProfilePage label="My Profile" labelIcon={<InfoIcon className="h-4 w-4" />} url="additional-info">
+                                        <AdditionalInfoPage />
+                                    </UserButton.UserProfilePage>
+                                </UserButton>
+                            </button>)}
+
+
+
+
                     </div>
                 </div>
             </nav>

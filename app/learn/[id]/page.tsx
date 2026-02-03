@@ -9,6 +9,7 @@ import ModuleList from '@/components/ModuleList'
 import { fetchCourseData, fetchModules, fetchProgress, markModuleComplete } from '@/lib/courseApi'
 import DNavbar from '@/page_components/DNavbar'
 import type { Course, Module, ProgressData } from '@/types/learning'
+import { Link } from 'lucide-react'
 
 export default function LearnPage() {
     const params = useParams<{ id: string }>();
@@ -21,6 +22,7 @@ export default function LearnPage() {
     const [currentModuleIndex, setCurrentModuleIndex] = useState<number>(0);
     const [completedModules, setCompletedModules] = useState<string[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const [isCompleted, setIsCompleted] = useState<boolean>(false);
 
     // Video tracking states
     const [watchedPercentage, setWatchedPercentage] = useState<number>(0);
@@ -101,6 +103,7 @@ export default function LearnPage() {
                     goToNextModule();
                 } else {
                     alert('🎉 Congratulations! You completed all modules!');
+                    setIsCompleted(true);
                 }
             }, 500);
         } catch (error) {
@@ -113,6 +116,8 @@ export default function LearnPage() {
     const calculateProgress = (): number => {
         if (modules.length === 0) return 0;
         return (completedModules.length / modules.length) * 100;
+
+
     };
 
     const isLastModule = (): boolean => {
@@ -146,10 +151,10 @@ export default function LearnPage() {
     return (
         <div className='flex flex-col gap-4 bg-gray-50'>
             <DNavbar />
-            <main className='flex gap-8 w-13/14 mx-auto'>
-                <div className='w-8/12 flex flex-col gap-6'>
+            <main className='flex flex-col md:flex-row gap-8 w-13/14 mx-auto'>
+                <div className='w-8/12 flex-col-reverse flex md:flex-col gap-6'>
                     {/* Course Header */}
-                    <div className='bg-white border border-gray-200 p-6 rounded-xl shadow-sm'>
+                    <div className='bg-white border border-gray-200 p-6 rounded-xl shadow-sm mb-6'>
                         <h2 className='text-3xl font-bold text-gray-900 mb-2'>
                             {course.title.split(':')[0]}
                         </h2>
@@ -171,7 +176,7 @@ export default function LearnPage() {
 
                     {/* Module Content */}
                     <div className='flex flex-col gap-6 bg-white border border-gray-200 p-6 rounded-xl shadow-sm'>
-                        <h3 className='text-3xl font-semibold'>
+                        <h3 className='text-xl md:text-3xl font-semibold'>
                             {currentModuleIndex + 1}: {currentModule?.title || 'Loading...'}
                         </h3>
 
@@ -184,7 +189,7 @@ export default function LearnPage() {
                         {/* Navigation Buttons */}
                         <div className='flex justify-between mt-4 gap-4'>
                             <button
-                                className='cursor-pointer py-3 px-6 rounded-lg border-[#e9e9e9] bg-[#e9e9e9] text-[#000] border-2 text-md flex-1 disabled:opacity-50 disabled:cursor-default transition-opacity'
+                                className='cursor-pointer md:py-3 md:px-6 px-2 py-4 rounded-lg border-[#e9e9e9] bg-[#e9e9e9] text-[#000] border-2 text-sm md:text-md flex-1 disabled:opacity-50 disabled:cursor-default transition-opacity'
                                 onClick={goToPreviousModule}
                                 disabled={isFirstModule()}
                                 type='button'
@@ -194,7 +199,7 @@ export default function LearnPage() {
 
                             {isModuleCompleted() ? (
                                 <button
-                                    className='cursor-pointer py-3 px-6 rounded-lg bg-[#665bca] text-white text-md flex-1 disabled:opacity-50 disabled:cursor-default transition-opacity'
+                                    className='cursor-pointer md:py-3 md:px-6 px-2 py-4  rounded-lg bg-[#665bca] text-white text-sm md:text-md flex-1 disabled:opacity-50 disabled:cursor-default transition-opacity'
                                     onClick={goToNextModule}
                                     disabled={isLastModule()}
                                     type='button'
@@ -205,7 +210,7 @@ export default function LearnPage() {
                                 <button
                                     onClick={handleMarkComplete}
                                     disabled={!hasWatched90Percent}
-                                    className='cursor-pointer py-3 px-6 rounded-lg border-[#e9e9e9] bg-[#665bca] text-white border-2 text-md flex-1 disabled:opacity-50 disabled:cursor-default transition-opacity'
+                                    className='cursor-pointer text-sm md:text-md md:py-3 md:px-6 px-2 py-4  rounded-lg border-[#e9e9e9] bg-[#665bca] text-white border-2 flex-1 disabled:opacity-50 disabled:cursor-default transition-opacity'
                                     type='button'
                                 >
                                     {hasWatched90Percent
@@ -213,6 +218,17 @@ export default function LearnPage() {
                                         : 'Watch More to Complete'
                                     }
                                 </button>
+                            )}
+
+                            {isCompleted && (
+                                <Link href={`/certificate/${courseId}`}>
+                                    <button
+                                        className='cursor-pointer md:py-3 md:px-6 px-2 py-4 rounded-lg bg-green-500 text-white text-sm md:text-md flex-1'
+                                        type='button'
+                                    >
+                                        Get Certificate
+                                    </button>
+                                </Link>
                             )}
                         </div>
                     </div>
@@ -225,6 +241,7 @@ export default function LearnPage() {
                     completedModules={completedModules}
                     onModuleSelect={handleModuleSelect}
                 />
+
             </main>
         </div>
     );

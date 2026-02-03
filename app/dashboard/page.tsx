@@ -3,69 +3,141 @@
 import Image from "next/image";
 
 import { useUser } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-
+// import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import CNotFound from '@/page_components/conotfound.jsx'
 import DNavbar from '@/page_components/DNavbar'
+// import courseNotFound from '@/page_components/coursenotfound'
+// import BackToTopBtn from '@/page_components/backToTopBtn'
 import Footer from '@/page_components/Footer'
 import { CircleDollarSign, CodeXml, Fingerprint, Sparkles, SplinePointer } from 'lucide-react'
+import { Course, CourseEnrollment, EnrollmentData } from "@/types";
+import Link from "next/link";
+import ResAuthenticate from "@/page_components/resauth";
+
+function parsePostgresArray(pgArray: string | string[] | null | undefined): string[] {
+    if (!pgArray) return [];
+    if (Array.isArray(pgArray)) return pgArray;
+
+    return pgArray
+        .replace(/[{}\[\]"\\]/g, '')
+        .split(',')
+        .map(item => item.trim())
+        .filter(item => item.length > 0);
+}
+
+const Featured = ['5fd8166e-6daf-48a7-8d2b-208df0c94953', '9bda6221-0975-419c-b78e-727083b48382', '26e07fe1-d15d-4eee-a954-69f4c549cb52', '5b1bfba6-107e-44f3-ba84-48b21c5f8531'];
 
 export default function Page() {
 
     const { user, isLoaded } = useUser();
-    const router = useRouter();
+    // const router = useRouter();
+    const [loading, setLoading] = useState(true);
+    const [enrolledCourses, setEnrolledCourses] = useState<CourseEnrollment[]>([]);
+    const [featuredCourses, setFeaturedCourses] = useState<Course[]>([]);
+    // const [btnLoading, setBtnLoading] = useState(false);
+
+
+    // const [completedCourses, setCompletedCourses] = useState<CourseEnrollment[]>([]);
+    const fetchEnrolledCourses = async () => {
+        try {
+            setLoading(true);
+            const response = await fetch('/api/get-user-courses-data');
+            if (!response.ok) {
+                console.warn(`Server responded with ${response.status}`);
+                setEnrolledCourses([]);
+                return;
+            }
+            const data: EnrollmentData = await response.json();
+            console.log('Enrolled Courses:', data);
+            setEnrolledCourses(data.userInprogressCourses || []);
+            // setCompletedCourses(data.userCompletedCourses);
+
+        } catch (error) {
+
+            console.error('Error fetching enrolled courses:', error);
+        }
+        finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchFeaturedCourses = async () => {
+        try {
+            setLoading(true);
+            const response = await fetch('/api/get-featured-courses', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ featuredCourseIds: Featured }),
+            });
+            // const data: EnrollmentData = await response.json();
+            const data = await response.json();
+            console.log('Featured Courses:', data);
+            setFeaturedCourses(data.featuredCourses);
+        } catch (error) {
+            console.error('Error fetching featured courses:', error);
+        }
+        finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        if (isLoaded && user) {
+        fetchEnrolledCourses();
+        fetchFeaturedCourses();
+    }, [user, isLoaded]);
 
-            const hasPhoneNumber = user.unsafeMetadata?.phoneNumber;
-            const hasEnrNumber = user.unsafeMetadata?.enrNumber;
+    if (!isLoaded || !user || loading) return <div>Loading...</div>;
 
-            if (!hasPhoneNumber || !hasEnrNumber) {
-                router.push('/onboarding');
-            }
-        }
-    }
-        , [isLoaded, user, router]);
 
-    if (!isLoaded) return <div>Loading...</div>;
 
     return (
-        <div className='bg-[#fff]'>
+        <div>
             <DNavbar />
-            <div className='h-[50vh] justify-center items-center flex flex-col gap-6 text-center w-11/12 md:w-10/12 mx-auto mt-20'>
-                <h1 className='text-5xl font-semibold'>Which Skill To Conquer Today,  <span className='text-[#665bca]'> {user?.firstName} </span></h1>
+            <ResAuthenticate />
+            {/* <div className="animate-spin rounded-full h-12 w-12 border-b-2 p-2 border-[#111111] mx-auto mt-10">
+                <Image
+                    src="/favicon.ico"
+                    height={500}
+                    width={500}
+                    alt="Loading..." />
+            </div> */}
 
-                <p className='w-5/12'>Browse categories aII over the gIobe Lorem, ipsum dolor sit amet consectetur adipisicing elit. Natus ducimus dolore doloremque. Find the perfect course for you</p>
+            <div className='h-[40vh] justify-center items-center flex flex-col gap-6 text-center w-11/12 md:w-10/12 mx-auto mt-32 mb-16'>
+                <h1 className=' text-4xl md:text-5xl capitalize font-medium md:font-semibold'>Which Skill To Conquer Today,  <span className='text-[#665bca] capitalize'> {user?.firstName} </span></h1>
 
-                <div className='flex gap-2'>
-                    <div className='flex gap-2 bg-[#E9E9E9] py-1 px-3 rounded-3xl text-[#000000d4] '>
-                        <SplinePointer />
-                        <span className='font-medium'>
+                <p className='w-9/12 md:w-6/12 text-gray-600'>Join a global community of learners and experts. From foundational concepts to advanced mastery, discover tailored learning paths that empower you to grow at your own pace</p>
+
+                <div className=' grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6 mb-16 grid-flow-dense'>
+                    <div className=' flex gap-2 bg-[#E9E9E9] py-1 px-3 rounded-3xl  items-center justify-center text-[#000000d4] '>
+                        <SplinePointer width={20} height={20} />
+                        <span className='font-medium text-sm'>
                             Design
                         </span>
                     </div>
-                    <div className='flex gap-2 bg-[#E9E9E9] py-1 px-3 rounded-3xl text-[#000000d4] '>
-                        <Fingerprint />
-                        <span className='font-medium'>
+                    <div className='flex gap-2 bg-[#E9E9E9] py-1 px-3 rounded-3xl  items-center justify-center text-[#000000d4] '>
+                        <Fingerprint width={20} height={20} />
+                        <span className='font-medium text-sm'>
                             Cyber Security
                         </span>
                     </div>
-                    <div className='flex gap-2 bg-[#E9E9E9] py-1 px-3 rounded-3xl text-[#000000d4] '>
-                        <CircleDollarSign />
-                        <span className='font-medium'>
+                    <div className='flex gap-2 bg-[#E9E9E9] py-1 px-3 rounded-3xl  items-center justify-center text-[#000000d4] '>
+                        <CircleDollarSign width={20} height={20} />
+                        <span className='font-medium text-sm'>
                             Business
                         </span>
                     </div>
-                    <div className='flex gap-2 bg-[#E9E9E9] py-1 px-3 rounded-3xl text-[#000000d4] '>
-                        <Sparkles />
-                        <span className='font-medium'>
-                            AiMl
+                    <div className='flex gap-2 bg-[#E9E9E9] py-1 px-3 rounded-3xl  items-center justify-center text-[#000000d4] '>
+                        <Sparkles width={20} height={20} />
+                        <span className='font-medium text-sm'>
+                            Artificial Intelligence
                         </span>
                     </div>
-                    <div className='flex gap-2 bg-[#E9E9E9] py-1 px-3 rounded-3xl text-[#000000d4] '>
-                        <CodeXml />
-                        <span className='font-medium'>
+                    <div className='flex gap-2 bg-[#E9E9E9] py-1 px-3 rounded-3xl  items-center justify-center text-[#000000d4] '>
+                        <CodeXml width={20} height={20} />
+                        <span className='font-medium text-sm'>
                             Programming
                         </span>
                     </div>
@@ -74,315 +146,159 @@ export default function Page() {
 
             <section className='w-11/12 md:w-11/12 m-auto'>
                 {/* Courses Section */}
-                <h2 className='text-4xl border-l-4 border-[#665bca] pl-4 font-bold my-7'>Featured Cources</h2>
+                <h2 className='text-4xl border-l-4 border-[#665bca] pl-4 font-bold mt-20 mb-8 '>Featured Cources</h2>
 
-                <div className="flex flex-wrap gap-5">
-                    {/* Course Cards */}
-                    <div className='course-card w-[290px] border-2 border-gray-300 rounded-xl p-3 mb-6'>
-                        <Image
-                            src="/Thumbnails/1.jpg"
-                            alt='img'
-                            width={325}
-                            height={200}
-                            className=' rounded-xl '
-                        />
-                        <div className="content flex flex-col justify-evenly h-52 ">
-                            <div className="acx">
-                                <p className='text-[#00159d]'>Certificated</p>
-                                <p className='font-bold text-lg line-clamp-2'>JavaScript Algorithms & DSA</p>
-                                <p>Code with Harry</p>
-                            </div>
-                            <div className='flex gap-2 font-semibold text-sm'>
-                                <span className=' bg-[#E9E9E9] py-1 px-3 rounded-2xl text-[#000000d4] '>Javascript</span><span className=' bg-[#E9E9E9] py-1 px-3 rounded-2xl text-[#000000d4] '>DSA</span><span className=' bg-[#E9E9E9] py-1 px-3 rounded-2xl text-[#000000d4] '>Algorithms</span>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {featuredCourses.length > 0 ? (
+                        featuredCourses.map((course) => {
+                            return (
+                                <div
+                                    key={course.id}
+                                    className='course-card w-full border border-gray-200 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300'
+                                >
+                                    {/* Thumbnail */}
+                                    <div className="aspect-ratio-16-9">
+                                        <Image
+                                            src={course.thumbnail_url}
+                                            alt={course.title}
+                                            layout="fill"
+                                            objectFit="cover"
+                                            className='rounded-t-xl'
+                                        />
+                                    </div>
 
-                            </div>
-                            <div className='font-semibold'>
-                                <span>6hr 40min</span>
-                                <span> |                    </span>
-                                <span> Beginner</span>
-                            </div>
-                            <button className='py-2 width-full bg-[#665bc9] rounded-2xl font-semibold '>
-                                Enroll Now
-                            </button>
-                        </div>
-                    </div>
+                                    {/* Content */}
+                                    <div className="content flex flex-col justify-between p-4 space-y-3 min-h-[220px]">
 
-                    <div className='course-card w-[290px] border-2 border-gray-300 rounded-xl p-3 mb-6'>
-                        <Image
-                            src="/Thumbnails/2.jpg"
-                            alt='img'
-                            width={325}
-                            height={200}
-                            className=' rounded-xl '
-                        />
-                        <div className="content flex flex-col justify-evenly h-52 ">
-                            <div className="acx">
-                                <p className='text-[#00159d]'>Certificated</p>
-                                <p className='font-bold text-lg line-clamp-2'>JavaScript Algorithms & DSA</p>
-                                <p>Code with Harry</p>
-                            </div>
-                            <div className='flex gap-2 font-semibold text-sm'>
-                                <span className=' bg-[#E9E9E9] py-1 px-3 rounded-2xl text-[#000000d4] '>Javascript</span><span className=' bg-[#E9E9E9] py-1 px-3 rounded-2xl text-[#000000d4] '>DSA</span><span className=' bg-[#E9E9E9] py-1 px-3 rounded-2xl text-[#000000d4] '>Algorithms</span>
+                                        {/* Category Badge + Title + Instructor */}
+                                        <div className="flex flex-col space-y-1">
+                                            <p className='text-sm font-medium text-indigo-700'> {/* Changed to indigo for better contrast */}
+                                                {course.category}
+                                            </p>
+                                            <p className='font-bold text-xl line-clamp-2 text-gray-800'>
+                                                {course.title}
+                                            </p>
+                                            <p className='text-gray-500 text-sm'>
+                                                {course.instructor}
+                                            </p>
+                                        </div>
 
-                            </div>
-                            <div className='font-semibold'>
-                                <span>6hr 40min</span>
-                                <span> |                    </span>
-                                <span> Beginner</span>
-                            </div>
-                            <button className='py-2 width-full bg-[#665bc9] rounded-2xl font-semibold '>
-                                Enroll Now
-                            </button>
-                        </div>
-                    </div>
+                                        {/* Tags */}
+                                        <div className='flex gap-2 text-xs font-medium flex-wrap mt-2'>
+                                            {parsePostgresArray(course.tags).slice(0, 3).map((tag, index) => (
+                                                <span
+                                                    key={index}
+                                                    className='bg-gray-100 py-1 px-3 rounded-full text-gray-600 whitespace-nowrap'
+                                                >
+                                                    {tag}
+                                                </span>
+                                            ))}
+                                        </div>
 
-                    <div className='course-card w-[290px] border-2 border-gray-300 rounded-xl p-3 mb-6'>
-                        <Image
-                            src="/Thumbnails/3.jpg"
-                            alt='img'
-                            width={325}
-                            height={200}
-                            className=' rounded-xl '
-                        />
-                        <div className="content flex flex-col justify-evenly h-52 ">
-                            <div className="acx">
-                                <p className='text-[#00159d]'>Certificated</p>
-                                <p className='font-bold text-lg line-clamp-2'>JavaScript Algorithms & DSA</p>
-                                <p>Code with Harry</p>
-                            </div>
-                            <div className='flex gap-2 font-semibold text-sm'>
-                                <span className=' bg-[#E9E9E9] py-1 px-3 rounded-2xl text-[#000000d4] '>Javascript</span><span className=' bg-[#E9E9E9] py-1 px-3 rounded-2xl text-[#000000d4] '>DSA</span><span className=' bg-[#E9E9E9] py-1 px-3 rounded-2xl text-[#000000d4] '>Algorithms</span>
+                                        {/* Duration + Level */}
+                                        <div className='font-semibold text-sm text-gray-700 flex items-center pt-2 border-t border-gray-100'>
+                                            <svg className="w-4 h-4 mr-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                            <span>{Math.floor(course.total_duration_seconds / 3600)}hr {Math.floor((course.total_duration_seconds % 3600) / 60)}min</span>
+                                            <span className='mx-2 text-gray-400'>|</span>
+                                            <span className='capitalize'>{course.level}</span>
+                                        </div>
 
-                            </div>
-                            <div className='font-semibold'>
-                                <span>6hr 40min</span>
-                                <span> |                    </span>
-                                <span> Beginner</span>
-                            </div>
-                            <button className='py-2 width-full bg-[#665bc9] rounded-2xl font-semibold '>
-                                Enroll Now
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className='course-card w-[290px] border-2 border-gray-300 rounded-xl p-3 mb-6'>
-                        <Image
-                            src="/Thumbnails/4.jpg"
-                            alt='img'
-                            width={325}
-                            height={200}
-                            className=' rounded-xl '
-                        />
-                        <div className="content flex flex-col justify-evenly h-52 ">
-                            <div className="acx">
-                                <p className='text-[#00159d]'>Certificated</p>
-                                <p className='font-bold text-lg line-clamp-1'>JavaScript Algorithms & DSA JavaScript DSAASD</p>
-                                <p>Code with Harry</p>
-                            </div>
-                            <div className='flex gap-2 font-semibold text-sm'>
-                                <span className=' bg-[#E9E9E9] py-1 px-3 rounded-2xl text-[#000000d4] '>Javascript</span><span className=' bg-[#E9E9E9] py-1 px-3 rounded-2xl text-[#000000d4] '>DSA</span><span className=' bg-[#E9E9E9] py-1 px-3 rounded-2xl text-[#000000d4] '>Algorithms</span>
-
-                            </div>
-                            <div className='font-semibold'>
-                                <span>6hr 40min</span>
-                                <span> |                    </span>
-                                <span> Beginner</span>
-                            </div>
-                            <button className='py-2 width-full bg-[#665bc9] rounded-2xl font-semibold '>
-                                Enroll Now
-                            </button>
-                        </div>
-                    </div>
-
+                                        {/* Button */}
+                                        <Link href={`/course/${course.id}`}>
+                                            <button
+                                                className='w-full mt-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold transition-colors duration-150 cursor-pointer'
+                                            >
+                                                Enroll Now
+                                            </button>
+                                        </Link>
+                                    </div>
+                                </div>
+                            )
+                        })) : <CNotFound />}
                 </div>
 
-                <h2 className='text-4xl border-l-4 border-[#665bca] pl-4 font-bold my-7'>Featured Cources</h2>
+                <h2 className='text-4xl border-l-4 border-[#665bca] pl-4 font-bold  mt-14'>Enrolled Cources</h2>
 
-                <div className="flex flex-wrap gap-5">
+                {enrolledCourses.length <= 0 ? <CNotFound /> : (<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {enrolledCourses && enrolledCourses.map((enrollment) => {
+                        const course: Course = enrollment.courses;
+                        return (
+                            <div
+                                key={enrollment.id}
+                                className='course-card w-full border border-gray-200 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300'
+                            >
+                                {/* Thumbnail */}
+                                <div className="aspect-ratio-16-9">
+                                    <Image
+                                        src={course.thumbnail_url}
+                                        alt={course.title}
+                                        layout="fill"
+                                        objectFit="cover"
+                                        className='rounded-t-xl'
+                                    />
+                                </div>
 
-                    <div className='course-card w-[290px] border-2 border-gray-300 rounded-xl p-3 mb-6'>
-                        <Image
-                            src="/Thumbnails/5.jpg"
-                            alt='img'
-                            width={325}
-                            height={200}
-                            className=' rounded-xl '
-                        />
-                        <div className="content flex flex-col justify-evenly h-52 ">
-                            <div className="acx">
-                                <p className='text-[#00159d]'>Certificated</p>
-                                <p className='font-bold text-lg line-clamp-2'>JavaScript Algorithms & DSA</p>
-                                <p>Code with Harry</p>
-                            </div>
-                            <div className='flex gap-2 font-semibold text-sm'>
-                                <span className=' bg-[#E9E9E9] py-1 px-3 rounded-2xl text-[#000000d4] '>Javascript</span><span className=' bg-[#E9E9E9] py-1 px-3 rounded-2xl text-[#000000d4] '>DSA</span><span className=' bg-[#E9E9E9] py-1 px-3 rounded-2xl text-[#000000d4] '>Algorithms</span>
+                                {/* Content */}
+                                <div className="content flex flex-col justify-between p-4 space-y-3 min-h-[220px]">
 
-                            </div>
-                            <div className='font-semibold'>
-                                <span>6hr 40min</span>
-                                <span> |                    </span>
-                                <span> Beginner</span>
-                            </div>
-                            <button className='py-2 width-full bg-[#665bc9] rounded-2xl font-semibold '>
-                                Enroll Now
-                            </button>
-                        </div>
-                    </div>
+                                    {/* Category Badge + Title + Instructor */}
+                                    <div className="flex flex-col space-y-1">
+                                        <p className='text-sm font-medium text-indigo-700'> {/* Changed to indigo for better contrast */}
+                                            {course.category}
+                                        </p>
+                                        <p className='font-bold text-xl line-clamp-2 text-gray-800'>
+                                            {course.title}
+                                        </p>
+                                        <p className='text-gray-500 text-sm'>
+                                            {course.instructor}
+                                        </p>
+                                    </div>
 
-                    <div className='course-card w-[290px] border-2 border-gray-300 rounded-xl p-3 mb-6'>
-                        <Image
-                            src="/Thumbnails/6.jpg"
-                            alt='img'
-                            width={325}
-                            height={200}
-                            className=' rounded-xl '
-                        />
-                        <div className="content flex flex-col justify-evenly h-52 ">
-                            <div className="acx">
-                                <p className='text-[#00159d]'>Certificated</p>
-                                <p className='font-bold text-lg line-clamp-2'>JavaScript Algorithms & DSA</p>
-                                <p>Code with Harry</p>
-                            </div>
-                            <div className='flex gap-2 font-semibold text-sm'>
-                                <span className=' bg-[#E9E9E9] py-1 px-3 rounded-2xl text-[#000000d4] '>Javascript</span><span className=' bg-[#E9E9E9] py-1 px-3 rounded-2xl text-[#000000d4] '>DSA</span><span className=' bg-[#E9E9E9] py-1 px-3 rounded-2xl text-[#000000d4] '>Algorithms</span>
+                                    {/* Tags */}
+                                    <div className='flex gap-2 text-xs font-medium flex-wrap mt-2'>
+                                        {parsePostgresArray(course.tags).slice(0, 3).map((tag, index) => (
+                                            <span
+                                                key={index}
+                                                className='bg-gray-100 py-1 px-3 rounded-full text-gray-600 whitespace-nowrap'
+                                            >
+                                                {tag}
+                                            </span>
+                                        ))}
+                                    </div>
 
-                            </div>
-                            <div className='font-semibold'>
-                                <span>6hr 40min</span>
-                                <span> |                    </span>
-                                <span> Beginner</span>
-                            </div>
-                            <button className='py-2 width-full bg-[#665bc9] rounded-2xl font-semibold '>
-                                Enroll Now
-                            </button>
-                        </div>
-                    </div>
+                                    {/* Duration + Level */}
+                                    <div className='font-semibold text-sm text-gray-700 flex items-center pt-2 border-t border-gray-100'>
+                                        <svg className="w-4 h-4 mr-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                        <span>{Math.floor(course.total_duration_seconds / 3600)}hr {Math.floor((course.total_duration_seconds % 3600) / 60)}min</span>
+                                        <span className='mx-2 text-gray-400'>|</span>
+                                        <span className='capitalize'>{course.level}</span>
+                                    </div>
 
-                    <div className='course-card w-[290px] border-2 border-gray-300 rounded-xl p-3 mb-6'>
-                        <Image
-                            src="/Thumbnails/6.jpg"
-                            alt='img'
-                            width={325}
-                            height={200}
-                            className=' rounded-xl '
-                        />
-                        <div className="content flex flex-col justify-evenly h-52 ">
-                            <div className="acx">
-                                <p className='text-[#00159d]'>Certificated</p>
-                                <p className='font-bold text-lg line-clamp-2'>JavaScript Algorithms & DSA</p>
-                                <p>Code with Harry</p>
+                                    {/* Button */}
+                                    <Link href={`/learn/${course.id}`}>
+                                        <button
+                                            className='w-full mt-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold transition-colors duration-150 cursor-pointer'
+                                        >
+                                            Continue
+                                        </button>
+                                    </Link>
+                                </div>
                             </div>
-                            <div className='flex gap-2 font-semibold text-sm'>
-                                <span className=' bg-[#E9E9E9] py-1 px-3 rounded-2xl text-[#000000d4] '>Javascript</span><span className=' bg-[#E9E9E9] py-1 px-3 rounded-2xl text-[#000000d4] '>DSA</span><span className=' bg-[#E9E9E9] py-1 px-3 rounded-2xl text-[#000000d4] '>Algorithms</span>
+                        )
+                    })}
+                </div>)}
 
-                            </div>
-                            <div className='font-semibold'>
-                                <span>6hr 40min</span>
-                                <span> |                    </span>
-                                <span> Beginner</span>
-                            </div>
-                            <button className='py-2 width-full bg-[#665bc9] rounded-2xl font-semibold '>
-                                Enroll Now
-                            </button>
-                        </div>
-                    </div>
 
-                    <div className='course-card w-[290px] border-2 border-gray-300 rounded-xl p-3 mb-6'>
-                        <Image
-                            src="/Thumbnails/6.jpg"
-                            alt='img'
-                            width={325}
-                            height={200}
-                            className=' rounded-xl '
-                        />
-                        <div className="content flex flex-col justify-evenly h-52 ">
-                            <div className="acx">
-                                <p className='text-[#00159d]'>Certificated</p>
-                                <p className='font-bold text-lg line-clamp-2'>JavaScript Algorithms & DSA</p>
-                                <p>Code with Harry</p>
-                            </div>
-                            <div className='flex gap-2 font-semibold text-sm'>
-                                <span className=' bg-[#E9E9E9] py-1 px-3 rounded-2xl text-[#000000d4] '>Javascript</span><span className=' bg-[#E9E9E9] py-1 px-3 rounded-2xl text-[#000000d4] '>DSA</span><span className=' bg-[#E9E9E9] py-1 px-3 rounded-2xl text-[#000000d4] '>Algorithms</span>
 
-                            </div>
-                            <div className='font-semibold'>
-                                <span>6hr 40min</span>
-                                <span> |                    </span>
-                                <span> Beginner</span>
-                            </div>
-                            <button className='py-2 width-full bg-[#665bc9] rounded-2xl font-semibold '>
-                                Enroll Now
-                            </button>
-                        </div>
-                    </div>
+                <h2 className='text-3xl md:text-4xl border-l-4 border-[#665bca] pl-4 font-bold mt-14 '>Newly Added Cources</h2>
 
-                </div>
+                <CNotFound />
 
-                <h2 className='text-4xl border-l-4 border-[#665bca] pl-4 font-bold my-7'>Featured Cources</h2>
 
-                <div className="flex flex-wrap gap-5">
-
-                    <div className='course-card w-[290px] border-2 border-gray-300 rounded-xl p-3 mb-6'>
-                        <Image
-                            src="/Thumbnails/1.jpg"
-                            alt='img'
-                            width={325}
-                            height={200}
-                            className=' rounded-xl '
-                        />
-                        <div className="content flex flex-col justify-evenly h-52 ">
-                            <div className="acx">
-                                <p className='text-[#00159d]'>Certificated</p>
-                                <p className='font-bold text-lg line-clamp-2'>JavaScript Algorithms & DSA</p>
-                                <p>Code with Harry</p>
-                            </div>
-                            <div className='flex gap-2 font-semibold text-sm'>
-                                <span className=' bg-[#E9E9E9] py-1 px-3 rounded-2xl text-[#000000d4] '>Javascript</span><span className=' bg-[#E9E9E9] py-1 px-3 rounded-2xl text-[#000000d4] '>DSA</span><span className=' bg-[#E9E9E9] py-1 px-3 rounded-2xl text-[#000000d4] '>Algorithms</span>
-
-                            </div>
-                            <div className='font-semibold'>
-                                <span>6hr 40min</span>
-                                <span> |                    </span>
-                                <span> Beginner</span>
-                            </div>
-                            <button className='py-2 width-full bg-[#665bc9] rounded-2xl font-semibold '>
-                                Enroll Now
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className='course-card w-[290px] border-2 border-gray-300 rounded-xl p-3 mb-6'>
-                        <Image
-                            src="/Thumbnails/1.jpg"
-                            alt='img'
-                            width={325}
-                            height={200}
-                            className=' rounded-xl '
-                        />
-                        <div className="content flex flex-col justify-evenly h-52 ">
-                            <div className="acx">
-                                <p className='text-[#00159d]'>Certificated</p>
-                                <p className='font-bold text-lg line-clamp-1'>JavaScript Algorithms & DSA JavaScript DSAASD</p>
-                                <p>Code with Harry</p>
-                            </div>
-                            <div className='flex gap-2 font-semibold text-sm'>
-                                <span className=' bg-[#E9E9E9] py-1 px-3 rounded-2xl text-[#000000d4] '>Javascript</span><span className=' bg-[#E9E9E9] py-1 px-3 rounded-2xl text-[#000000d4] '>DSA</span><span className=' bg-[#E9E9E9] py-1 px-3 rounded-2xl text-[#000000d4] '>Algorithms</span>
-
-                            </div>
-                            <div className='font-semibold'>
-                                <span>6hr 40min</span>
-                                <span> |                    </span>
-                                <span> Beginner</span>
-                            </div>
-                            <button className='py-2 width-full bg-[#665bc9] rounded-2xl font-semibold '>
-                                Enroll Now
-                            </button>
-                        </div>
-                    </div>
-                </div>
             </section >
 
             <Footer />
+            {/* <BackToTopBtn /> */}
         </div >
     )
 }

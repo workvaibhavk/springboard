@@ -98,7 +98,6 @@ const Footer = () => {
                 <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
                     <span className="text-gray-600">© 2026 Springboard. All rights reserved.
                         <p className="text-gray-400">Crafted by Vaibhav</p>
-
                     </span>
                     <div className="flex gap-6">
                         <Link href="/privacy" className="text-gray-400 hover:text-white transition-colors duration-200">Privacy Policy</Link>

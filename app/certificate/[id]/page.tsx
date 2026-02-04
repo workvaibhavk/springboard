@@ -81,7 +81,7 @@ export default function Page() {
             const blob = new Blob([serialised], { type: 'image/svg+xml' })
             const url = URL.createObjectURL(blob)
 
-            const img = new Image()
+            const img = document.createElement('img')
             img.onload = () => {
                 const canvas = document.createElement('canvas')
                 canvas.width = w * 2   // 2× for retina

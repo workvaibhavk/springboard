@@ -2,6 +2,9 @@ Springboard ReThink
 
 A full-stack LMS inspired by Infosys Springboard, built with Next.js, Tailwind, Supabase, Clerk Auth, and YouTube integration. Features custom course player, video progress tracking, user dashboards, and real-world LMS architecture for portfolio demonstration.
 
+Started: 16 oct 2025
+Expected Release: 16 mar 2026
+
 🚀 Tech Stack :
 Next.js 14 (App Router) 
 Tailwind CSS

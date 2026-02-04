@@ -9,6 +9,8 @@ import ModuleList from '@/components/ModuleList'
 import { fetchCourseData, fetchModules, fetchProgress, markModuleComplete } from '@/lib/courseApi'
 import DNavbar from '@/page_components/DNavbar'
 import type { Course, Module, ProgressData } from '@/types/learning'
+import Link from 'next/link'
+import { Download } from 'lucide-react'
 
 export default function LearnPage() {
     const params = useParams<{ id: string }>();
@@ -25,6 +27,8 @@ export default function LearnPage() {
     // Video tracking states
     const [watchedPercentage, setWatchedPercentage] = useState<number>(0);
     const [hasWatched90Percent, setHasWatched90Percent] = useState<boolean>(false);
+
+    const isCompleted = modules.length > 0 && completedModules.length >= modules.length;
 
     useEffect(() => {
         if (isLoaded && user && courseId) {
@@ -53,7 +57,8 @@ export default function LearnPage() {
             }
 
             if (progressData.completedModules) {
-                setCompletedModules(progressData.completedModules);
+                const unique = [...new Set(progressData.completedModules)];
+                setCompletedModules(unique);
             }
         } catch (error) {
             console.error('Error fetching learning data:', error);
@@ -89,12 +94,15 @@ export default function LearnPage() {
     const handleMarkComplete = async (): Promise<void> => {
         if (!currentModule || !courseId) return;
 
+        if (completedModules.includes(currentModule.id)) {
+            goToNextModule();
+            return;
+        }
+
         try {
             await markModuleComplete(courseId, currentModule.id);
 
-            if (!completedModules.includes(currentModule.id)) {
-                setCompletedModules([...completedModules, currentModule.id]);
-            }
+            setCompletedModules(prev => [...prev, currentModule.id]);
 
             setTimeout(() => {
                 if (currentModuleIndex < modules.length - 1) {
@@ -144,19 +152,26 @@ export default function LearnPage() {
     }
 
     return (
-        <div className='flex flex-col gap-4 bg-gray-50'>
+        <div className='flex flex-col gap-4 bg-gray-50 min-h-screen'>
             <DNavbar />
-            <main className='flex gap-8 w-13/14 mx-auto'>
-                <div className='w-8/12 flex flex-col gap-6'>
+
+            {/* Main Content Container - Responsive width constraints */}
+            <main className='flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8 w-full px-4 sm:px-6 lg:px-8 xl:w-11/12 2xl:w-10/12 mx-auto pb-8'>
+
+                {/* Left Column - Video and Course Info */}
+                <div className='w-full lg:w-8/12 xl:w-2/3 flex flex-col gap-4 sm:gap-6'>
+
                     {/* Course Header */}
-                    <div className='bg-white border border-gray-200 p-6 rounded-xl shadow-sm'>
-                        <h2 className='text-3xl font-bold text-gray-900 mb-2'>
+                    <div className='bg-white border border-gray-200 p-4 sm:p-6 rounded-xl shadow-sm'>
+                        <h2 className='text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2'>
                             {course.title.split(':')[0]}
                         </h2>
-                        <p className='text-gray-600 mb-4'>
+                        <p className='text-sm sm:text-base text-gray-600 mb-4'>
                             {course.description.slice(0, 85)}..
                         </p>
-                        <div className='w-[100%] bg-gray-200 h-2 rounded-xl mt-2'>
+
+                        {/* Progress Bar */}
+                        <div className='w-full bg-gray-200 h-2 rounded-xl mt-2'>
                             <div
                                 className='bg-[#665bca] h-2 rounded-s-xl transition-all duration-300'
                                 style={{
@@ -164,15 +179,15 @@ export default function LearnPage() {
                                 }}
                             ></div>
                         </div>
-                        <p className='mt-2 text-sm text-gray-600'>
-                            {completedModules.length} of {modules.length} completed
+                        <p className='mt-2 text-xs sm:text-sm text-gray-600'>
+                            {completedModules.length} of {modules.length} completed ({Math.round(calculateProgress())}%)
                         </p>
                     </div>
 
                     {/* Module Content */}
-                    <div className='flex flex-col gap-6 bg-white border border-gray-200 p-6 rounded-xl shadow-sm'>
-                        <h3 className='text-3xl font-semibold'>
-                            {currentModuleIndex + 1}: {currentModule?.title || 'Loading...'}
+                    <div className='flex flex-col gap-4 sm:gap-6 bg-white border border-gray-200 p-4 sm:p-6 rounded-xl shadow-sm'>
+                        <h3 className='text-lg sm:text-xl lg:text-2xl xl:text-3xl font-semibold text-gray-900 leading-tight'>
+                            Module {currentModuleIndex + 1}: {currentModule?.title || 'Loading...'}
                         </h3>
 
                         <VideoPlayer
@@ -181,10 +196,11 @@ export default function LearnPage() {
                             onHasWatched90Percent={setHasWatched90Percent}
                         />
 
-                        {/* Navigation Buttons */}
-                        <div className='flex justify-between mt-4 gap-4'>
+                        {/* Navigation Buttons - Responsive Layout */}
+                        <div className='flex flex-col sm:flex-row justify-between gap-3 sm:gap-4 mt-4'>
+                            {/* Previous Button */}
                             <button
-                                className='cursor-pointer py-3 px-6 rounded-lg border-[#e9e9e9] bg-[#e9e9e9] text-[#000] border-2 text-md flex-1 disabled:opacity-50 disabled:cursor-default transition-opacity'
+                                className='cursor-pointer py-3 px-4 sm:px-6 lg:px-8 rounded-lg border-2 border-[#e9e9e9] bg-[#e9e9e9] text-[#000] text-sm sm:text-base font-medium flex-1 disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:bg-gray-200 active:scale-95'
                                 onClick={goToPreviousModule}
                                 disabled={isFirstModule()}
                                 type='button'
@@ -192,20 +208,22 @@ export default function LearnPage() {
                                 Previous Module
                             </button>
 
+                            {/* Complete/Next Button */}
                             {isModuleCompleted() ? (
-                                <button
-                                    className='cursor-pointer py-3 px-6 rounded-lg bg-[#665bca] text-white text-md flex-1 disabled:opacity-50 disabled:cursor-default transition-opacity'
-                                    onClick={goToNextModule}
-                                    disabled={isLastModule()}
-                                    type='button'
-                                >
-                                    Next Module
-                                </button>
+                                !isLastModule() && (
+                                    <button
+                                        className='cursor-pointer py-3 px-4 sm:px-6 lg:px-8 rounded-lg bg-[#665bca] text-white text-sm sm:text-base font-medium flex-1 transition-all hover:bg-[#5449b0] active:scale-95'
+                                        onClick={goToNextModule}
+                                        type='button'
+                                    >
+                                        Next Module
+                                    </button>
+                                )
                             ) : (
                                 <button
                                     onClick={handleMarkComplete}
                                     disabled={!hasWatched90Percent}
-                                    className='cursor-pointer py-3 px-6 rounded-lg border-[#e9e9e9] bg-[#665bca] text-white border-2 text-md flex-1 disabled:opacity-50 disabled:cursor-default transition-opacity'
+                                    className='cursor-pointer py-3 px-4 sm:px-6 lg:px-8 rounded-lg bg-[#665bca] text-white text-sm sm:text-base font-medium flex-1 disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:bg-[#5449b0] active:scale-95'
                                     type='button'
                                 >
                                     {hasWatched90Percent
@@ -214,17 +232,42 @@ export default function LearnPage() {
                                     }
                                 </button>
                             )}
+
+                            {/* Certificate Button - Full width on mobile when shown */}
+                            {isCompleted && (
+                                <Link href={`/certificate/${courseId}`} className='sm:flex-1'>
+                                    <button
+                                        className='w-full cursor-pointer py-3 px-4 sm:px-6 lg:px-8 rounded-lg bg-green-500 text-white text-sm sm:text-base font-medium transition-all hover:bg-green-600 active:scale-95 flex items-center justify-center gap-2'
+                                        type='button'
+                                    >
+                                        <Download className="w-4 h-4 sm:w-5 sm:h-5" />
+                                        Get Certificate
+                                    </button>
+                                </Link>
+                            )}
                         </div>
+
+                        {/* Video Progress Indicator - Mobile friendly */}
+                        {/* {!isModuleCompleted() && (
+                            <div className='mt-2 text-xs sm:text-sm text-gray-500 text-center'>
+                                {hasWatched90Percent
+                                    ? '✓ You can now mark this module as complete'
+                                    : `Watch ${Math.max(0, 90 - watchedPercentage)}% more to unlock completion`
+                                }
+                            </div>
+                        )} */}
                     </div>
                 </div>
 
-                {/* Module List Sidebar */}
-                <ModuleList
-                    modules={modules}
-                    currentModule={currentModule}
-                    completedModules={completedModules}
-                    onModuleSelect={handleModuleSelect}
-                />
+                {/* Right Column - Module List Sidebar */}
+                <div className='w-full lg:w-4/12 xl:w-1/3'>
+                    <ModuleList
+                        modules={modules}
+                        currentModule={currentModule}
+                        completedModules={completedModules}
+                        onModuleSelect={handleModuleSelect}
+                    />
+                </div>
             </main>
         </div>
     );

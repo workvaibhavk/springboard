@@ -1,38 +1,16 @@
-"use client"
-
 import Image from 'next/image'
-import { MoveRight } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-
 import Navbar from '@/page_components/Navbar'
 import Footer from '@/page_components/Footer'
+import Ctabtn from '@/page_components/landing/Ctabtn'
+import Authenticate from '@/page_components/auth'
+// import Authenticate from './authenticate/page'
 
-import { useUser } from '@clerk/nextjs'
-import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
-
-const Page = () => {
-
-  const { isSignedIn, isLoaded } = useUser()
-  const router = useRouter()
-
-  useEffect(() => {
-    if (isLoaded && isSignedIn) {
-      router.push('/dashboard')
-    }
-  }, [isLoaded, isSignedIn, router])
-
-  if (!isLoaded) {
-    return (
-      <div className='min-h-screen flex items-center justify-center'>
-        <p className='text-2xl text-gray-600'>Loading...</p>
-      </div>
-    )
-  }
-
+export default function Page() {
   return (
-    <div className='overflow-x-hidden'>
-
+    // <div className='overflow-x-hidden'>
+    <div className='overflow-x-hidden bg-[#fff]'>
+      <Authenticate />
       <Navbar />
       {/* <section id='main' className='flex items-center w-10/12 m-auto py-90'> */}
       <section id="main" className="flex flex-col h-[100%] md:flex-row items-center w-11/12 md:w-10/12 m-auto pt-24 pb-24 md:pt-32 md:pb-20 gap-8">
@@ -49,14 +27,7 @@ const Page = () => {
               </div>
             </button> */}
 
-            <button className='flex items-center gap-3 relative overflow-hidden bg-[#111111] text-white rounded-full px-6 py-3 transition-all duration-300 cursor-pointer text-[17px] font-medium group'>
-              <span className='relative z-10'>Get Started</span>
-              <div className='p-2 bg-white rounded-full'>
-                <MoveRight className="text-black" />
-              </div>
-
-              <span className='absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out bg-gradient-to-r from-transparent via-white/30 to-transparent'></span>
-            </button>
+            <Ctabtn />
 
 
 
@@ -207,5 +178,3 @@ const Page = () => {
     </div >
   )
 }
-
-export default Page

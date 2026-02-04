@@ -34,7 +34,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "app/api/add-course/route.js",
-    ".next/dev/types/**/*.ts"
+    ".next/dev/types/**/*.ts",
+    "page_components/conotfound.jsx"
   ],
   "exclude": [
     "node_modules"

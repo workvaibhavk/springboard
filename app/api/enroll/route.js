@@ -21,7 +21,6 @@ export async function POST(request) {
             )
         }
 
-
         const { data: existingEnrollment } = await supabase
             .from('enrollments')
             .select('*')
@@ -63,10 +62,22 @@ export async function POST(request) {
         })
     }
     catch (error) {
-        console.error('API error:', error);
-        return Response.json(
-            { error: 'Something went wrong', details: error.message },
-            { status: 500 }
-        );
+
+        if (error.code == '23505') {
+            return Response.json({
+                success: true,
+                message: 'Already enrolled',
+                alreadyEnrolled: true
+            });
+        }
+
+        else {
+
+            console.error('API error:', error);
+            return Response.json(
+                { error: 'Something went wrong', details: error.message },
+                { status: 500 }
+            );
+        }
     }
 }

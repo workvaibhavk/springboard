@@ -1,3 +1,4 @@
+// get user courses data (completed and in-progress)
 import { auth } from "@clerk/nextjs/server";
 import { supabaseAdmin as supabase } from '@/lib/supabase-admin'
 

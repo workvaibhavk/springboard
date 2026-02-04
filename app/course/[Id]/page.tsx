@@ -2,7 +2,7 @@
 
 import { supabase } from '@/lib/supabase';
 import { useUser } from '@clerk/nextjs';
-import { ChevronLeft } from 'lucide-react';
+import { BookOpen, ChevronLeft, Clock, Film, MoveRight, Play, Video, Zap } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation'
@@ -29,6 +29,7 @@ export default function CoursePreviewPage() {
     const [modules, setModules] = useState<Module[]>([]);
     const [isEnrolled, setIsEnrolled] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [btnLoading, setBtnLoading] = useState(false);
     const { user, isLoaded } = useUser();
 
 
@@ -118,6 +119,7 @@ export default function CoursePreviewPage() {
         }
 
         try {
+            setBtnLoading(true);
             const response = await fetch('/api/enroll', {
                 method: 'POST',
                 headers: {
@@ -144,6 +146,10 @@ export default function CoursePreviewPage() {
             console.error('Enrollment error:', error);
             // alert(error.message || 'Failed to enroll. Please try again.');
         }
+
+        finally {
+            setBtnLoading(false);
+        }
     }
 
     if (!user) return;
@@ -152,6 +158,7 @@ export default function CoursePreviewPage() {
     const checkEnrollmentStatus = async () => {
 
         try {
+            setBtnLoading(true);
             const response = await fetch(`/api/check-enrollment?courseId=${courseId}`);
             const data = await response.json();
             console.log('hii', data)
@@ -167,11 +174,14 @@ export default function CoursePreviewPage() {
             console.error('Error checking enrollment:', error);
             setIsEnrolled(false);
         }
+        finally {
+            setBtnLoading(false);
+        }
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 py-12 px-4">
-            <div className="max-w-6xl mx-auto">
+        <div className="min-h-screen bg-gray-50 py-12 px-0">
+            <div className="w-11/12 mx-auto">
 
                 {loading ? (
                     <div className="flex justify-center items-center h-64">
@@ -197,14 +207,15 @@ export default function CoursePreviewPage() {
 
                             {/* Course Info */}
                             <div className="md:w-3/5">
-                                <h1 className="text-4xl font-bold mb-2">{course.title}</h1>
-                                <p className="text-gray-600 mb-2">by {course.instructor}</p>
+                                <p className="text-gray-600 mb-2 font-semibold">by {course.instructor}</p>
+
+                                <h1 className="text-2xl md:text-5xl font-bold mb-6">{course.title}</h1>
 
                                 {/* Course Stats */}
-                                <div className="flex gap-4 text-sm text-gray-600 mb-4">
-                                    <span>📚 {modules.length} Modules</span>
-                                    <span>⏱️ {Math.floor(course.total_duration_seconds / 3600)}hr {Math.floor((course.total_duration_seconds % 3600) / 60)}min</span>
-                                    <span>📊 {course.level}</span>
+                                <div className="flex gap-4 md:gap-6 text-sm mb-4 font-semibold capitalize">
+                                    <span><Film className="inline mr-1 size-6 text-[#665bca]" /> {modules.length} Modules</span>
+                                    <span><Clock className="inline mr-1 size-6 text-[#665bca]" /> {Math.floor(course.total_duration_seconds / 3600)}hr {Math.floor((course.total_duration_seconds % 3600) / 60)}min</span>
+                                    <span><Zap className="inline mr-1 size-6 text-[#665bca]" /> {course.level}</span>
                                 </div>
 
                                 {/* Category Badge */}
@@ -219,7 +230,7 @@ export default function CoursePreviewPage() {
                                     {parsePostgresArray(course.tags).slice(0, 3).map((tag, index) => (
                                         <span
                                             key={index}
-                                            className='bg-[#E9E9E9] py-1 px-3 rounded-2xl text-[#000000d4] text-sm font-semibold'
+                                            className='bg-white py-2 px-4 shadow-md rounded-2xl text-[#000000d4] text-sm font-semibold'
                                         >
                                             {tag}
                                         </span>
@@ -231,16 +242,32 @@ export default function CoursePreviewPage() {
                                 <div className="my-4">
                                     {isEnrolled ? (
                                         <Link href={`/learn/${courseId}`}>
-                                            <button className="w-full md:w-auto px-8 py-3 bg-[#665bca] hover:bg-[#5548b8] text-white rounded-2xl font-semibold text-lg transition-colors cursor-pointer">
-                                                Continue Learning →
+                                            <button
+                                                disabled={btnLoading}
+                                                className="w-full flex items-center justify-center md:w-auto px-8 py-3 bg-[#665bca]  text-white rounded-2xl font-semibold text-lg transition-colors cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed">
+
+
+
+                                                {btnLoading && (
+                                                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#665bca]"></div>
+                                                )}
+                                                Continue Learning  <MoveRight className="inline ml-2" />
+
+
                                             </button>
                                         </Link>
                                     ) : (
                                         <button
                                             onClick={handleEnroll}
-                                            className="w-full md:w-auto px-8 py-3 bg-[#665bca] hover:bg-[#5548b8] text-white rounded-2xl font-semibold text-lg transition-colors cursor-pointer"
+                                            disabled={btnLoading}
+                                            className="w-full flex items-center justify-center md:w-auto px-8 py-3 bg-[#665bca]  text-white rounded-2xl font-semibold text-lg transition-colors cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed"
                                         >
-                                            Enroll Now
+                                            {btnLoading && (
+                                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#665bca]"></div>
+                                            )}
+                                            Enroll Now <MoveRight className="inline ml-2" />
+
+
                                         </button>
                                     )}
                                 </div>
@@ -248,22 +275,24 @@ export default function CoursePreviewPage() {
                         </div>
 
                         {/* Description */}
-                        <div className="mb-8">
-                            <h2 className="text-2xl font-bold mb-3">About this course</h2>
-                            <p className="text-lg text-gray-700">
-                                {course.description || "📝 No description provided for this course."}
-                            </p>
-                        </div>
-
+                        {course.description && (
+                            <div className="mb-10 bg-white px-6 md:px-12 py-6 rounded-2xl shadow-md">
+                                <h2 className="text-3xl font-bold py-2 mb-4">About this course</h2>
+                                <p className="text-lg text-gray-700">
+                                    {course.description || "📝 No description provided for this course."}
+                                </p>
+                            </div>
+                        )}
                         {/* Module List */}
-                        <div className="mb-8">
-                            <h2 className="text-2xl font-bold mb-4">📚 Course Content ({modules.length} modules)</h2>
+                        <div className="mb-10">
+                            <h2 className="text-3xl font-bold mb-8">
+                                <BookOpen className="inline mr-2 size-8 text-[#665bca]" /> Course Content <br /> ({modules.length} modules)</h2>
 
-                            <div className="space-y-3">
+                            <div className="space-y-4">
                                 {modules.map((module: Module) => (
                                     <div
                                         key={module.id}
-                                        className="flex items-center gap-4 p-4 bg-white rounded-lg border border-gray-200 hover:shadow-md transition-shadow"
+                                        className="flex flex-col md:flex-row items-center gap-4 p-6 bg-white rounded-2xl border border-gray-200 hover:shadow-md transition-shadow"
                                     >
                                         {/* Module Thumbnail */}
                                         <div className="flex-shrink-0">
@@ -273,21 +302,31 @@ export default function CoursePreviewPage() {
                                                 alt={module.title}
                                                 width={1280}
                                                 height={720}
-                                                className="rounded object-cover h-[90px] w-[160px]"
+                                                className="rounded-xl object-cover md:h-[99px] h-[165px] w-[355px] md:w-[176px]"
                                             />
                                             {/* </div> */}
                                         </div>
 
                                         {/* Module Info */}
                                         <div className="flex-grow">
-                                            <p className="font-semibold text-gray-900">
-                                                {module.order}. {module.title}
+                                            <p className="font-bold text-xl text-[#665bca] mb-1">
+                                                Lecture {module.order}
+                                            </p> <p className="font-semibold text-lg text-gray-900">
+                                                {module.title}
                                             </p>
                                             <p className="text-sm text-gray-600 mt-1">
                                                 {/* {module.duration_seconds} */}
-                                                ⏱️  {Math.floor(module.duration_seconds / 60)} min {Math.floor(module.duration_seconds % 60)} sec
+                                                <Clock className="inline mr-1 size-4 text-gray-500" />
+                                                {Math.floor(module.duration_seconds / 60)} min {Math.floor(module.duration_seconds % 60)} sec
                                             </p>
                                         </div>
+
+                                        <div className="hidden md:flex flex-shrink-0 size-14 text-[#665bca] bg-[#665bca2e]  items-center justify-center rounded-full p-3 hover:bg-[#665bca] hover:text-white cursor-pointer">
+                                            <Play className="size-4 text-2xl " fill='#665bca' />
+                                        </div>
+
+
+
 
 
                                     </div>

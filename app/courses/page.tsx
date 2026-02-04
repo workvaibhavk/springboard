@@ -115,7 +115,7 @@ export default function Page() {
                                 />
                             </div>
                             {/* Category Filter */}
-                            <div className="mb-4">
+                            <div className="mb-8">
                                 <p className="text-sm font-semibold text-gray-700 mb-2">Category:</p>
                                 <div className="flex flex-wrap gap-2">
                                     {getUniqueCategories().map((category) => (
@@ -134,7 +134,7 @@ export default function Page() {
                             </div>
 
                             {/* Level Filter */}
-                            <div className="mb-8">
+                            <div className="mb-8 hidden">
                                 <p className="text-sm font-semibold text-gray-700 mb-2">Level:</p>
                                 <div className="flex flex-wrap gap-2">
                                     {getUniqueLevels().map((level) => (

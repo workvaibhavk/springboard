@@ -2,12 +2,12 @@
 
 import { Certificate, CertificateError, Course } from '@/types';
 import { useUser } from '@clerk/nextjs';
-import { BadgeCheck, ChevronLeft } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react';
-import QRCode from 'react-qr-code'
-import Image from 'next/image';
+import CertificateTemplate from "@/page_components/Certificatetemplate"
+import { generateCertificatePDF } from "@/lib/Certificatepdfgenerator"
 
 export default function Page() {
 
@@ -54,177 +54,12 @@ export default function Page() {
         }
     }
 
-    // ── colour-function regex that html2canvas chokes on ──
-    const BAD_COLOR = /\b(lab|oklch|oklab|color)\s*\(/
-
-    /**
-     * Rasterise a single <svg> element to a PNG data-URL.
-     * We serialise the SVG, draw it on an off-screen <canvas>, and return
-     * the PNG string.  This completely removes SVG from the tree so
-     * html2canvas never has to parse SVG colour functions.
-     */
-    const svgToDataUrl = (svg: SVGElement): Promise<string> => {
-        return new Promise((resolve, reject) => {
-            // Grab the bounding rect from the LIVE svg (clone hasn't been laid out yet)
-            // so we fall back to width/height attributes or a default.
-            const w = Number(svg.getAttribute('width')) || 140
-            const h = Number(svg.getAttribute('height')) || 140
-
-            // Clone the svg so we can tweak it without side effects
-            const svgClone = svg.cloneNode(true) as SVGElement
-            svgClone.setAttribute('width', String(w))
-            svgClone.setAttribute('height', String(h))
-            // Ensure it has an xmlns so the blob parses correctly
-            svgClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
-
-            const serialised = new XMLSerializer().serializeToString(svgClone)
-            const blob = new Blob([serialised], { type: 'image/svg+xml' })
-            const url = URL.createObjectURL(blob)
-
-            const img = document.createElement('img')
-            img.onload = () => {
-                const canvas = document.createElement('canvas')
-                canvas.width = w * 2   // 2× for retina
-                canvas.height = h * 2
-                const ctx = canvas.getContext('2d')!
-                ctx.scale(2, 2)
-                ctx.drawImage(img, 0, 0, w, h)
-                URL.revokeObjectURL(url)
-                resolve(canvas.toDataURL('image/png'))
-            }
-            img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('SVG rasterise failed')) }
-            img.src = url
-        })
-    }
-
-    const rasteriseSvgs = async (root: HTMLElement) => {
-        const svgs = Array.from(root.querySelectorAll<SVGElement>('svg'))
-        await Promise.all(svgs.map(async (svg) => {
-            try {
-                // Use the computed size from the *live* original if possible,
-                // otherwise fall back to SVG attributes.
-                const rect = svg.getBoundingClientRect()
-                const w = rect.width || Number(svg.getAttribute('width')) || 140
-                const h = rect.height || Number(svg.getAttribute('height')) || 140
-
-                // Force explicit size on the svg before we serialise it
-                svg.setAttribute('width', String(w))
-                svg.setAttribute('height', String(h))
-
-                const dataUrl = await svgToDataUrl(svg)
-
-                const img = document.createElement('img')
-                img.src = dataUrl
-                img.style.width = w + 'px'
-                img.style.height = h + 'px'
-                img.style.display = 'block'
-
-
-                svg.parentNode?.replaceChild(img, svg)
-            } catch {
-                // If one SVG fails to rasterise just leave it; html2canvas
-                // will still try (and probably warn) but won't crash the whole flow.
-                console.warn('Could not rasterise an SVG, skipping it.')
-            }
-        }))
-    }
-
-    const sanitiseColors = (root: HTMLElement) => {
-        const all = [root, ...Array.from(root.querySelectorAll<HTMLElement>('*'))];
-        // This regex catches modern color functions that html2canvas cannot parse
-        const BAD_COLOR = /\b(lab|oklch|oklab|color|hwb)\s*\(/;
-
-        all.forEach((el) => {
-            const style = window.getComputedStyle(el);
-
-            // 1. Fix Background Gradients (The most common source of 'lab')
-            if (BAD_COLOR.test(style.backgroundImage)) {
-                el.style.setProperty('background-image', 'linear-gradient(to right, #665bca, #9333ea)', 'important');
-            }
-
-            // 2. Fix Solid Colors (Text, Backgrounds, Borders)
-            if (BAD_COLOR.test(style.color)) el.style.setProperty('color', '#665bca', 'important');
-            if (BAD_COLOR.test(style.backgroundColor)) el.style.setProperty('background-color', '#ffffff', 'important');
-            if (BAD_COLOR.test(style.borderColor)) el.style.setProperty('border-color', '#665bca', 'important');
-
-            // 3. Fix SVG properties (Fills and Strokes)
-            if (BAD_COLOR.test(style.fill)) el.style.setProperty('fill', '#665bca', 'important');
-        });
-    };
-
     const downloadPDF = async () => {
+        if (!certificate || !course) return;
+
         setDownloading(true);
         try {
-            const html2canvas = (await import('html2canvas')).default;
-            const { jsPDF } = await import('jspdf');
-
-            const element = document.getElementById('certificate');
-            if (!element) return;
-
-            // --- STEP 1: CREATE A HIDDEN DESKTOP CONTAINER ---
-            const container = document.createElement('div');
-            // We use position: fixed and a massive width to simulate a desktop viewport
-            container.style.cssText = `
-            position: fixed; 
-            top: 0; 
-            left: -10000px; 
-            width: 1200px; 
-            z-index: -9999;
-        `;
-            document.body.appendChild(container);
-
-            // --- STEP 2: CLONE & FORCE DESKTOP STYLES ---
-            const clone = element.cloneNode(true) as HTMLElement;
-            // Reset ALL mobile transforms/scaling and force exact PDF dimensions
-            clone.style.cssText = `
-            width: 900px !important;
-            height: 636px !important;
-            transform: none !important;
-            position: relative !important;
-            display: block !important;
-            margin: 0 !important;
-        `;
-            container.appendChild(clone);
-
-            const images = clone.querySelectorAll('img');
-            images.forEach(img => {
-                img.style.maxWidth = 'none !important';
-                img.style.height = 'auto';
-                if (img.alt === 'vSpringboard') img.style.width = '105px'; img.style.paddingBottom = '20px';
-                if (img.alt === 'Signature') img.style.width = '60px'; img.style.paddingBottom = '20px';
-            });
-
-            // --- STEP 4: CLEAN UP COLOR FUNCTIONS ---
-            sanitiseColors(clone);
-
-            // Wait a moment for the 'container' layout to settle
-            await new Promise(r => setTimeout(r, 500));
-
-            // --- STEP 5: CAPTURE ---
-            const canvas = await html2canvas(clone, {
-                scale: 3,
-                useCORS: true,
-                allowTaint: true,
-                backgroundColor: '#ffffff',
-                width: 900,
-                height: 636,
-                // Force the capture window to be large enough for the certificate
-                windowWidth: 1000,
-                windowHeight: 800
-            });
-
-            document.body.removeChild(container);
-
-            // --- STEP 6: GENERATE PDF ---
-            const imgData = canvas.toDataURL('image/png', 1.0);
-            const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-
-            // A4 landscape is 297x210mm
-            pdf.addImage(imgData, 'PNG', 0, 0, 297, 210, undefined, 'FAST');
-
-            const safeName = certificate?.userName?.replace(/[^a-z0-9]/gi, '_') || 'User';
-            pdf.save(`Certificate_${safeName}.pdf`);
-
+            await generateCertificatePDF(certificate, course, 'certificate');
         } catch (err) {
             console.error('PDF generation failed:', err);
         } finally {
@@ -345,127 +180,8 @@ export default function Page() {
                         <div className="space-y-6">
 
                             <div id="cert-wrapper" className="certificate-wrapper">
-                                <div
-                                    id="certificate"
-                                    className="certificate-inner bg-white rounded-lg shadow-2xl border-8 border-double border-[#665bca] relative overflow-hidden"
-                                    style={{ minWidth: '900px', minHeight: '636px' }}
-                                >
-                                    {/* Decorative corner ornaments */}
-                                    <div className="absolute inset-0 opacity-5 pointer-events-none">
-                                        <div className="absolute top-0 left-0 w-48 h-48 bg-[#665bca] rounded-full -translate-x-24 -translate-y-24"></div>
-                                        <div className="absolute top-0 right-0 w-48 h-48 bg-purple-600 rounded-full translate-x-24 -translate-y-24"></div>
-                                        <div className="absolute bottom-0 left-0 w-48 h-48 bg-purple-600 rounded-full -translate-x-24 translate-y-24"></div>
-                                        <div className="absolute bottom-0 right-0 w-48 h-48 bg-[#665bca] rounded-full translate-x-24 translate-y-24"></div>
-                                    </div>
-
-                                    {/* Main Content - Centered */}
-                                    <div className="relative z-10 flex flex-col items-center justify-center h-full px-16 py-12">
-
-                                        <div className="text-center space-y-4 max-w-3xl">
-                                            {/* Header */}
-                                            <div className="space-y-3">
-                                                <Image
-                                                    src="/brand.png"
-                                                    alt="vSpringboard"
-                                                    width={135}
-                                                    height={45}
-                                                    className="object-contain mx-auto"
-                                                />
-                                                <h1 className="text-4xl font-bold text-[#665bca] tracking-wide">
-                                                    Certificate of Completion
-                                                </h1>
-                                                <div className="mx-auto h-1.5 w-24 bg-gradient-to-r from-[#665bca] to-purple-600 rounded-full mt-4"></div>
-                                            </div>
-
-                                            {/* Awarded To */}
-                                            <div className="space-y-3 py-6">
-                                                <p className="text-base text-gray-800 font-semibold">This is to certify that</p>
-                                                <h2 className="text-4xl font-bold text-gray-900  border-gray-300 inline-block px-10">
-                                                    {certificate.userName}
-                                                </h2>
-                                                {/* Course Details */}
-                                                <div className="space-y-2">
-                                                    <p className="text-base text-gray-500 font-medium">
-                                                        has successfully completed the course
-                                                    </p>
-                                                    <h3 className="text-2xl font-bold text-[#665bca] leading-snug px-6">
-                                                        {course.title.split(':')[0]?.trim()}
-                                                        {course.title.split(':')[1]?.trim() && (
-                                                            <span className="block text-base font-semibold opacity-80 mt-1">
-                                                                {course.title.split(':')[1]?.trim()}
-                                                            </span>
-                                                        )}
-                                                    </h3>
-                                                </div>
-                                            </div>
-
-
-
-                                            {/* Course Metadata */}
-                                            <div className="flex justify-center gap-6 text-gray-600 pt-4 flex-wrap">
-                                                <div className="text-center">
-                                                    <p className="text-[10px] uppercase tracking-wider text-gray-400 mb-1">Instructor</p>
-                                                    <p className="font-semibold text-sm">{course.instructor}</p>
-                                                </div>
-                                                <div className="w-px bg-gray-300"></div>
-                                                <div className="text-center">
-                                                    <p className="text-[10px] uppercase tracking-wider text-gray-400 mb-1">Completion Date</p>
-                                                    <p className="font-semibold text-sm">
-                                                        {new Date(certificate.issued_at).toLocaleDateString('en-US', {
-                                                            year: 'numeric',
-                                                            month: 'long',
-                                                            day: 'numeric'
-                                                        })}
-                                                    </p>
-                                                </div>
-                                                <div className="w-px bg-gray-300"></div>
-                                                <div className="text-center">
-                                                    <p className="text-[10px] uppercase tracking-wider text-gray-400 mb-1">Duration</p>
-                                                    <p className="font-semibold text-sm">
-                                                        {Math.floor(course.total_duration_seconds / 3600)}hr{' '}
-                                                        {Math.floor((course.total_duration_seconds % 3600) / 60)}m
-                                                    </p>
-                                                </div>
-                                            </div>
-
-                                            {/* Certificate Number */}
-                                            <div className="pt-2">
-                                                <p className="text-[10px] text-gray-400 uppercase tracking-wider">Certificate Number</p>
-                                                <p className="text-xs font-mono font-semibold text-gray-500">{certificate.certificate_number}</p>
-                                            </div>
-
-                                            {/* Signature - Bottom Left */}
-                                            <div className="absolute bottom-6 left-6 z-20 bg-white p-2 rounded-lg ">
-                                                <div className="pt-6 flex justify-center">
-                                                    <div className="text-center">
-                                                        <Image
-                                                            src="/signature.png"
-                                                            alt="Signature"
-                                                            width={150}
-                                                            height={68}
-                                                            className="object-contain mx-auto mb-2"
-                                                        />
-                                                        <div className="border-t-2 border-gray-400 pt-2 px-6">
-                                                            <p className="font-bold text-gray-800 text-sm">Vaibhav Kamble</p>
-                                                            <p className="text-xs text-gray-600">vSpringboard Dev</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* QR Code - Bottom Right */}
-                                    <div className="absolute bottom-6 right-6 z-20 bg-white p-2 rounded-lg shadow-lg border border-gray-200">
-                                        <QRCode
-                                            size={120}
-                                            value={`https://vspringboard.vercel.app/verify/${certificate.certificate_number}`}
-                                            fgColor="#665bca"
-                                            level="H"
-                                            viewBox="0 0 256 256"
-                                        />
-                                        <p className="text-[9px] text-center text-gray-500 mt-1">Verify</p>
-                                    </div>
+                                <div className="certificate-inner">
+                                    <CertificateTemplate certificate={certificate} course={course} />
                                 </div>
                             </div>
 

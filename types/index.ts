@@ -33,6 +33,32 @@ export interface CourseEnrollment {
     completed: boolean;
     courses: Course;
 }
+//fake
+export interface UserDataaaa {
+    id: string;
+    user_id: string;
+
+    completed_at: string | null;
+    courses: Course;
+    userDetails: {
+        course_id: string;
+        enrolled_at: string;
+        completed: boolean;
+
+    }
+}
+
+export interface UserDataa {
+    user_id: string;
+    course_id: string;
+    enrolled_at: string;
+    completed: boolean;
+    completed_at: string | null;
+    courses: {
+        title: string;
+        // Add other course properties you need
+    };
+}
 
 export interface EnrollmentData {
     userCompletedCourses: CourseEnrollment[];

@@ -1,18 +1,23 @@
 "use client"
 
-import { CourseEnrollment } from "@/types"
+import { UserDataa } from "@/types"
 import { UserData } from "@/types/usersdata"
 import { useUser } from "@clerk/nextjs"
 import Image from "next/image"
 import { useEffect, useState } from "react"
+import { Certificate, Course } from "@/types"
+import CertificateTemplate from "@/page_components/Certificatetemplate"
+import { generateCertificatePDF } from "@/lib/Certificatepdfgenerator"
 
 export default function Page() {
     const { isLoaded } = useUser()
 
     const [users, setUsers] = useState<UserData[]>([])
     const [selectedUser, setSelectedUser] = useState('')
-    const [userDetails, setUserDetails] = useState<CourseEnrollment | null>(null)
+    const [userDetails, setUserDetails] = useState<UserDataa[] | null>(null)
     const [showModal, setShowModal] = useState(false)
+    const [certificateData, setCertificateData] = useState<{ certificate: Certificate, course: Course } | null>(null)
+    const [isGeneratingPDF, setIsGeneratingPDF] = useState(false)
 
     useEffect(() => {
         if (isLoaded) {
@@ -41,6 +46,52 @@ export default function Page() {
         }
         catch (error) {
             console.error('Error fetching user details:', error)
+        }
+    }
+
+    const handleDownloadCertificate = async (userId: string, courseId: string) => {
+        try {
+            setIsGeneratingPDF(true)
+
+            // Fetch certificate data for the specific user and course
+            const response = await fetch(`/api/admin/get-user-certificate?userId=${userId}&courseId=${courseId}`)
+
+            // Check content type before parsing
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                const text = await response.text();
+                console.error('Non-JSON response:', text);
+                alert('API endpoint error. Check console for details.');
+                return;
+            }
+
+            const data = await response.json()
+
+            if (!response.ok) {
+                alert(data.error || 'Failed to fetch certificate')
+                console.error('API Error:', data);
+                return
+            }
+
+            // Set certificate data to render the hidden component
+            setCertificateData({
+                certificate: data.certificate,
+                course: data.course
+            })
+
+            // Wait for the component to render
+            await new Promise(resolve => setTimeout(resolve, 100))
+
+            // Generate PDF
+            await generateCertificatePDF(data.certificate, data.course, 'admin-certificate')
+
+            // Clear certificate data
+            setCertificateData(null)
+        } catch (error) {
+            console.error('Error downloading certificate:', error)
+            alert('Failed to download certificate. Check console for details.')
+        } finally {
+            setIsGeneratingPDF(false)
         }
     }
 
@@ -108,10 +159,22 @@ export default function Page() {
                 </table>
             </div>
 
-            {/* Modal - moved outside the table */}
+            {/* Hidden certificate renderer */}
+            {certificateData && (
+                <div style={{ position: 'fixed', left: '-10000px', top: 0 }}>
+                    <div id="admin-certificate">
+                        <CertificateTemplate
+                            certificate={certificateData.certificate}
+                            course={certificateData.course}
+                        />
+                    </div>
+                </div>
+            )}
+
+            {/* Modal */}
             {showModal && userDetails && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white p-6 rounded-lg shadow-lg w-11/12 md:w-1/2">
+                    <div className="bg-white p-6 rounded-lg shadow-lg w-11/12 md:w-1/2 max-h-[90vh] overflow-y-auto">
                         <h2 className="text-2xl font-bold mb-4">User Details</h2>
                         <table className="w-full">
                             <tbody>
@@ -124,15 +187,30 @@ export default function Page() {
                                     <td className="py-2">{userDetails[0]?.courses?.title || 'No course title'}</td>
                                 </tr>
                                 <tr className="border-b">
+                                    <td className="py-2 font-semibold">Course ID:</td>
+                                    <td className="py-2">{userDetails[0]?.course_id || 'No course ID'}</td>
+                                </tr>
+                                <tr className="border-b">
                                     <td className="py-2 font-semibold">Enrollment Date:</td>
                                     <td className="py-2">{userDetails[0]?.enrolled_at || 'No enrollment date'}</td>
                                 </tr>
-                                <tr>
+                                <tr className="border-b">
                                     <td className="py-2 font-semibold">Completion Status:</td>
                                     <td className="py-2">{userDetails[0]?.completed ? 'Completed' : 'In Progress'}</td>
                                 </tr>
                             </tbody>
                         </table>
+
+                        {/* Download Certificate Button */}
+                        {userDetails[0]?.completed && (
+                            <button
+                                onClick={() => handleDownloadCertificate(selectedUser, userDetails[0].course_id)}
+                                disabled={isGeneratingPDF}
+                                className="mt-4 bg-green-500 hover:bg-green-700 disabled:bg-gray-400 text-white font-bold py-2 px-4 rounded mr-2">
+                                {isGeneratingPDF ? 'Generating PDF...' : 'Download Certificate'}
+                            </button>
+                        )}
+
                         <button
                             onClick={() => setShowModal(false)}
                             className="mt-4 bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">

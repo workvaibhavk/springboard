@@ -14,7 +14,7 @@ export default function ModuleList({
         : 0;
 
     return (
-        <div className="w-full md:w-4/12 h-screen border-r flex flex-col bg-white border border-gray-200 p-6 rounded-xl shadow-sm
+        <div className="w-full h-screen border-r flex flex-col bg-white border border-gray-200 p-6 rounded-xl shadow-sm
         ">
             <div className='flex justify-between'>
                 <h4 className='text-2xl font-semibold'>Course Modules</h4>

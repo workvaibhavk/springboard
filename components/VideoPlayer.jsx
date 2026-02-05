@@ -115,11 +115,29 @@ export default function VideoPlayer({
             {/* YOUTUBE PLAYER CONTAINER - Always present in DOM */}
 
             <div
+                className={`absolute inset-0 z-10 bg-black/20 usma`}
+                onClick={togglePlayPause}
+            >
+
+                {/* This div captures clicks to toggle play/pause */}
+                {isPlaying ? null : (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                        <button
+                            onClick={togglePlayPause}
+                            className="w-20 h-20 flex items-center justify-center bg-gray-600 hover:bg-gray-700 rounded-full transition-all transform hover:scale-110"
+                        >
+                            <PlayIcon size={40} fill="white" className="text-white ml-1" />
+                        </button>
+                    </div>
+                )}
+
+            </div>
+            <div
                 id="youtube-player"
                 className="w-full h-full"
                 style={{
                     display: showPlayer ? 'block' : 'none',
-                    pointerEvents: showPlayer ? 'none' : 'auto'
+                    pointerEvents: showPlayer ? 'auto' : 'auto'
                 }}
             ></div>
             {playerLoading && (

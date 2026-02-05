@@ -17,7 +17,7 @@ export default function Page() {
         <div className='w-100 md:w-11/18 flex flex-col gap-[30px] items-center md:items-start'>
           <h1 className='text-[42px] leading-[2.5rem] md:leading-[4rem]  md:text-7xl inter text-gray-900'>Master New Skills
             <br /> with SpringBoard</h1>
-          <p className='text-center md:text-start w-11/12 md:w-10/12 text-gray-700'>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Animi quaerat quibusdam, eum, omnis corrupti Iure.</p>
+          <p className='text-center md:text-start w-11/12 md:w-10/12 text-gray-700'>Join a global community of learners and experts. From foundational concepts to advanced mastery, discover tailored learning paths that empower you to grow at your own pace</p>
 
           <div className='flex gap-5'>
             {/* <button className='bg-[#111111] hover:bg-gray-900 transition-colors rounded-full p-5 h-15 flex flex-wrap gap-4 w-auto items-center justify-center content-center cursor-pointer'>

@@ -214,13 +214,11 @@ export function useYouTubePlayer(videoId, shouldInitialize = false) {
         const newTime = parseFloat(event.target.value);
         const current = player.getCurrentTime();
 
-
-
         if (newTime < current) {
             player.seekTo(newTime, true);
         } else {
             console.log('⏭️ Please watch the video. Fast-forwarding is disabled.');
-            player.seekTo(newTime, true);
+            // player.seekTo(newTime, true);
         }
     }, [player]);
 

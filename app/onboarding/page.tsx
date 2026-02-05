@@ -96,7 +96,7 @@ export default function Page() {
 
                         <button
                             type="submit"
-                            disabled={loading}
+                            disabled={loading || phoneNumber.length !== 10 || enrNumber.length !== 7}
                             className="w-full bg-[#111111] text-white rounded-full px-6 py-3 font-medium hover:bg-[#222222] transition-colors disabled:opacity-50"
                         >
                             {loading ? "Saving..." : "Continue to Dashboard"}

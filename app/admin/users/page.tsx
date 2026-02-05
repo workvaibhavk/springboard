@@ -1,5 +1,6 @@
 "use client"
 
+import { UserData } from "@/types/usersdata"
 import { useUser } from "@clerk/nextjs"
 import Image from "next/image"
 import { useEffect, useState } from "react"
@@ -7,7 +8,7 @@ import { useEffect, useState } from "react"
 export default function Page() {
     const { isLoaded } = useUser()
 
-    const [users, setUsers] = useState([])
+    const [users, setUsers] = useState<UserData[]>([])
     useEffect(() => {
         if (isLoaded) {
             getUsersData()

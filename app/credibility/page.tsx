@@ -5,21 +5,16 @@ export default function Page() {
         <div>
             <div className="min-h-screen flex flex-col py-12 gap-12 items-center justify-center bg-gray-50">
                 <div className="bg-white p-8 rounded-lg shadow-lg max-w-3xl text-center">
-                    <h1 className="text-4xl font-bold text-gray-900 mb-4">Our Commitment to Credibility</h1>
+                    <h1 className="text-2xl md:text-4xl font-bold text-gray-900 mb-4">Our Commitment to Credibility</h1>
                     <p className="text-lg text-gray-700 mb-6">
-                        At Springboard, we understand that choosing the right educational path is a significant decision. That&apos;s why we are dedicated to providing you with transparent, accurate, and up-to-date information about our courses, instructors, and outcomes. Our credibility is built on a foundation of trust, integrity, and a relentless commitment to your success.
-                    </p>
-                    <p className="text-lg text-gray-700 mb-6">
-                        We rigorously vet our instructors, ensuring they are industry experts with real-world experience. Our course content is continuously updated to reflect the latest trends and technologies, and we provide clear outcomes and success stories from our graduates. We are here to support you every step of the way, and we take pride in being a trusted partner in your educational journey.
+                        At Springboard, we are dedicated to providing high-quality education with transparent outcomes. Our instructors are industry experts, and our course content reflects the latest trends and technologies.
                     </p>
                     <p className="text-lg text-gray-700">
-                        Your success is our success, and we are committed to maintaining the highest standards of credibility in everything we do. Thank you for choosing Springboard as your learning partner.
+                        We are committed to maintaining the highest standards of credibility and supporting you every step of the way. Thank you for choosing Springboard as your learning partner.
                     </p>
                 </div>
 
-                <div className="bg-white flex justify-center items-center p-8 rounded-lg shadow-lg w-10/12 text-center">
-
-
+                <div className="bg-white flex flex-col md:flex-row justify-center items-center p-8 rounded-lg shadow-lg w-10/12 text-center">
                     <Image
                         src="/credibility.jpeg"
                         alt="Credibility Image"
@@ -27,17 +22,48 @@ export default function Page() {
                         height={300}
                         className="mx-auto mb-6 rounded-lg shadow-md"
                     />
-                    <div className="max-w-lg flex flex-col items-center gap-1">
-                        <h1 className="text-4xl font-bold text-gray-900 mb-4">Credibility of Certificate</h1>
-                        <p className="text-lg text-gray-700 mb-6">
-                            For your kind information, Springboard certificates are widely recognized and respected by the Educators and lecturers at Gpp and various other reknwned colleges. Our certificates are designed to showcase your achievements and can be a valuable asset in your professional journey, helping you stand out to employers and advance your career.
-                        </p>
-                        <p className="text-lg text-gray-700 mb-6">
-                            As Seen in the Screenshot, <span className="font-bold text-[#665bca]">Mrs Swati Sant Madam</span>, the Main Computer Science Lecturer Faculty at Gpp, and our Theory teacher for all batches and Praticals teacher for C batch at Web Page Designing using HTML has acknowledged the credibility of Springboard certificates and encourages students to pursue them for their career growth. This endorsement from a respected educator further reinforces the value and recognition of our certificates in the academic and professional world.
-                        </p>
+                    <div className="max-w-lg flex flex-col items-center gap-4">
+                        <h1 className="text-2xl md:text-4xl font-bold text-gray-900 mb-4">Certificate Recognition</h1>
                         <p className="text-lg text-gray-700">
-
+                            Springboard certificates are recognized and respected by educators at GPP and other renowned institutions, helping you advance your professional journey.
                         </p>
+
+                        <div className="text-left w-full space-y-4 mt-4">
+                            <div className="border-l-4 border-[#665bca] pl-4">
+                                <p className="text-lg text-gray-700">
+                                    <span className="font-bold text-[#665bca]">Mrs. Swati Sant</span>, Main Computer Science Lecturer at GPP and Theory teacher for all batches, has acknowledged the credibility of Springboard certificates and encourages students to pursue them for career growth.
+                                </p>
+                            </div>
+
+                            <div className="border-l-4 border-[#665bca] pl-4">
+                                {/* <p className="text-lg text-gray-700">
+                                    <span className="font-bold text-[#665bca]">Mrs. Sayali Pradeep Ambavane</span>, Main Computer Science Lecturer at GPP and Programming in C instructor, endorsed Springboard during a conversation with our founder <span className="font-bold text-[#665bca]">Mr. Vaibhav Kamble</span> on February 5, 2026, stating: <em>&quot;Ok Springboard, ok chalel&quot;</em> in response to platform accessibility concerns.
+                                </p> */}
+                                {/* 
+                                <p className="text-lg text-gray-700">
+                                    <span className="font-bold text-[#665bca]">Mrs. Sayali Pradeep Ambavane</span>, Main Computer Science Lecturer at GPP and Programming in C instructor, had a talk with our founder <span className="font-bold text-[#665bca]">Mr. Vaibhav Kamble</span> on Thursday, February 5, 2026 at 11:29:55 AM {'{UTC+05:30 82°30′ E}'} and acknowledged the credibility of Springboard certificates with the words: <em>&quot;Mam ha platform use keIa tr chaIeI kay, Infosys madhe certificates sathi problems yeto &quot; — kay naav boIIas  -- vSpringboard  &quot;Ok vSpringboard ahey na, ok chalel&quot;</em>
+                                </p> */}
+
+
+                                <p className="text-lg text-gray-700 mb-3">
+                                    <span className="font-bold text-[#665bca]">Mrs. Sayali Pradeep Ambavane</span>, Main Computer Science Lecturer at GPP and Theory and Practicals teacher for all batches in Programming in C, had a talk with our founder <span className="font-bold text-[#665bca]">Mr. Vaibhav Kamble</span> on Thursday, February 5, 2026 at 11:29:55 AM {'{UTC+05:30 82°30′ E}'} and acknowledged the credibility of Springboard certificates:
+                                </p>
+                                <div className="bg-gray-50 rounded-lg p-4 space-y-2 text-left">
+                                    <p className="text-gray-800">
+                                        <span className="font-semibold text-[#665bca]">Mr. Vaibhav:</span> <em>&quot;Mam ha platform use kela tr chalel kay, Infosys madhe certificates sathi problems yeto&quot;</em>
+                                    </p>
+                                    <p className="text-gray-800">
+                                        <span className="font-semibold text-[#665bca]">Mrs. Ambavane:</span> <em>&quot;Kay naav bollas&quot;</em>
+                                    </p>
+                                    <p className="text-gray-800">
+                                        <span className="font-semibold text-[#665bca]">Mr. Vaibhav:</span> <em>&quot;vSpringboard&quot;</em>
+                                    </p>
+                                    <p className="text-gray-800">
+                                        <span className="font-semibold text-[#665bca]">Mrs. Ambavane:</span> <em>&quot;Ok vSpringboard ahey na, ok chalel&quot;</em>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -32,6 +32,7 @@ export interface CourseEnrollment {
     completed_at: string | null;
     completed: boolean;
     courses: Course;
+    length: number;
 }
 //fake
 export interface UserDataaaa {

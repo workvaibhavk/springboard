@@ -15,7 +15,7 @@ export default function Page() {
 
     const [users, setUsers] = useState<UserData[]>([])
     const [selectedUser, setSelectedUser] = useState('')
-    const [userDetails, setUserDetails] = useState<CourseEnrollment | null>(null)
+    const [userDetails, setUserDetails] = useState<CourseEnrollment[] | null>(null)
     const [showModal, setShowModal] = useState(false)
     const [certificateData, setCertificateData] = useState<{ certificate: Certificate, course: Course } | null>(null)
     const [isGeneratingPDF, setIsGeneratingPDF] = useState(false)
@@ -186,7 +186,7 @@ export default function Page() {
                         <h3 className="text-lg font-semibold mb-3">Enrolled Courses</h3>
 
                         <div className="space-y-4">
-                            {userDetails.map((enrollment, index) => (
+                            {userDetails?.map((enrollment: CourseEnrollment) => (
                                 <div key={enrollment.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
                                     <div className="flex justify-between items-start mb-3">
                                         <div className="flex-1">

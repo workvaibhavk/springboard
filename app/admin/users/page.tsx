@@ -1,6 +1,6 @@
 "use client"
 
-import { UserDataa } from "@/types"
+import { CourseEnrollment } from "@/types"
 import { UserData } from "@/types/usersdata"
 import { useUser } from "@clerk/nextjs"
 import Image from "next/image"
@@ -8,13 +8,14 @@ import { useEffect, useState } from "react"
 import { Certificate, Course } from "@/types"
 import CertificateTemplate from "@/page_components/Certificatetemplate"
 import { generateCertificatePDF } from "@/lib/Certificatepdfgenerator"
+import { DownloadIcon } from "lucide-react"
 
 export default function Page() {
     const { isLoaded } = useUser()
 
     const [users, setUsers] = useState<UserData[]>([])
     const [selectedUser, setSelectedUser] = useState('')
-    const [userDetails, setUserDetails] = useState<UserDataa[] | null>(null)
+    const [userDetails, setUserDetails] = useState<CourseEnrollment | null>(null)
     const [showModal, setShowModal] = useState(false)
     const [certificateData, setCertificateData] = useState<{ certificate: Certificate, course: Course } | null>(null)
     const [isGeneratingPDF, setIsGeneratingPDF] = useState(false)
@@ -174,46 +175,101 @@ export default function Page() {
             {/* Modal */}
             {showModal && userDetails && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white p-6 rounded-lg shadow-lg w-11/12 md:w-1/2 max-h-[90vh] overflow-y-auto">
+                    <div className="bg-white p-6 rounded-lg shadow-lg w-11/12 md:w-2/3 max-h-[90vh] overflow-y-auto">
                         <h2 className="text-2xl font-bold mb-4">User Details</h2>
-                        <table className="w-full">
-                            <tbody>
-                                <tr className="border-b">
-                                    <td className="py-2 font-semibold">User ID:</td>
-                                    <td className="py-2">{selectedUser}</td>
-                                </tr>
-                                <tr className="border-b">
-                                    <td className="py-2 font-semibold">Course Title:</td>
-                                    <td className="py-2">{userDetails[0]?.courses?.title || 'No course title'}</td>
-                                </tr>
-                                <tr className="border-b">
-                                    <td className="py-2 font-semibold">Course ID:</td>
-                                    <td className="py-2">{userDetails[0]?.course_id || 'No course ID'}</td>
-                                </tr>
-                                <tr className="border-b">
-                                    <td className="py-2 font-semibold">Enrollment Date:</td>
-                                    <td className="py-2">{userDetails[0]?.enrolled_at || 'No enrollment date'}</td>
-                                </tr>
-                                <tr className="border-b">
-                                    <td className="py-2 font-semibold">Completion Status:</td>
-                                    <td className="py-2">{userDetails[0]?.completed ? 'Completed' : 'In Progress'}</td>
-                                </tr>
-                            </tbody>
-                        </table>
 
-                        {/* Download Certificate Button */}
-                        {userDetails[0]?.completed && (
-                            <button
-                                onClick={() => handleDownloadCertificate(selectedUser, userDetails[0].course_id)}
-                                disabled={isGeneratingPDF}
-                                className="mt-4 bg-green-500 hover:bg-green-700 disabled:bg-gray-400 text-white font-bold py-2 px-4 rounded mr-2">
-                                {isGeneratingPDF ? 'Generating PDF...' : 'Download Certificate'}
-                            </button>
-                        )}
+                        <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+                            <p className="text-sm text-gray-600"><span className="font-semibold">User ID:</span> {selectedUser}</p>
+                            <p className="text-sm text-gray-600 mt-1"><span className="font-semibold">Total Enrollments:</span> {userDetails.length}</p>
+                        </div>
+
+                        <h3 className="text-lg font-semibold mb-3">Enrolled Courses</h3>
+
+                        <div className="space-y-4">
+                            {userDetails.map((enrollment, index) => (
+                                <div key={enrollment.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                                    <div className="flex justify-between items-start mb-3">
+                                        <div className="flex-1">
+                                            <h4 className="font-semibold text-lg text-gray-800">
+                                                {enrollment.courses?.title || 'No course title'}
+                                            </h4>
+                                            <p className="text-sm text-gray-500 mt-1">
+                                                Instructor: {enrollment.courses?.instructor || 'N/A'}
+                                            </p>
+                                        </div>
+                                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${enrollment.completed
+                                            ? 'bg-green-100 text-green-800'
+                                            : 'bg-yellow-100 text-yellow-800'
+                                            }`}>
+                                            {enrollment.completed ? 'Completed' : 'In Progress'}
+                                        </span>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-3 text-sm mb-3">
+                                        <div>
+                                            <span className="text-gray-500">Course ID:</span>
+                                            <p className="font-mono text-xs text-gray-700">{enrollment.course_id}</p>
+                                        </div>
+                                        <div>
+                                            <span className="text-gray-500">Enrolled:</span>
+                                            <p className="text-gray-700">
+                                                {new Date(enrollment.enrolled_at).toLocaleDateString('en-US', {
+                                                    year: 'numeric',
+                                                    month: 'short',
+                                                    day: 'numeric'
+                                                })}
+                                            </p>
+                                        </div>
+                                        {enrollment.completed_at && (
+                                            <div>
+                                                <span className="text-gray-500">Completed:</span>
+                                                <p className="text-gray-700">
+                                                    {new Date(enrollment.completed_at).toLocaleDateString('en-US', {
+                                                        year: 'numeric',
+                                                        month: 'short',
+                                                        day: 'numeric'
+                                                    })}
+                                                </p>
+                                            </div>
+                                        )}
+                                        <div>
+                                            <span className="text-gray-500">Duration:</span>
+                                            <p className="text-gray-700">
+                                                {Math.floor(enrollment.courses?.total_duration_seconds / 3600)}h{' '}
+                                                {Math.floor((enrollment.courses?.total_duration_seconds % 3600) / 60)}m
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Download Certificate Button for each course */}
+                                    {enrollment.completed && (
+                                        <button
+                                            onClick={() => handleDownloadCertificate(selectedUser, enrollment.course_id)}
+                                            disabled={isGeneratingPDF}
+                                            className="w-full bg-green-500 hover:bg-green-700 disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded transition-colors flex items-center justify-center gap-2">
+                                            {isGeneratingPDF ? (
+                                                <>
+                                                    <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                    </svg>
+                                                    Generating PDF...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <DownloadIcon className="h-4 w-4 inline mr-2" />
+                                                    Download Certificatee
+                                                </>
+                                            )}
+                                        </button>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
 
                         <button
                             onClick={() => setShowModal(false)}
-                            className="mt-4 bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                            className="mt-6 w-full bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded transition-colors">
                             Close
                         </button>
                     </div>

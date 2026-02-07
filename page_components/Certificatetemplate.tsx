@@ -34,16 +34,16 @@ export default function CertificateTemplate({ certificate, course }: Certificate
                             height={45}
                             className="object-contain mx-auto"
                         />
-                        <h1 className="text-4xl my-4 font-bold text-[#665bca] tracking-wide">
+                        <h1 style={{ paddingBottom: '10px' }} className="text-4xl my-4 font-bold text-[#665bca] tracking-wide">
                             Certificate of Completion
                         </h1>
-                        <div style={{ marginTop: '10px' }} className="mx-auto h-1.5 w-24 bg-gradient-to-r from-[#665bca] to-purple-600 rounded-full mt-4"></div>
+                        <div className="mx-auto h-1.5 w-24 bg-gradient-to-r from-[#665bca] to-purple-600 rounded-full mt-4"></div>
                     </div>
 
                     {/* Awarded To */}
                     <div className="space-y-3 py-6">
                         <p style={{ color: '#424242' }} className="text-base text-gray-800 font-semibold"> This is to certify that</p>
-                        <h2 style={{ color: '#000000' }} className="text-5xl font-bold text-gray-900 border-gray-300 inline-block px-6 mb-6">
+                        <h2 style={{ color: '#000000' }} className="text-5xl font-bold text-gray-900 border-gray-300 inline-block pt-2 pb-6 mb-6">
                             {certificate.user_name}
                         </h2>
                         {/* Course Details */}

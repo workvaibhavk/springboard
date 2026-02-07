@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
 
 /* import all the icons in Free Solid, Free Regular, and Brands styles */
@@ -82,6 +82,7 @@ const Footer = () => {
                             <Link href="/careers" className="text-gray-300 hover:text-white transition-colors duration-200 text-sm">Careers</Link>
                             <Link href="/blog" className="text-gray-300 hover:text-white transition-colors duration-200 text-sm">Blog</Link>
                             <Link href="/contact" className="text-gray-300 hover:text-white transition-colors duration-200 text-sm">Contact</Link>
+                            <Link href="/credibility" className="text-gray-400 hover:text-white transition-colors duration-200">Credibility</Link>
                         </div>
 
                         <div className='flex flex-col space-y-4 min-w-[140px]'>
@@ -101,6 +102,7 @@ const Footer = () => {
                     </span>
                     <div className="flex gap-6">
                         <Link href="/privacy" className="text-gray-400 hover:text-white transition-colors duration-200">Privacy Policy</Link>
+
                         <Link href="/terms" className="text-gray-400 hover:text-white transition-colors duration-200">Terms of Service</Link>
                         <Link href="/cookies" className="text-gray-400 hover:text-white transition-colors duration-200">Cookie Policy</Link>
                     </div>

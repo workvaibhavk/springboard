@@ -2,12 +2,14 @@
 
 import { supabase } from '@/lib/supabase';
 import { useUser } from '@clerk/nextjs';
-import { BookOpen, ChevronLeft, Clock, Film, MoveRight, Play, Video, Zap } from 'lucide-react';
+import { BookOpen, ChevronLeft, Clock, Film, MoveRight, Play, Zap } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react';
 import { Course, Module } from '@/types';
+import CAuthenticate from "@/page_components/cauth";
+
 // import { Course, EnrollmentData, CourseEnrollment, Module } from '@/types';
 
 
@@ -181,6 +183,8 @@ export default function CoursePreviewPage() {
 
     return (
         <div className="min-h-screen bg-gray-50 py-12 px-0">
+            <CAuthenticate />
+
             <div className="w-11/12 mx-auto">
 
                 {loading ? (
@@ -321,9 +325,13 @@ export default function CoursePreviewPage() {
                                             </p>
                                         </div>
 
-                                        <div className="hidden md:flex flex-shrink-0 size-14 text-[#665bca] bg-[#665bca2e]  items-center justify-center rounded-full p-3 hover:bg-[#665bca] hover:text-white cursor-pointer">
+                                        <button
+                                            className="hidden md:flex flex-shrink-0 size-14 text-[#665bca] bg-[#665bca2e]  items-center justify-center rounded-full p-3 hover:bg-[#665bca] hover:text-white cursor-pointer"
+                                            onClick={() => router.push(`/learn/${courseId}`)}
+                                        // onClick={() => router.push(`/learn/${courseId}?module=${module.id}`)}
+                                        >
                                             <Play className="size-4 text-2xl " fill='#665bca' />
-                                        </div>
+                                        </button>
 
 
 

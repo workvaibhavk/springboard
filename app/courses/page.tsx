@@ -2,6 +2,7 @@
 
 import DNavbar from '@/page_components/DNavbar'
 import Footer from '@/page_components/Footer'
+import LoadingComponent from '@/page_components/loady'
 // import { Search } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
@@ -28,6 +29,7 @@ export default function Page() {
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [selectedLevel, setSelectedLevel] = useState('All');
     const [loading, setLoading] = useState(true);
+
 
     useEffect(() => {
         fetchCourses();
@@ -97,9 +99,7 @@ export default function Page() {
                     <h1 className="text-4xl font-bold mb-8">All Courses</h1>
 
                     {loading ? (
-                        <div className="flex justify-center items-center h-64">
-                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#665bca]"></div>
-                        </div>
+                        <LoadingComponent />
                     ) : (
                         <>
                             {/* <DNavbar /> */}

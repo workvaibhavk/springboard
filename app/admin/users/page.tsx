@@ -1,11 +1,10 @@
 "use client"
 
-import { CourseEnrollment } from "@/types"
 import { UserData } from "@/types/usersdata"
 import { useUser } from "@clerk/nextjs"
 import Image from "next/image"
 import { useEffect, useState } from "react"
-import { Certificate, Course } from "@/types"
+import { Certificate, Course, CourseEnrollment } from "@/types"
 import CertificateTemplate from "@/page_components/Certificatetemplate"
 import { generateCertificatePDF } from "@/lib/Certificatepdfgenerator"
 import { DownloadIcon } from "lucide-react"

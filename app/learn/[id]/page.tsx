@@ -1,16 +1,40 @@
 // app/learn/[id]/page.tsx
 "use client"
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { useUser } from '@clerk/nextjs'
 import VideoPlayer from '@/components/VideoPlayer'
 import ModuleList from '@/components/ModuleList'
+import LoadingComponent from '@/page_components/loady'
 import { fetchCourseData, fetchModules, fetchProgress, markModuleComplete } from '@/lib/courseApi'
 import DNavbar from '@/page_components/DNavbar'
 import type { Course, Module, ProgressData } from '@/types/learning'
 import Link from 'next/link'
 import { Download } from 'lucide-react'
+
+interface ToastProps {
+    message: string;
+    type: 'success' | 'error';
+    onClose: () => void;
+}
+
+function Toast({ message, type, onClose }: ToastProps) {
+    useEffect(() => {
+        const timer = setTimeout(onClose, 4000);
+        return () => clearTimeout(timer);
+    }, [onClose]);
+
+    return (
+        <div
+            className={`fixed bottom-6 right-6 z-50 flex items-center gap-3 px-5 py-4 rounded-xl shadow-lg text-white text-sm font-medium transition-all animate-fade-in
+                ${type === 'success' ? 'bg-green-500' : 'bg-red-500'}`}
+        >
+            <span>{message}</span>
+            <button onClick={onClose} className='ml-2 text-white/80 hover:text-white text-lg leading-none'>×</button>
+        </div>
+    );
+}
 
 export default function LearnPage() {
     const params = useParams<{ id: string }>();
@@ -23,20 +47,19 @@ export default function LearnPage() {
     const [currentModuleIndex, setCurrentModuleIndex] = useState<number>(0);
     const [completedModules, setCompletedModules] = useState<string[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-
-    // Video tracking states
-    const [watchedPercentage, setWatchedPercentage] = useState<number>(0);
+    const isCompleted = modules.length > 0 && completedModules.length >= modules.length;
+    const [btnDisabled, setBtnDisabled] = useState<boolean>(false);
     const [hasWatched90Percent, setHasWatched90Percent] = useState<boolean>(false);
 
-    const isCompleted = modules.length > 0 && completedModules.length >= modules.length;
+    const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
-    useEffect(() => {
-        if (isLoaded && user && courseId) {
-            fetchLearningData();
-        }
-    }, [isLoaded, user, courseId]);
+    const showToast = useCallback((message: string, type: 'success' | 'error') => {
+        setToast({ message, type });
+    }, []);
 
-    const fetchLearningData = async (): Promise<void> => {
+    // Fix #4: Wrapped fetchLearningData in useCallback so it can be safely
+    // added to the useEffect dependency array without causing infinite re-renders.
+    const fetchLearningData = useCallback(async (): Promise<void> => {
         if (!courseId) return;
 
         setLoading(true);
@@ -57,6 +80,7 @@ export default function LearnPage() {
             }
 
             if (progressData.completedModules) {
+                // Deduplication retained from original
                 const unique = [...new Set(progressData.completedModules)];
                 setCompletedModules(unique);
             }
@@ -65,7 +89,14 @@ export default function LearnPage() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [courseId]);
+
+    // Fix #4: fetchLearningData is now in the dependency array (safe due to useCallback above)
+    useEffect(() => {
+        if (isLoaded && user && courseId) {
+            fetchLearningData();
+        }
+    }, [isLoaded, user, courseId, fetchLearningData]);
 
     const goToPreviousModule = (): void => {
         if (currentModuleIndex > 0) {
@@ -92,29 +123,52 @@ export default function LearnPage() {
     };
 
     const handleMarkComplete = async (): Promise<void> => {
+        // Fix #2: Guard clauses moved BEFORE setBtnDisabled so the button is
+        // never permanently locked if we return early (finally won't run for early returns).
         if (!currentModule || !courseId) return;
 
+        // If already completed, just navigate forward
         if (completedModules.includes(currentModule.id)) {
             goToNextModule();
             return;
         }
 
+        setBtnDisabled(true);
+
         try {
             await markModuleComplete(courseId, currentModule.id);
 
-            setCompletedModules(prev => [...prev, currentModule.id]);
+            // Fix #3 & #5: Use the functional updater form so we work with the
+            // latest state snapshot inside the callback, eliminating the stale
+            // closure bug. Also prevents duplicate entries naturally.
+            setCompletedModules(prev => {
+                if (prev.includes(currentModule.id)) return prev; // guard against duplicates
+                return [...prev, currentModule.id];
+            });
 
+            // Fix #3: isLastModule check uses the synchronously-available index,
+            // which doesn't depend on React state settling.
             setTimeout(() => {
                 if (currentModuleIndex < modules.length - 1) {
                     goToNextModule();
+                    setHasWatched90Percent(false);
                 } else {
-                    alert('🎉 Congratulations! You completed all modules!');
+                    // Fix #7: Toast instead of alert() — non-blocking, so state
+                    // updates (including isCompleted) render immediately alongside it.
+                    showToast('🎉 Congratulations! You completed all modules!', 'success');
+                    // Fix #1 & #3: No manual +1 calculation needed. isCompleted is
+                    // derived from state on re-render, so it resolves correctly once
+                    // setCompletedModules above triggers a re-render.
                 }
             }, 500);
+
         } catch (error) {
             console.error('Error marking complete:', error);
             const errorMessage = error instanceof Error ? error.message : 'Failed to mark as complete';
-            alert(errorMessage);
+            // Fix #7: Toast instead of alert()
+            showToast(errorMessage, 'error');
+        } finally {
+            setBtnDisabled(false);
         }
     };
 
@@ -123,23 +177,15 @@ export default function LearnPage() {
         return (completedModules.length / modules.length) * 100;
     };
 
-    const isLastModule = (): boolean => {
-        return currentModuleIndex === modules.length - 1;
-    };
+    const isLastModule = (): boolean => currentModuleIndex === modules.length - 1;
+    const isFirstModule = (): boolean => currentModuleIndex === 0;
+    const isModuleCompleted = (): boolean =>
+        currentModule ? completedModules.includes(currentModule.id) : false;
 
-    const isFirstModule = (): boolean => {
-        return currentModuleIndex === 0;
-    };
-
-    const isModuleCompleted = (): boolean => {
-        return currentModule ? completedModules.includes(currentModule.id) : false;
-    };
-
+    // ─── Render Guards ──────────────────────────────────────────────────────
     if (loading) {
         return (
-            <div className='flex justify-center items-center min-h-screen'>
-                <div className='text-lg text-gray-600'>Loading...</div>
-            </div>
+            <LoadingComponent />
         );
     }
 
@@ -151,11 +197,21 @@ export default function LearnPage() {
         );
     }
 
+    // ─── Main UI ────────────────────────────────────────────────────────────
     return (
         <div className='flex flex-col gap-4 bg-gray-50 min-h-screen'>
             <DNavbar />
 
-            {/* Main Content Container - Responsive width constraints */}
+            {/* Fix #7: Toast rendered at root level so it overlays everything */}
+            {toast && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={() => setToast(null)}
+                />
+            )}
+
+            {/* Main Content Container */}
             <main className='flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8 w-full px-4 sm:px-6 lg:px-8 xl:w-11/12 2xl:w-10/12 mx-auto pb-8'>
 
                 {/* Left Column - Video and Course Info */}
@@ -174,10 +230,8 @@ export default function LearnPage() {
                         <div className='w-full bg-gray-200 h-2 rounded-xl mt-2'>
                             <div
                                 className='bg-[#665bca] h-2 rounded-s-xl transition-all duration-300'
-                                style={{
-                                    width: `${calculateProgress()}%`
-                                }}
-                            ></div>
+                                style={{ width: `${calculateProgress()}%` }}
+                            />
                         </div>
                         <p className='mt-2 text-xs sm:text-sm text-gray-600'>
                             {completedModules.length} of {modules.length} completed ({Math.round(calculateProgress())}%)
@@ -192,12 +246,12 @@ export default function LearnPage() {
 
                         <VideoPlayer
                             currentModule={currentModule}
-                            onWatchedPercentageChange={setWatchedPercentage}
                             onHasWatched90Percent={setHasWatched90Percent}
                         />
 
-                        {/* Navigation Buttons - Responsive Layout */}
+                        {/* Navigation Buttons */}
                         <div className='flex flex-col sm:flex-row justify-between gap-3 sm:gap-4 mt-4'>
+
                             {/* Previous Button */}
                             <button
                                 className='cursor-pointer py-3 px-4 sm:px-6 lg:px-8 rounded-lg border-2 border-[#e9e9e9] bg-[#e9e9e9] text-[#000] text-sm sm:text-base font-medium flex-1 disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:bg-gray-200 active:scale-95'
@@ -208,7 +262,7 @@ export default function LearnPage() {
                                 Previous Module
                             </button>
 
-                            {/* Complete/Next Button */}
+                            {/* Complete / Next Button */}
                             {isModuleCompleted() ? (
                                 !isLastModule() && (
                                     <button
@@ -222,18 +276,15 @@ export default function LearnPage() {
                             ) : (
                                 <button
                                     onClick={handleMarkComplete}
-                                    disabled={!hasWatched90Percent}
+                                    disabled={!hasWatched90Percent || btnDisabled}
                                     className='cursor-pointer py-3 px-4 sm:px-6 lg:px-8 rounded-lg bg-[#665bca] text-white text-sm sm:text-base font-medium flex-1 disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:bg-[#5449b0] active:scale-95'
                                     type='button'
                                 >
-                                    {hasWatched90Percent
-                                        ? 'Mark as Complete'
-                                        : 'Watch More to Complete'
-                                    }
+                                    {hasWatched90Percent ? 'Mark as Complete' : 'Watch More to Complete'}
                                 </button>
                             )}
 
-                            {/* Certificate Button - Full width on mobile when shown */}
+                            {/* Certificate Button — renders immediately when isCompleted becomes true */}
                             {isCompleted && (
                                 <Link href={`/certificate/${courseId}`} className='sm:flex-1'>
                                     <button
@@ -246,16 +297,6 @@ export default function LearnPage() {
                                 </Link>
                             )}
                         </div>
-
-                        {/* Video Progress Indicator - Mobile friendly */}
-                        {/* {!isModuleCompleted() && (
-                            <div className='mt-2 text-xs sm:text-sm text-gray-500 text-center'>
-                                {hasWatched90Percent
-                                    ? '✓ You can now mark this module as complete'
-                                    : `Watch ${Math.max(0, 90 - watchedPercentage)}% more to unlock completion`
-                                }
-                            </div>
-                        )} */}
                     </div>
                 </div>
 

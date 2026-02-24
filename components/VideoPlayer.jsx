@@ -8,7 +8,6 @@ import { useYouTubePlayer } from '@/hooks/useYouTubePlayer'
 
 export default function VideoPlayer({
     currentModule,
-    onWatchedPercentageChange,
     onHasWatched90Percent
 }) {
     const [showPlayer, setShowPlayer] = useState(false);
@@ -32,21 +31,12 @@ export default function VideoPlayer({
         resetPlayer
     } = useYouTubePlayer(currentModule?.video_id, showPlayer);
 
-    // Notify parent of watched percentage changes
-    useEffect(() => {
-        if (onWatchedPercentageChange) {
-            onWatchedPercentageChange(watchedPercentage);
-        }
-    }, [watchedPercentage, onWatchedPercentageChange]);
-
-    // Notify parent when 90% threshold is reached
     useEffect(() => {
         if (hasWatched90Percent && onHasWatched90Percent) {
             onHasWatched90Percent(true);
         }
     }, [hasWatched90Percent, onHasWatched90Percent]);
 
-    // Reset player when module changes
     useEffect(() => {
         setShowPlayer(false);
         resetPlayer();
@@ -68,36 +58,30 @@ export default function VideoPlayer({
                 case ' ':
                 case 'p':
                     e.preventDefault();
-                    togglePlayPause()
+                    togglePlayPause();
                     break;
 
                 case 'f':
                     e.preventDefault();
-                    toggleFullscreen()
+                    toggleFullscreen();
                     break;
 
                 case 'm':
                     e.preventDefault();
+
                     if (volume > 0) {
-                        player.setVolume(0)
-                        setVolume(0)
-                    }
-                    else {
-                        player.setVolume(100)
-                        setVolume(100)
+                        player.setVolume(0);
+                        handleVolumeChange({ target: { value: 0 } });
+                    } else {
+                        player.setVolume(100);
+                        handleVolumeChange({ target: { value: 100 } });
                     }
                     break;
-
             }
-        }
+        };
 
-        window.addEventListener('keydown', handleKeyPress)
-
-        return () => {
-            window.removeEventListener('keydown', handleKeyPress)
-
-        }
-
+        window.addEventListener('keydown', handleKeyPress);
+        return () => window.removeEventListener('keydown', handleKeyPress);
     }, [player, volume, isPlaying]);
 
     const getThumbnailUrl = () => {
@@ -112,14 +96,11 @@ export default function VideoPlayer({
 
     return (
         <div id="player-container" className="group relative w-full aspect-video bg-black overflow-hidden rounded-xl cursor-default">
-            {/* YOUTUBE PLAYER CONTAINER - Always present in DOM */}
 
             <div
-                className={`absolute inset-0 z-10 bg-black/20 usma`}
+                className="absolute inset-0 z-10 bg-black/20"
                 onClick={togglePlayPause}
             >
-
-                {/* This div captures clicks to toggle play/pause */}
                 {isPlaying ? null : (
                     <div className="absolute inset-0 flex items-center justify-center">
                         <button
@@ -130,22 +111,21 @@ export default function VideoPlayer({
                         </button>
                     </div>
                 )}
-
             </div>
+
             <div
                 id="youtube-player"
                 className="w-full h-full"
-                style={{
-                    display: showPlayer ? 'block' : 'none',
-                    pointerEvents: showPlayer ? 'auto' : 'auto'
-                }}
-            ></div>
+                style={{ display: showPlayer ? 'block' : 'none' }}
+            />
+
             {playerLoading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-black z-10">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white" />
                 </div>
             )}
-            {/* THUMBNAIL OVERLAY - Shows when player is not initialized */}
+
+            {/* Thumbnail Overlay */}
             <div
                 className="absolute inset-0 z-30 transition-opacity duration-300"
                 style={{
@@ -162,7 +142,6 @@ export default function VideoPlayer({
                             className="object-cover"
                             priority
                         />
-                        {/* Play button overlay */}
                         <div className="absolute inset-0 flex items-center justify-center bg-black/45">
                             <button
                                 onClick={togglePlayPause}
@@ -175,7 +154,7 @@ export default function VideoPlayer({
                 )}
             </div>
 
-            {/* OVERLAY (Shows on hover when player is active) */}
+            {/* Controls Overlay */}
             <div
                 className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent transition-opacity duration-300 flex flex-col justify-end p-4 z-20"
                 style={{
@@ -185,7 +164,7 @@ export default function VideoPlayer({
                 onMouseEnter={(e) => showPlayer && (e.currentTarget.style.opacity = '1')}
                 onMouseLeave={(e) => showPlayer && (e.currentTarget.style.opacity = '0')}
             >
-                {/* SEEK BAR */}
+                {/* Seek Bar */}
                 <div className="relative flex items-center w-full mb-3 pointer-events-auto">
                     <input
                         type="range"
@@ -197,17 +176,16 @@ export default function VideoPlayer({
                     />
                 </div>
 
-                {/* CONTROLS ROW */}
+                {/* Controls Row */}
                 <div className="flex items-center justify-between w-full pointer-events-auto">
-                    {/* Left Section */}
                     <div className="flex items-center space-x-5">
                         <button
                             onClick={togglePlayPause}
-                            className="text-white hover:text-gray-300 transition-colors cursor-pointer outline-none">
+                            className="text-white hover:text-gray-300 transition-colors cursor-pointer outline-none"
+                        >
                             {isPlaying ? <Pause size={28} fill="currentColor" /> : <PlayIcon size={28} fill="currentColor" />}
                         </button>
 
-                        {/* Volume Group */}
                         <div className="group/volume flex items-center space-x-2">
                             <button className="text-white hover:text-gray-300 cursor-pointer">
                                 <VolumeIcon size={22} />
@@ -229,24 +207,22 @@ export default function VideoPlayer({
                         </span>
                     </div>
 
-                    {/* Right Section */}
                     <div className="flex items-center space-x-5">
-                        <div className="relative">
-                            <select
-                                value={playbackRate}
-                                onChange={handleSpeedChange}
-                                className="bg-transparent text-white text-sm font-bold border-none focus:ring-0 cursor-pointer hover:text-gray-300 appearance-none text-center"
-                            >
-                                <option value="0.5" className="text-black">0.5x</option>
-                                <option value="1" className="text-black">1x</option>
-                                <option value="1.5" className="text-black">1.5x</option>
-                                <option value="2" className="text-black">2x</option>
-                            </select>
-                        </div>
+                        <select
+                            value={playbackRate}
+                            onChange={handleSpeedChange}
+                            className="bg-transparent text-white text-sm font-bold border-none focus:ring-0 cursor-pointer hover:text-gray-300 appearance-none text-center"
+                        >
+                            <option value="0.5" className="text-black">0.5x</option>
+                            <option value="1" className="text-black">1x</option>
+                            <option value="1.5" className="text-black">1.5x</option>
+                            <option value="2" className="text-black">2x</option>
+                        </select>
 
                         <button
                             onClick={toggleFullscreen}
-                            className="text-white hover:text-gray-300 transition-colors cursor-pointer">
+                            className="text-white hover:text-gray-300 transition-colors cursor-pointer"
+                        >
                             <FullscreenIcon size={22} />
                         </button>
                     </div>

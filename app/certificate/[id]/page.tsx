@@ -8,6 +8,8 @@ import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react';
 import CertificateTemplate from "@/page_components/Certificatetemplate"
 import { generateCertificatePDF } from "@/lib/Certificatepdfgenerator"
+import LoadingComponent from '@/page_components/loady'
+
 
 export default function Page() {
 
@@ -146,9 +148,7 @@ export default function Page() {
                     </Link>
 
                     {loading ? (
-                        <div className="flex justify-center items-center h-96">
-                            <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-[#665bca]"></div>
-                        </div>
+                        <LoadingComponent />
                     ) : error ? (
                         <div className="rounded-lg shadow-lg p-8 text-center bg-white">
                             <div className="text-6xl mb-4">⚠️</div>

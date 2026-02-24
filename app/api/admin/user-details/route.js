@@ -1,3 +1,4 @@
+// api/admin/user-details
 import { supabaseAdmin as supabase } from '@/lib/supabase-admin';
 
 export async function POST(request) {

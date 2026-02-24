@@ -1,3 +1,4 @@
+//api/admin/get-user-certificate
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
 import { currentUser } from '@clerk/nextjs/server';

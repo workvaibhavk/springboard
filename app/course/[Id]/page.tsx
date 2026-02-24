@@ -9,6 +9,8 @@ import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react';
 import { Course, Module } from '@/types';
 import CAuthenticate from "@/page_components/cauth";
+import LoadingComponent from '@/page_components/loady'
+
 
 // import { Course, EnrollmentData, CourseEnrollment, Module } from '@/types';
 
@@ -188,9 +190,7 @@ export default function CoursePreviewPage() {
             <div className="w-11/12 mx-auto">
 
                 {loading ? (
-                    <div className="flex justify-center items-center h-64">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#665bca]"></div>
-                    </div>
+                    <LoadingComponent />
                 ) : course ? (
 
                     <div>

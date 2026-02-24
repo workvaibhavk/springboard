@@ -83,3 +83,22 @@ export interface CertificateError {
     message?: string;
     code?: string;
 }
+
+export interface ModuleCompletion {
+    id: string
+    module_id: string
+    completed: boolean
+    completed_at: string | null
+    created_at: string
+    modules?: {
+        id: string
+        title: string
+        order_index: number
+    }
+}
+
+export interface ModuleProgress {
+    moduleCompletions: ModuleCompletion[]
+    totalModules: number
+    completedCount: number
+}

@@ -40,6 +40,9 @@ export default function VideoPlayer({
     useEffect(() => {
         setShowPlayer(false);
         resetPlayer();
+        if (onHasWatched90Percent) {
+            onHasWatched90Percent(false);
+        }
     }, [currentModule?.id]);
 
     const togglePlayPause = () => {

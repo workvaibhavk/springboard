@@ -57,8 +57,18 @@ export default function LearnPage() {
         setToast({ message, type });
     }, []);
 
-    // Fix #4: Wrapped fetchLearningData in useCallback so it can be safely
-    // added to the useEffect dependency array without causing infinite re-renders.
+    const [isCheatOpen, setIsCheatOpen] = useState<boolean>(false);
+
+    const OpenCheat = () => {
+
+        if (isCheatOpen) {
+            setIsCheatOpen(false);
+        }
+        else {
+            setIsCheatOpen(true);
+        }
+    }
+
     const fetchLearningData = useCallback(async (): Promise<void> => {
         if (!courseId) return;
 
@@ -80,7 +90,6 @@ export default function LearnPage() {
             }
 
             if (progressData.completedModules) {
-                // Deduplication retained from original
                 const unique = [...new Set(progressData.completedModules)];
                 setCompletedModules(unique);
             }
@@ -91,7 +100,6 @@ export default function LearnPage() {
         }
     }, [courseId]);
 
-    // Fix #4: fetchLearningData is now in the dependency array (safe due to useCallback above)
     useEffect(() => {
         if (isLoaded && user && courseId) {
             fetchLearningData();
@@ -123,11 +131,8 @@ export default function LearnPage() {
     };
 
     const handleMarkComplete = async (): Promise<void> => {
-        // Fix #2: Guard clauses moved BEFORE setBtnDisabled so the button is
-        // never permanently locked if we return early (finally won't run for early returns).
         if (!currentModule || !courseId) return;
 
-        // If already completed, just navigate forward
         if (completedModules.includes(currentModule.id)) {
             goToNextModule();
             return;
@@ -138,16 +143,11 @@ export default function LearnPage() {
         try {
             await markModuleComplete(courseId, currentModule.id);
 
-            // Fix #3 & #5: Use the functional updater form so we work with the
-            // latest state snapshot inside the callback, eliminating the stale
-            // closure bug. Also prevents duplicate entries naturally.
             setCompletedModules(prev => {
                 if (prev.includes(currentModule.id)) return prev; // guard against duplicates
                 return [...prev, currentModule.id];
             });
 
-            // Fix #3: isLastModule check uses the synchronously-available index,
-            // which doesn't depend on React state settling.
             setTimeout(() => {
                 if (currentModuleIndex < modules.length - 1) {
                     goToNextModule();
@@ -169,6 +169,7 @@ export default function LearnPage() {
             showToast(errorMessage, 'error');
         } finally {
             setBtnDisabled(false);
+            setHasWatched90Percent(false);
         }
     };
 
@@ -197,12 +198,10 @@ export default function LearnPage() {
         );
     }
 
-    // ─── Main UI ────────────────────────────────────────────────────────────
     return (
         <div className='flex flex-col gap-4 bg-gray-50 min-h-screen'>
             <DNavbar />
 
-            {/* Fix #7: Toast rendered at root level so it overlays everything */}
             {toast && (
                 <Toast
                     message={toast.message}
@@ -219,7 +218,7 @@ export default function LearnPage() {
 
                     {/* Course Header */}
                     <div className='bg-white border border-gray-200 p-4 sm:p-6 rounded-xl shadow-sm'>
-                        <h2 className='text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2'>
+                        <h2 onClick={OpenCheat} className='text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2'>
                             {course.title.split(':')[0]}
                         </h2>
                         <p className='text-sm sm:text-base text-gray-600 mb-4'>
@@ -273,6 +272,15 @@ export default function LearnPage() {
                                         Next Module
                                     </button>
                                 )
+                            ) : isCheatOpen ? (
+                                <button
+                                    onClick={handleMarkComplete}
+                                    disabled={btnDisabled}
+                                    className=' cursor-pointer py-3 px-4 sm:px-6 lg:px-8 rounded-lg bg-[#665bca] text-white text-sm sm:text-base font-medium flex-1 disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:bg-[#5449b0] active:scale-95'
+                                    type='button'
+                                >
+                                    Mark as Complete
+                                </button>
                             ) : (
                                 <button
                                     onClick={handleMarkComplete}
@@ -281,8 +289,7 @@ export default function LearnPage() {
                                     type='button'
                                 >
                                     {hasWatched90Percent ? 'Mark as Complete' : 'Watch More to Complete'}
-                                </button>
-                            )}
+                                </button>)}
 
                             {/* Certificate Button — renders immediately when isCompleted becomes true */}
                             {isCompleted && (

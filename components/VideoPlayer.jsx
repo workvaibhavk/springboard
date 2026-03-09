@@ -40,6 +40,9 @@ export default function VideoPlayer({
     useEffect(() => {
         setShowPlayer(false);
         resetPlayer();
+        if (onHasWatched90Percent) {
+            onHasWatched90Percent(false);
+        }
     }, [currentModule?.id]);
 
     const togglePlayPause = () => {
@@ -105,7 +108,7 @@ export default function VideoPlayer({
                     <div className="absolute inset-0 flex items-center justify-center">
                         <button
                             onClick={togglePlayPause}
-                            className="w-20 h-20 flex items-center justify-center bg-gray-600 hover:bg-gray-700 rounded-full transition-all transform hover:scale-110"
+                            className="x w-20 h-20 flex items-center justify-center bg-gray-600 hover:bg-gray-700 rounded-full transition-all transform hover:scale-110"
                         >
                             <PlayIcon size={40} fill="white" className="text-white ml-1" />
                         </button>

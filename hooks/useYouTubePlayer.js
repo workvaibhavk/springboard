@@ -147,10 +147,6 @@ export function useYouTubePlayer(videoId, shouldInitialize = false) {
             setIsPlaying(false);
             stopTimeTracking();
         }
-
-        if (event.data === 0) {
-            setHasWatched90Percent(true);
-        }
     };
 
     const startTimeTracking = (playerInstance) => {
@@ -218,7 +214,7 @@ export function useYouTubePlayer(videoId, shouldInitialize = false) {
             player.seekTo(newTime, true);
         } else {
             console.log('⏭️ Please watch the video. Fast-forwarding is disabled.');
-             player.seekTo(newTime, true);
+            // player.seekTo(newTime, true);
         }
     }, [player]);
 
@@ -300,3 +296,5 @@ export function useYouTubePlayer(videoId, shouldInitialize = false) {
         playerLoading
     };
 }
+
+// y

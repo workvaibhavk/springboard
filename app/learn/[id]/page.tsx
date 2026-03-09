@@ -165,7 +165,7 @@ export default function LearnPage() {
         } catch (error) {
             console.error('Error marking complete:', error);
             const errorMessage = error instanceof Error ? error.message : 'Failed to mark as complete';
-            // Fix #7: Toast instead of alert()
+            // Fix #7: Toast instead of alert().
             showToast(errorMessage, 'error');
         } finally {
             setBtnDisabled(false);

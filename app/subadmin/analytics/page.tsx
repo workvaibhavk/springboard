@@ -1,25 +1,15 @@
 "use client"
 
-// import { UserData } from "@/types/usersdata"
 import { useUser } from "@clerk/nextjs"
-// import Image from "next/image"
 import { useEffect, useState } from "react"
-// import { Certificate, Course, CourseEnrollment } from "@/types"
-// import CertificateTemplate from "@/page_components/Certificatetemplate"
-// import { generateCertificatePDF } from "@/lib/Certificatepdfgenerator"
-// import { DownloadIcon } from "lucide-react"
-// import AdminNav from "@/page_components/adminNav"
+import Image from "next/image";
+import AdminNav from "@/page_components/adminNav"
+import { CourseAnal } from "@/types/index"
 
 export default function Page() {
 
     const { isLoaded } = useUser()
-
-    // const [users, setUsers] = useState<UserData[]>([])
-    // const [selectedUser, setSelectedUser] = useState('')
-    const [data, setData] = useState(null);
-    // const [showModal, setShowModal] = useState(false)
-    // const [certificateData, setCertificateData] = useState<{ certificate: Certificate, course: Course } | null>(null)
-    // const [isGeneratingPDF, setIsGeneratingPDF] = useState(false)
+    const [data, setData] = useState<CourseAnal[]>([]);
 
     useEffect(() => {
         if (isLoaded) {
@@ -37,6 +27,7 @@ export default function Page() {
             })
             const data = await response.json()
             console.log(data.Analytics)
+            // console.log(data.users)
             setData(data.Analytics)
         } catch (error) {
             console.error('Error fetching users data:', error)
@@ -44,17 +35,67 @@ export default function Page() {
     }
 
     return (
-        <div>
-            {/* <div>{data.Analytics.completed_count}</div> */}
-            {/* <div>{data.Analytics.ongoing_count}</div> */}
-            {/* <div>{data.Analytics.total}</div> */}
+        <div className="w-11/12 mx-auto py-4">
+            <AdminNav />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 my-10 gap-6">
+                {data?.map((course, index) => {
+                    return (
+                        <div key={index} className="card shadow-md rounded-xl">
 
-            {data?.map((course) => {
-                console.log(course.course_id)
-                console.log(course.completed_count)
-                console.log(course.ongoing_count)
-                console.log("))))))))))))")
-            })}
+                            <div className="aspect-ratio-16-9">
+                                <Image
+                                    src={course.course_thumbnail_url}
+                                    alt={course.course_title}
+                                    layout="fill"
+                                    objectFit="cover"
+                                    className='rounded-t-xl'
+                                />
+                            </div>
+
+                            <div className="py-4 px-3 rounded-2xl w-full max-w-sm">
+
+                                {/* Title */}
+                                <h1 className="text-lg font-bold text-gray-800">
+                                    {course.course_title.split(":")[0]}
+                                </h1>
+
+                                {/* Subtitle */}
+                                <p className="text-sm text-gray-500 mb-4">
+                                    {course.course_title.split(":")[1]}
+                                </p>
+
+                                {/* Stats */}
+                                <div className="flex flex-col gap-2 text-sm text-gray-700">
+
+                                    <div className="flex justify-between">
+                                        <span className="font-semibold">Completed</span>
+                                        <span className="text-green-600 font-medium">
+                                            {course.completed_count}
+                                        </span>
+                                    </div>
+
+                                    <div className="flex justify-between">
+                                        <span className="font-semibold">Ongoing</span>
+                                        <span className="text-yellow-500 font-medium">
+                                            {course.ongoing_count}
+                                        </span>
+                                    </div>
+
+                                    <div className="flex justify-between border-t pt-2 mt-2">
+                                        <span className="font-semibold">Total</span>
+                                        <span className="text-blue-600 font-semibold">
+                                            {course.total}
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    )
+                })}
+            </div>
+
         </div>
     )
 }

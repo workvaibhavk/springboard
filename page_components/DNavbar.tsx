@@ -2,25 +2,15 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState, MouseEvent } from 'react';
+import { useState } from 'react';
 import { InfoIcon, Menu, Search, X } from 'lucide-react';
 import { SignInButton, UserButton, useUser } from '@clerk/nextjs';
 import AdditionalInfoPage from "./addInfo";
-
-interface NavLinkProps {
-    href: string;
-    children: React.ReactNode;
-}
-
-interface MobileNavLinkProps {
-    href: string;
-    children: React.ReactNode;
-    onClick: () => void;
-}
+import { NavLinkProps, MobileNavLinkProps } from "@/types/index"
 
 const DNavbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
-    const { isSignedIn, user } = useUser();
+    const { isSignedIn } = useUser();
 
     // Add a function to handle menu closure for click outside or link navigation
     const closeMenu = (): void => setIsMenuOpen(false);

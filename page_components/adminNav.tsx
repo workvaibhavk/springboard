@@ -2,25 +2,15 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState, MouseEvent } from 'react';
+import { useState } from 'react';
 import { InfoIcon, Menu, Search, X } from 'lucide-react';
 import { SignInButton, UserButton, useUser } from '@clerk/nextjs';
 import AdditionalInfoPage from "./addInfo";
-
-interface NavLinkProps {
-    href: string;
-    children: React.ReactNode;
-}
-
-interface MobileNavLinkProps {
-    href: string;
-    children: React.ReactNode;
-    onClick: () => void;
-}
+import { NavLinkProps, MobileNavLinkProps } from "@/types/index"
 
 const AdminNav = () => {
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
-    const { isSignedIn, user } = useUser();
+    const { isSignedIn } = useUser();
 
     // Add a function to handle menu closure for click outside or link navigation
     const closeMenu = (): void => setIsMenuOpen(false);
@@ -140,11 +130,14 @@ const AdminNav = () => {
                         <MobileNavLink href="/dashboard" onClick={closeMenu}>
                             Home
                         </MobileNavLink>
-                        <MobileNavLink href="/courses" onClick={closeMenu}>
-                            Courses
+                        <MobileNavLink href="/subadmin/sheet" onClick={closeMenu}>
+                            Datasheet
                         </MobileNavLink>
-                        <MobileNavLink href="/user" onClick={closeMenu}>
-                            My Learning
+                        <MobileNavLink href="/subadmin/users" onClick={closeMenu}>
+                            Users
+                        </MobileNavLink>
+                        <MobileNavLink href="/subadmin/analytics" onClick={closeMenu}>
+                            Analytics
                         </MobileNavLink>
 
                         {/* Mobile Sign In Button */}

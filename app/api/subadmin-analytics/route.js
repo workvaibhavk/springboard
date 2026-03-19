@@ -147,15 +147,133 @@
 //             { status: 500 }
 //         );
 //     }
+// // }
+// import { clerkClient } from '@clerk/nextjs/server';
+
+// const client = await clerkClient();
+// const { data: clerkUsers } = await client.users.getUserList({ limit: 500 });
+
+// const users = clerkUsers.map(user => ({
+//     id: user.id,
+//     name: user.firstName && user.lastName
+//         ? `${user.firstName} ${user.lastName}`
+//         : user.emailAddresses[0]?.emailAddress || "Student",
+//     enrNumber: user.publicMetadata?.enrNumber ?? null,
+// }));
+
+
+
+
+
+
+
+// import { supabaseAdmin as supabase } from '@/lib/supabase-admin';
+
+// export async function POST() {
+//     try {
+//         // Join enrollments with courses table
+//         const { data, error } = await supabase
+//             .from('enrollments')
+//             .select(`
+//                 *,
+//                 courses (
+//                     id,
+//                     title,
+//                     thumbnail_url
+//                 )
+//             `);
+
+//         if (error) throw error;
+
+//         // Group by course_id
+//         const grouped = data.reduce((acc, enrollment) => {
+//             const { course_id, completed, courses } = enrollment;
+
+//             if (!acc[course_id]) {
+//                 acc[course_id] = {
+//                     course_id,
+//                     course_title: courses?.title,
+//                     course_thumbnail_url: courses?.thumbnail_url,
+//                     completed: [],
+//                     ongoing: [],
+//                 };
+//             }
+
+//             // Attach user info to each enrollment
+//             const enrichedEnrollment = {
+//                 ...enrollment,
+//                 user: usersMap[enrollment.user_id] || null,
+//             };
+
+//             if (completed) {
+//                 acc[course_id].completed.push(enrichedEnrollment);
+//             } else {
+//                 acc[course_id].ongoing.push(enrichedEnrollment);
+//             }
+
+//             return acc;
+//         }, {});
+
+//         // Convert to array and add counts
+//         const Analytics = Object.values(grouped).map(course => ({
+//             ...course,
+//             completed_count: course.completed.length,
+//             ongoing_count: course.ongoing.length,
+//             total: course.completed.length + course.ongoing.length,
+//         }));
+
+//         return Response.json({
+//             success: true,
+//             Analytics,
+//             users
+//         });
+
+//     } catch (error) {
+//         console.error('Analytics fetch error:', error);
+//         return Response.json(
+//             { success: false, error: error.message },
+//             { status: 500 }
+//         );
+//     }
 // }
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { clerkClient } from '@clerk/nextjs/server';
 import { supabaseAdmin as supabase } from '@/lib/supabase-admin';
 
 export async function POST() {
     try {
-        // Join enrollments with courses table
+        const client = await clerkClient();
+        const { data: clerkUsers } = await client.users.getUserList({ limit: 500 });
+
+        const usersMap = Object.fromEntries(
+            clerkUsers.map(user => [
+                user.id,
+                {
+                    name: user.firstName && user.lastName
+                        ? `${user.firstName} ${user.lastName}`
+                        : user.emailAddresses[0]?.emailAddress || "Student",
+                    enrNumber: user.publicMetadata?.enrNumber ?? null,
+                }
+            ])
+        );
+
         const { data, error } = await supabase
             .from('enrollments')
             .select(`
@@ -169,52 +287,38 @@ export async function POST() {
 
         if (error) throw error;
 
-        // Fetch user details for all unique user_ids
-        const userIds = [...new Set(data.map(e => e.user_id))];
-
-        const { data: usersData, error: usersError } = await supabase.auth.admin.listUsers();
-        if (usersError) throw usersError;
-
-        // Map users by id for quick lookup
-        const usersMap = usersData.users.reduce((acc, user) => {
-            acc[user.id] = {
-                first_name: user.user_metadata?.first_name,
-                last_name: user.user_metadata?.last_name,
-                enrNumber: user.user_metadata?.enrNumber,
-            };
-            return acc;
-        }, {});
-
-        // Group by course_id
         const grouped = data.reduce((acc, enrollment) => {
-            const { course_id, completed, courses } = enrollment;
+            const { course_id, completed, courses, user_id, enrolled_at, completed_at } = enrollment;
 
             if (!acc[course_id]) {
                 acc[course_id] = {
                     course_id,
                     course_title: courses?.title,
-                    course_img: courses?.img,
+                    course_thumbnail_url: courses?.thumbnail_url,
                     completed: [],
                     ongoing: [],
                 };
             }
 
-            // Attach user info to each enrollment
-            const enrichedEnrollment = {
-                ...enrollment,
-                user: usersMap[enrollment.user_id] || null,
-            };
-
             if (completed) {
-                acc[course_id].completed.push(enrichedEnrollment);
+                acc[course_id].completed.push({
+                    id: enrollment.id,
+                    user_id,
+                    enrolled_at,
+                    completed_at,
+                });
             } else {
-                acc[course_id].ongoing.push(enrichedEnrollment);
+                const user = usersMap[user_id];
+                acc[course_id].ongoing.push({
+                    name: user?.name || "Student",
+                    enrNumber: user?.enrNumber || null,
+                    enrolled_at,
+                });
             }
 
             return acc;
         }, {});
 
-        // Convert to array and add counts
         const Analytics = Object.values(grouped).map(course => ({
             ...course,
             completed_count: course.completed.length,
@@ -222,16 +326,10 @@ export async function POST() {
             total: course.completed.length + course.ongoing.length,
         }));
 
-        return Response.json({
-            success: true,
-            Analytics
-        });
+        return Response.json({ success: true, Analytics });
 
     } catch (error) {
         console.error('Analytics fetch error:', error);
-        return Response.json(
-            { success: false, error: error.message },
-            { status: 500 }
-        );
+        return Response.json({ success: false, error: error.message }, { status: 500 });
     }
 }

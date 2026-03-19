@@ -8,7 +8,7 @@ import { SignInButton, UserButton, useUser } from '@clerk/nextjs';
 import AdditionalInfoPage from "./addInfo";
 import { NavLinkProps, MobileNavLinkProps } from "@/types/index"
 
-const DNavbar = () => {
+const AdminNav = () => {
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
     const { isSignedIn } = useUser();
 
@@ -54,23 +54,13 @@ const DNavbar = () => {
                     {/* 2. Desktop Navigation Links */}
                     <div className='hidden md:flex font-semibold text-base space-x-8 lg:space-x-12'>
                         <NavLink href="/dashboard">Home</NavLink>
-                        <NavLink href="/courses">Courses</NavLink>
-                        <NavLink href="/user">My Learning</NavLink>
+                        <NavLink href="/subadmin/sheet">Datasheet</NavLink>
+                        <NavLink href="/subadmin/users">Users</NavLink>
+                        <NavLink href="/subadmin/analytics">Analytics</NavLink>
                     </div>
 
                     {/* 3. Search and User Actions */}
                     <div className='flex items-center space-x-4'>
-                        {/* Search Bar (Combined for better structure) */}
-                        <div className='hidden lg:flex items-center border border-gray-300 rounded-full px-4 py-2 bg-gray-50 transition-all focus-within:border-indigo-500'>
-                            <input
-                                type="search"
-                                name="Mysearch"
-                                id="search"
-                                placeholder="Search courses..."
-                                className="focus:outline-none bg-gray-50 w-40 text-sm"
-                            />
-                            <Search className="h-5 w-5 text-gray-500 ml-2 cursor-pointer" />
-                        </div>
 
                         {/* Sign In/User Button */}
                         <div className='hidden md:block'>
@@ -140,11 +130,14 @@ const DNavbar = () => {
                         <MobileNavLink href="/dashboard" onClick={closeMenu}>
                             Home
                         </MobileNavLink>
-                        <MobileNavLink href="/courses" onClick={closeMenu}>
-                            Courses
+                        <MobileNavLink href="/subadmin/sheet" onClick={closeMenu}>
+                            Datasheet
                         </MobileNavLink>
-                        <MobileNavLink href="/user" onClick={closeMenu}>
-                            My Learning
+                        <MobileNavLink href="/subadmin/users" onClick={closeMenu}>
+                            Users
+                        </MobileNavLink>
+                        <MobileNavLink href="/subadmin/analytics" onClick={closeMenu}>
+                            Analytics
                         </MobileNavLink>
 
                         {/* Mobile Sign In Button */}
@@ -190,4 +183,4 @@ const MobileNavLink = ({ href, children, onClick }: MobileNavLinkProps) => (
     </Link>
 );
 
-export default DNavbar;
+export default AdminNav;

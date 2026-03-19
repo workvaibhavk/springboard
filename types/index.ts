@@ -102,3 +102,22 @@ export interface ModuleProgress {
     totalModules: number
     completedCount: number
 }
+
+export interface CourseAnal {
+    course_title: string
+    course_thumbnail_url: string
+    completed_count: number
+    ongoing_count: number
+    total: number
+}
+
+export interface NavLinkProps {
+    href: string;
+    children: React.ReactNode;
+}
+
+export interface MobileNavLinkProps {
+    href: string;
+    children: React.ReactNode;
+    onClick: () => void;
+}

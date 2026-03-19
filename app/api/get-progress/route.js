@@ -9,10 +9,8 @@ export async function GET(request) {
             return Response.json({ completedModules: [] })
         }
 
-
         const { searchParams } = new URL(request.url);
         const courseId = searchParams.get('courseId')
-
 
         if (!courseId) {
             return Response.json(

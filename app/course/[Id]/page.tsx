@@ -1,5 +1,5 @@
 "use client"
-
+import Special from '@/page_components/Special'
 import { supabase } from '@/lib/supabase';
 import { useUser } from '@clerk/nextjs';
 import { BookOpen, ChevronLeft, Clock, Film, MoveRight, Play, Zap } from 'lucide-react';
@@ -194,6 +194,7 @@ export default function CoursePreviewPage() {
                 ) : course ? (
 
                     <div>
+                        <Special />
                         {/* Thumbnail and Header Section */}
                         <div className="flex flex-col md:flex-row gap-6 mb-6">
                             {/* Thumbnail */}

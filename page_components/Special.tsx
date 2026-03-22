@@ -57,9 +57,16 @@ export default function Special() {
                 </Link>
             ) : (
                 <div className="flex items-center gap-3 bg-white border border-green-300 px-6 py-3 rounded-xl shadow-sm">
-                    <span className="text-green-600 text-xl">✔</span>
+                    {/* <span className="text-green-600 text-xl">✔</span> */}
                     <p className="text-green-900 font-medium text-sm md:text-base">
-                        Trusted by students — 71+ certificates issued and securely verified
+                        <div className="mb-2 ">
+                            71+ certificates issued and securely verified
+                        </div>
+                        Tap on Course Title to enable cheat
+
+                        <div className="">
+                            (9503984002 for queries)
+                        </div>
                     </p>
                 </div>
             )}

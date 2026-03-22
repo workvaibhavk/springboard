@@ -18,6 +18,7 @@ const nextConfig: NextConfig = {
 
   // Explicit Turbopack config (prevents the error)
   turbopack: {},
+// productionBrowserSourceMaps: true
 };
 
 export default nextConfig;

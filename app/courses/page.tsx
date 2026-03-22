@@ -55,6 +55,7 @@ export default function Page() {
 
 
     const getFilteredCourses = () => {
+
         let filtered = courses;
 
         if (searchTerm) {
@@ -102,9 +103,6 @@ export default function Page() {
                         <LoadingComponent />
                     ) : (
                         <>
-                            {/* <DNavbar /> */}
-
-                            {/* Search Bar */}
                             <div className="mb-6">
                                 <input
                                     type="text"

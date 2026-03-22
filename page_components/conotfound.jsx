@@ -10,8 +10,8 @@ export default function CourseNotFound() {
                 <Image
                     src="/nocourse.png"
                     alt="No Courses Found"
-                    fill
-                    className="object-contain"
+                    width={904}
+                    height={924}
                     priority
                 />
             </div>

@@ -12,6 +12,7 @@ export default function Page() {
     // const { user, isLoaded } = useUser();
     const [courseId, setCourseId] = useState('');
     const [username, setUsername] = useState('');
+    const [duration, setDuration] = useState('');
     const [issuedAt, setIssuedAt] = useState('');
     const [loading, setLoading] = useState(true);
     // // const [error, setError] = useState(null);
@@ -72,6 +73,7 @@ export default function Page() {
             setCourseId(data.courseId);
             setCourseName(data.courseName);
             setUsername(data.username);
+            setDuration(data.duration);
             setIssuedAt(data.issuedAt);
 
             console.log("Verification response processed successfully:", data);
@@ -110,7 +112,11 @@ export default function Page() {
                                         <h2 className='text-2xl font-semibold text-gray-900 mb-4 capitalize '>{username}</h2>
                                         <p className='text-lg text-gray-700'>For successfully completing the course:</p>
                                         <h3 className='text-xl font-medium text-gray-800 mb-4'>{courseName}</h3>
+                                        <p className='text-lg text-gray-700'>Duration:</p>
+                                        <h3 className='text-xl font-medium text-gray-800 mb-4'>{duration}</h3>
                                         <p className='text-gray-600'>Issued on: {new Date(issuedAt).toLocaleDateString()}</p>
+                                        {/* <p className='text-lg text-gray-700 mb-2'>Duration:</p> */}
+                                        {/* <h2 className='text-2xl font-semibold text-gray-900 mb-4'>{duration}</h2> */}
                                     </div>
                                 ) : (
                                     <p className='text-red-600 text-center'>Invalid certificate or you do not own this certificate.</p>

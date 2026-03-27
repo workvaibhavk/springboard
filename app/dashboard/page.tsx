@@ -51,6 +51,7 @@ export default function Page() {
                 return;
             }
             const data: EnrollmentData = await response.json();
+            console.clear();
             console.log('Enrolled Courses:', data);
             setEnrolledCourses(data.userInprogressCourses || []);
             // setCompletedCourses(data.userCompletedCourses);
@@ -167,8 +168,7 @@ export default function Page() {
                                                     <Image
                                                         src={course.thumbnail_url}
                                                         alt={course.title}
-                                                        layout="fill"
-                                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                                        fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                                         objectFit="cover"
                                                         className='rounded-t-xl'
                                                     />
@@ -235,7 +235,7 @@ export default function Page() {
                                                 <Image
                                                     src={course.thumbnail_url}
                                                     alt={course.title}
-                                                    layout="fill"
+                                                    fill
                                                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                                     objectFit="cover"
                                                     className='rounded-t-xl'

@@ -1,37 +1,3 @@
-// import { useUser } from "@clerk/nextjs";
-// import Link from "next/link";
-
-// export default function Special() {
-//     const { user, isLoaded } = useUser();
-
-//     if (!isLoaded) return null;
-
-//     return (
-//         <div className="flex justify-center items-center bg-green-500 py-3">
-
-
-
-
-//             {user?.publicMetadata?.role !== "subadmin" || "admin" ? (
-//                 <div className="">
-//                     <Link href="/subadmin/users"
-//                         className="font-semibold text-xl">
-//                         71 Certificates Generated in last 2 months and counting <button className="">hii</button>
-//                     </Link>
-//                 {/* </div> */}
-//             ) : (
-//                 <div className="hidden">
-//                     <Link href="/subadmin/users"
-//                         className="font-semibold text-xl">
-//                         Welcome, Enter your admin page <button className="">hii</button>
-//                     </Link>
-//                 </div>
-//             )}
-
-//         </div>
-//     )
-// }
-
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
 

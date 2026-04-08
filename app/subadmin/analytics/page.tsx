@@ -27,7 +27,6 @@ export default function Page() {
             })
             const data = await response.json()
             console.log(data.Analytics)
-            // console.log(data.users)
             setData(data.Analytics)
         } catch (error) {
             console.error('Error fetching users data:', error)
@@ -41,7 +40,6 @@ export default function Page() {
                 {data?.map((course, index) => {
                     return (
                         <div key={index} className="card shadow-md rounded-xl">
-
                             <div className="aspect-ratio-16-9">
                                 <Image
                                     src={course.course_thumbnail_url}
@@ -54,17 +52,14 @@ export default function Page() {
 
                             <div className="py-4 px-3 rounded-2xl w-full max-w-sm">
 
-                                {/* Title */}
                                 <h1 className="text-lg font-bold text-gray-800">
                                     {course.course_title.split(":")[0]}
                                 </h1>
 
-                                {/* Subtitle */}
                                 <p className="text-sm text-gray-500 mb-4">
                                     {course.course_title.split(":")[1]}
                                 </p>
 
-                                {/* Stats */}
                                 <div className="flex flex-col gap-2 text-sm text-gray-700">
 
                                     <div className="flex justify-between">
@@ -87,15 +82,12 @@ export default function Page() {
                                             {course.total}
                                         </span>
                                     </div>
-
                                 </div>
                             </div>
-
                         </div>
                     )
                 })}
             </div>
-
         </div>
     )
 }

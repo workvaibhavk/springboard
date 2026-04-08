@@ -72,7 +72,6 @@ const Navbar = () => {
                 </button>
 
             </nav>
-            {/* Mobile Menu */}
             {isMenuOpen && (
                 <div className='fixed top-[80px] left-0 right-0 bg-white z-40 md:hidden shadow-lg transition-transform duration-300'>
                     <div className='flex flex-col p-6 gap-4'>
@@ -91,9 +90,7 @@ const Navbar = () => {
                     </div>
                 </div>
             )}
-
         </div>
-
     )
 }
 

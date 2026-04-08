@@ -11,14 +11,11 @@ const AdditionalInfoPage = () => {
     }
 
     return (
-        <div>
-            {/* Additional Info Page */}
-
+        <>
             <h2 className="text-lg font-bold mb-4">Additional Information</h2>
             <hr className="border-t border-gray-200 mb-4" />
 
-            <div className="space-y-4 ">
-
+            <div className="space-y-4">
                 <div className="space-y-3">
                     <div className="flex flex-col">
                         <span className="text-sm text-gray-500 mb-1">Phone Number</span>
@@ -34,7 +31,7 @@ const AdditionalInfoPage = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     )
 }
 

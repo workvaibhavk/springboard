@@ -11,23 +11,14 @@ import { NavLinkProps, MobileNavLinkProps } from "@/types/index"
 const AdminNav = () => {
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
     const { isSignedIn } = useUser();
-
-    // Add a function to handle menu closure for click outside or link navigation
     const closeMenu = (): void => setIsMenuOpen(false);
-
     const toggleMenu = (): void => setIsMenuOpen(!isMenuOpen);
 
     return (
-        // The outer div should be the container for the entire fixed navbar space
         <div className='w-full'>
-            {/* Main Navigation Container: Fixed, full-width, and elevated (z-50) */}
-            {/* <nav className='fixed top-0 left-0 right-0 z-50 bg-white shadow-md'> */}
             <nav className='bg-white'>
-                {/* Inner Content Container: Centered and constrained width */}
                 <div className='flex items-center justify-between w-full max-w-7xl mx-auto py-3 px-4 sm:px-6 lg:px-8'>
-                    {/* 1. Logo Section */}
                     <div className='flex items-center space-x-2'>
-                        {/* Desktop Logo */}
                         <Link href="/dashboard">
                             <Image
                                 className='hidden md:block cursor-pointer'
@@ -38,7 +29,6 @@ const AdminNav = () => {
                                 priority
                             />
                         </Link>
-                        {/* Mobile Logo */}
                         <Link href="/dashboard">
                             <Image
                                 className='md:hidden cursor-pointer'
@@ -51,7 +41,6 @@ const AdminNav = () => {
                         </Link>
                     </div>
 
-                    {/* 2. Desktop Navigation Links */}
                     <div className='hidden md:flex font-semibold text-base space-x-8 lg:space-x-12'>
                         <NavLink href="/dashboard">Home</NavLink>
                         <NavLink href="/subadmin/sheet">Datasheet</NavLink>
@@ -59,10 +48,7 @@ const AdminNav = () => {
                         <NavLink href="/subadmin/analytics">Analytics</NavLink>
                     </div>
 
-                    {/* 3. Search and User Actions */}
                     <div className='flex items-center space-x-4'>
-
-                        {/* Sign In/User Button */}
                         <div className='hidden md:block'>
                             {isSignedIn ? (
                                 <UserButton afterSignOutUrl="/" />
@@ -78,7 +64,6 @@ const AdminNav = () => {
                             )}
                         </div>
 
-                        {/* Mobile Menu Toggle Button */}
                         <button
                             onClick={toggleMenu}
                             className='block md:hidden p-1 text-gray-700 hover:text-black transition-colors'
@@ -91,33 +76,23 @@ const AdminNav = () => {
 
                         {isSignedIn && (
                             <button
-                                // onClick={toggleMenu}
                                 className='block md:hidden text-gray-700 hover:text-black transition-colors'
-                                // aria-label="Toggle Menu"
-                                // aria-expanded={isMenuOpen}
                                 type="button"
                             >
                                 <UserButton
                                     afterSignOutUrl="/">
-
                                     <UserButton.UserProfilePage label="My Profile" labelIcon={<InfoIcon className="h-4 w-4" />} url="additional-info">
                                         <AdditionalInfoPage />
                                     </UserButton.UserProfilePage>
                                 </UserButton>
                             </button>)}
-
-
-
-
                     </div>
                 </div>
             </nav>
 
-            {/* Mobile Menu Dropdown */}
             {isMenuOpen && (
                 <div className='fixed top-[56px] sm:top-[64px] left-0 right-0 bg-white z-40 md:hidden shadow-xl border-t border-gray-100'>
                     <div className='flex flex-col p-4'>
-                        {/* Search Bar for Mobile */}
                         <div className='flex items-center border border-gray-300 rounded-lg px-3 py-2 bg-gray-50 mb-4'>
                             <input
                                 type="search"
@@ -140,7 +115,6 @@ const AdminNav = () => {
                             Analytics
                         </MobileNavLink>
 
-                        {/* Mobile Sign In Button */}
                         {!isSignedIn && (
                             <div className="pt-4 mt-4 border-t border-gray-200">
                                 <SignInButton mode="modal" forceRedirectUrl="/dashboard">
@@ -161,7 +135,6 @@ const AdminNav = () => {
     );
 };
 
-// Helper component for Desktop Nav Links
 const NavLink = ({ href, children }: NavLinkProps) => (
     <Link
         href={href}
@@ -172,7 +145,6 @@ const NavLink = ({ href, children }: NavLinkProps) => (
     </Link>
 );
 
-// Helper component for Mobile Nav Links
 const MobileNavLink = ({ href, children, onClick }: MobileNavLinkProps) => (
     <Link
         href={href}

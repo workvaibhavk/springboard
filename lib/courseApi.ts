@@ -1,8 +1,5 @@
-// lib/courseApi.ts
-
 import { supabase } from '@/lib/supabase';
 import type { Course, Module, ProgressData } from '@/types/learning';
-
 interface ApiErrorResponse {
     error?: string;
     message?: string;
@@ -18,9 +15,6 @@ class CourseApiError extends Error {
     }
 }
 
-/**
- * Fetches course data by ID from Supabase
- */
 export async function fetchCourseData(courseId: string): Promise<Course> {
     try {
         const { data, error } = await supabase
@@ -48,9 +42,6 @@ export async function fetchCourseData(courseId: string): Promise<Course> {
     }
 }
 
-/**
- * Fetches modules for a specific course from Supabase
- */
 export async function fetchModules(courseId: string): Promise<Module[]> {
     try {
         const { data, error } = await supabase
@@ -74,9 +65,6 @@ export async function fetchModules(courseId: string): Promise<Module[]> {
     }
 }
 
-/**
- * Fetches user progress for a specific course
- */
 export async function fetchProgress(courseId: string): Promise<ProgressData> {
     try {
         const response = await fetch(`/api/get-progress?courseId=${courseId}`, {
@@ -105,9 +93,6 @@ export async function fetchProgress(courseId: string): Promise<ProgressData> {
     }
 }
 
-/**
- * Marks a module as complete for the current user
- */
 export async function markModuleComplete(
     courseId: string,
     moduleId: string
@@ -144,9 +129,6 @@ export async function markModuleComplete(
     }
 }
 
-/**
- * Type guard to check if error is CourseApiError
- */
 export function isCourseApiError(error: unknown): error is CourseApiError {
     return error instanceof CourseApiError;
 }

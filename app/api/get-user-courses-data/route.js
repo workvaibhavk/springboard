@@ -1,7 +1,5 @@
-// get user courses data (completed and in-progress)
 import { auth } from "@clerk/nextjs/server";
 import { supabaseAdmin as supabase } from '@/lib/supabase-admin'
-
 
 export async function GET() {
     const { userId } = await auth()
@@ -27,7 +25,6 @@ export async function GET() {
             { status: 500 }
         )
     }
-
 
     const { data: userInprogressCourses, error: userInprogressCoursesError } = await supabase
         .from('enrollments')

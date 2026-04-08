@@ -16,16 +16,17 @@ export default function Page() {
 
 
     useEffect(() => {
-        if (isLoaded && user) {
-            const phoneNumber = user.publicMetadata.phoneNumber;
-            const enrNumber = user.publicMetadata.enrNumber;
+        if (!isLoaded || !user) return;
+        
+        const phoneNumber = user.publicMetadata.phoneNumber;
+        const enrNumber = user.publicMetadata.enrNumber;
 
-            if (phoneNumber && enrNumber) {
-                router.push('/dashboard');
-            } else {
-                router.push('/onboarding');
-            }
+        if (phoneNumber && enrNumber) {
+            router.push('/dashboard');
+        } else {
+            router.push('/onboarding');
         }
+        
     }, [isLoaded, user, router]);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -52,7 +53,6 @@ export default function Page() {
         <div className="flex items-center justify-center min-h-screen bg-gray-50">
             <div className="flex flex-col md:flex-row w-full max-w-2xl justify-around py-[50px] px-[25px] bg-white rounded-lg shadow-xl max-h-5xl h-full">
 
-
                 <div className="w-full md:w-80 mr-0 md:mr-0">
                     <h2 className="text-2xl font-bold mb-2">Complete Your Profile</h2>
                     <p className="text-gray-600 mb-6">Just a few more details to get started</p>
@@ -71,7 +71,6 @@ export default function Page() {
                                 value={phoneNumber}
                                 onChange={(e) => setPhoneNumber(e.target.value)}
                                 placeholder="87677 85318"
-                                // maxLength={10}
                                 required
                                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-[#111111]"
                             />
@@ -88,7 +87,6 @@ export default function Page() {
                                 value={enrNumber}
                                 onChange={(e) => setEnrNumber(e.target.value)}
                                 placeholder="2506084"
-                                // maxLength={6}
                                 required
                                 className="w-full px-4 py-2 mb-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-[#111111]"
                             />

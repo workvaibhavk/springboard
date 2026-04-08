@@ -11,7 +11,6 @@ import { DownloadIcon, ChevronDownIcon, ChevronUpIcon, CheckCircle2, Clock } fro
 
 export default function Page() {
     const { isLoaded } = useUser()
-
     const [users, setUsers] = useState<UserData[]>([])
     const [selectedUser, setSelectedUser] = useState('')
     const [userDetails, setUserDetails] = useState<CourseEnrollment[] | null>(null)
@@ -153,7 +152,6 @@ export default function Page() {
                 This is the admin users page. Here you can manage all the users of the platform.
             </p>
 
-            {/* Users Table */}
             <div className="mt-6">
                 <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
                     <thead>
@@ -201,7 +199,6 @@ export default function Page() {
                 </table>
             </div>
 
-            {/* Hidden certificate renderer */}
             {certificateData && (
                 <div style={{ position: 'fixed', left: '-10000px', top: 0 }}>
                     <div id="admin-certificate">
@@ -213,7 +210,6 @@ export default function Page() {
                 </div>
             )}
 
-            {/* Modal */}
             {showModal && userDetails && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white p-6 rounded-lg shadow-lg w-11/12 md:w-2/3 max-h-[90vh] overflow-y-auto">
@@ -239,7 +235,6 @@ export default function Page() {
                                 return (
                                     <div key={enrollment.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
 
-                                        {/* Course Header */}
                                         <div className="flex justify-between items-start mb-3">
                                             <div className="flex-1">
                                                 <h4 className="font-semibold text-lg text-gray-800">
@@ -257,7 +252,6 @@ export default function Page() {
                                             </span>
                                         </div>
 
-                                        {/* Course Meta */}
                                         <div className="grid grid-cols-2 gap-3 text-sm mb-3">
                                             <div>
                                                 <span className="text-gray-500">Course ID:</span>
@@ -281,7 +275,6 @@ export default function Page() {
                                             </div>
                                         </div>
 
-                                        {/* ── Module Progress Toggle ────────────────────────── */}
                                         <button
                                             onClick={() => toggleCourseExpand(enrollment.course_id)}
                                             className="w-full flex items-center justify-between text-sm font-medium text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 rounded-md px-3 py-2 transition-colors mb-3"
@@ -296,7 +289,6 @@ export default function Page() {
                                                 )}
                                             </span>
 
-                                            {/* Mini progress bar */}
                                             {progress && (
                                                 <div className="flex items-center gap-2">
                                                     <div className="w-24 bg-gray-200 rounded-full h-1.5">
@@ -314,7 +306,6 @@ export default function Page() {
                                             )}
                                         </button>
 
-                                        {/* ── Module List ──────────────────────────────────── */}
                                         {isExpanded && (
                                             <div className="mb-3 border border-gray-100 rounded-lg overflow-hidden">
                                                 {isLoadingMods ? (
@@ -372,7 +363,6 @@ export default function Page() {
                                             </div>
                                         )}
 
-                                        {/* Download Certificate */}
                                         {enrollment.completed && (
                                             <button
                                                 onClick={() => handleDownloadCertificate(selectedUser, enrollment.course_id)}

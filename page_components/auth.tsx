@@ -10,16 +10,10 @@ export default function Authenticate() {
     const router = useRouter();
 
     useEffect(() => {
-        if (!isLoaded) return;
 
-        if (isLoaded && user) {
-            router.push('/authenticate');
-            // router.push('/onboarding');
-        }
+        if (!isLoaded || !user) return; 
 
-        else if (isLoaded && !user) {
-            // router.push('/');
-        }
+        router.push('/authenticate');        
 
     }, [isLoaded, user, router]);
 

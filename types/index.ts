@@ -34,7 +34,6 @@ export interface CourseEnrollment {
     courses: Course;
     length: number;
 }
-//fake
 export interface UserDataaaa {
     id: string;
     user_id: string;
@@ -57,7 +56,6 @@ export interface UserDataa {
     completed_at: string | null;
     courses: {
         title: string;
-        // Add other course properties you need
     };
 }
 
@@ -73,7 +71,7 @@ export interface Certificate {
     certificate_number: string;
     user_name: string;
     issued_at: string;
-    userName: string;     // note: appears to be duplicate of user_name
+    userName: string;     
 }
 
 export interface CertificateError {

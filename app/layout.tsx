@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "next-themes"
 import { ClerkProvider } from "@clerk/nextjs";
-// import BackToTopBtn from "@/page_components/backToTopBtn";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,8 +38,6 @@ export default function RootLayout({
           >
             {children}
           </ThemeProvider>
-          {/* <BackToTopBtn /> */}
-
         </body>
       </html>
     </ClerkProvider>

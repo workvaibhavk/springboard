@@ -256,7 +256,7 @@
 
 import { clerkClient } from '@clerk/nextjs/server';
 import { supabaseAdmin as supabase } from '@/lib/supabase-admin';
-
+ 
 export async function POST() {
     try {
         const client = await clerkClient();

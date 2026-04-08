@@ -1,6 +1,6 @@
 // app/learn/[id]/page.tsx
 "use client"
-
+import Special from '@/page_components/Special'
 import { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { useUser } from '@clerk/nextjs'
@@ -201,7 +201,7 @@ export default function LearnPage() {
     return (
         <div className='flex flex-col gap-4 bg-gray-50 min-h-screen'>
             <DNavbar />
-
+            <Special />
             {toast && (
                 <Toast
                     message={toast.message}

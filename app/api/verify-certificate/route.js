@@ -44,7 +44,7 @@ export async function GET(request) {
             certificate_number: certData.certificate_number,
             course_id: certData.course_id,
             user_name: certData.user_name,
-            issued_at: certData.issued_at
+            issued_at: certData.issued_at,
         })
 
         console.log(`[GET /api/verify] Querying courses table for id = ${certData.course_id}`)
@@ -78,18 +78,23 @@ export async function GET(request) {
         const courseName = courseData.title
         const issuedDate = certData.issued_at
         const username = certData.user_name
+        const durationInHours = Math.floor(courseData.total_duration_seconds / 3600)
+        const durationInMin = Math.floor((courseData.total_duration_seconds % 3600) / 60)
+        const duration = durationInHours + "hr " + durationInMin + "min"
 
         console.log('[GET /api/verify] Preparing successful response:', {
             courseId,
             courseName,
             username,
-            issuedAt: issuedDate
+            issuedAt: issuedDate,
+            duration
         })
 
         return Response.json({
             courseId,
             courseName,
             username,
+            duration,
             issuedAt: issuedDate,
         })
 

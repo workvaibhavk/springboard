@@ -1,5 +1,3 @@
-// types/learning.ts
-
 export interface Course {
     id: string;
     title: string;
@@ -10,7 +8,6 @@ export interface Course {
     tags?: string[];
     created_at?: string;
     updated_at?: string;
-    // Add other course properties as needed
 }
 
 export interface Module {
@@ -23,7 +20,6 @@ export interface Module {
     description?: string | null;
     created_at?: string;
     updated_at?: string;
-    // Add other module properties as needed
 }
 
 export interface ProgressData {
@@ -31,7 +27,6 @@ export interface ProgressData {
     lastAccessedModule?: string;
     totalWatchTime?: number;
     progress?: number;
-    // Add other progress properties as needed
 }
 
 export interface VideoPlayerProps {

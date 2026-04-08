@@ -185,7 +185,6 @@ export default function Page() {
                                 </div>
                             </div>
 
-                            {/* Buttons */}
                             <div className="flex gap-4 justify-center flex-wrap">
                                 <button
                                     onClick={downloadPDF}

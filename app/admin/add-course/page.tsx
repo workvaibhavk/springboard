@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, FormEvent, ChangeEvent } from 'react';
-// import { useRouter } from 'next/navigation';
 import { CheckIcon } from 'lucide-react';
 import type {
     DifficultyLevel,
@@ -11,7 +10,6 @@ import type {
     AddCourseApiResponse
 } from '@/types/course';
 
-// Constants
 const TAGS_OPTIONS: readonly CourseTag[] = [
     'WebDev', 'FullStack', 'Frontend', 'Backend', 'JavaScript',
     'Algorithms', 'DataStructures', 'Python', 'Java', 'CSharp',
@@ -48,7 +46,6 @@ const CATEGORIES: readonly CourseCategory[] = [
 ] as const;
 
 export default function AddCoursePage() {
-    // const router = useRouter();
     const [playlistId, setPlaylistId] = useState<string>('');
     const [maxVideos, setMaxVideos] = useState<string>('');
     const [level, setLevel] = useState<DifficultyLevel>('beginner');
@@ -68,8 +65,6 @@ export default function AddCoursePage() {
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
-
-        // Reset messages
         setError('');
         setSuccess('');
         setLoading(true);
@@ -83,7 +78,6 @@ export default function AddCoursePage() {
                 tags: selectedTags
             };
 
-            // Call our API
             const response = await fetch('/api/add-course', {
                 method: 'POST',
                 headers: {
@@ -98,7 +92,6 @@ export default function AddCoursePage() {
                 throw new Error(data.error || 'Failed to add course');
             }
 
-            // Success!
             setSuccess(data.message);
             setPlaylistId('');
             setMaxVideos('');
@@ -106,11 +99,6 @@ export default function AddCoursePage() {
             setCategory('Programming');
             setSelectedTags([]);
             window.scrollTo(0, 0);
-
-            // Redirect to courses page after 2 seconds
-            // setTimeout(() => {
-            //     router.push('/courses');
-            // }, 2000);
 
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred';
@@ -144,14 +132,12 @@ export default function AddCoursePage() {
                         Add New Course
                     </h1>
 
-                    {/* Error Message */}
                     {error && (
                         <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-md">
                             <p className="text-sm text-red-600">{error}</p>
                         </div>
                     )}
 
-                    {/* Success Message */}
                     {success && (
                         <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-md">
                             <p className="text-sm text-green-600">{success}</p>
@@ -203,7 +189,6 @@ export default function AddCoursePage() {
                             </p>
                         </div>
 
-                        {/* Level Selection */}
                         <div>
                             <label
                                 htmlFor="level"
@@ -228,7 +213,6 @@ export default function AddCoursePage() {
                             </p>
                         </div>
 
-                        {/* Category Selection */}
                         <div>
                             <label
                                 htmlFor="category"
@@ -253,7 +237,6 @@ export default function AddCoursePage() {
                             </p>
                         </div>
 
-                        {/* Tags Selection */}
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
                                 Tags
@@ -297,10 +280,8 @@ export default function AddCoursePage() {
                             )}
                         </button>
                     </form>
-
                     <button
                         type="button"
-                        // onClick={() => router.push('/dashboard')}
                         disabled={loading}
                         className="w-full mt-3 bg-white hover:bg-gray-50 disabled:opacity-50 text-gray-700 font-medium py-2.5 px-4 rounded-md border border-gray-300 transition duration-200"
                     >
@@ -308,7 +289,6 @@ export default function AddCoursePage() {
                     </button>
                 </div>
 
-                {/* Info Section */}
                 <div className="mt-6 bg-[#fff] border border-[#665bca] rounded-lg p-4">
                     <h3 className="text-sm font-semibold text-[#665bca] mb-2">
                         How to find Playlist ID:

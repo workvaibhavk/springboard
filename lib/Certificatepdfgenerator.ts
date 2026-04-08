@@ -31,7 +31,6 @@ export const generateCertificatePDF = async (
         throw new Error('Certificate element not found');
     }
 
-    // Create hidden desktop container
     const container = document.createElement('div');
     container.style.cssText = `
         position: fixed; 
@@ -42,7 +41,6 @@ export const generateCertificatePDF = async (
     `;
     document.body.appendChild(container);
 
-    // Clone and force desktop styles
     const clone = element.cloneNode(true) as HTMLElement;
     clone.style.cssText = `
         width: 900px !important;
@@ -70,7 +68,6 @@ export const generateCertificatePDF = async (
 
     sanitiseColors(clone);
 
-    // Wait for layout to settle
     await new Promise(r => setTimeout(r, 500));
 
     try {
@@ -92,10 +89,8 @@ export const generateCertificatePDF = async (
 
         pdf.addImage(imgData, 'PNG', 0, 0, 297, 210, undefined, 'FAST');
 
-        // Generate filename: "UserName CourseInitials Certificate.pdf"
         const safeName = certificate?.userName?.replace(/[^a-z0-9\s]/gi, '_').trim() || 'User';
 
-        // Extract course initials (first letter of each word)
         const courseInitials = course?.title
             ?.split(/[\s:]+/)
             .map(word => word.charAt(0).toUpperCase())

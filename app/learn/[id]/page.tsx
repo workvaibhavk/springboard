@@ -144,7 +144,7 @@ export default function LearnPage() {
             await markModuleComplete(courseId, currentModule.id);
 
             setCompletedModules(prev => {
-                if (prev.includes(currentModule.id)) return prev; // guard against duplicates
+                if (prev.includes(currentModule.id)) return prev; 
                 return [...prev, currentModule.id];
             });
 
@@ -153,19 +153,13 @@ export default function LearnPage() {
                     goToNextModule();
                     setHasWatched90Percent(false);
                 } else {
-                    // Fix #7: Toast instead of alert() — non-blocking, so state
-                    // updates (including isCompleted) render immediately alongside it.
                     showToast('🎉 Congratulations! You completed all modules!', 'success');
-                    // Fix #1 & #3: No manual +1 calculation needed. isCompleted is
-                    // derived from state on re-render, so it resolves correctly once
-                    // setCompletedModules above triggers a re-render.
                 }
             }, 500);
 
         } catch (error) {
             console.error('Error marking complete:', error);
             const errorMessage = error instanceof Error ? error.message : 'Failed to mark as complete';
-            // Fix #7: Toast instead of alert().
             showToast(errorMessage, 'error');
         } finally {
             setBtnDisabled(false);
@@ -183,12 +177,7 @@ export default function LearnPage() {
     const isModuleCompleted = (): boolean =>
         currentModule ? completedModules.includes(currentModule.id) : false;
 
-    // ─── Render Guards ──────────────────────────────────────────────────────
-    if (loading) {
-        return (
-            <LoadingComponent />
-        );
-    }
+  
 
     if (!course || modules.length === 0) {
         return (
@@ -200,7 +189,9 @@ export default function LearnPage() {
 
     return (
         <div className='flex flex-col gap-4 bg-gray-50 min-h-screen'>
-            <DNavbar />
+               {loading ? <LoadingComponent /> : 
+               <>
+ <DNavbar />
             <Special />
             {toast && (
                 <Toast
@@ -210,13 +201,10 @@ export default function LearnPage() {
                 />
             )}
 
-            {/* Main Content Container */}
             <main className='flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8 w-full px-4 sm:px-6 lg:px-8 xl:w-11/12 2xl:w-10/12 mx-auto pb-8'>
 
-                {/* Left Column - Video and Course Info */}
                 <div className='w-full lg:w-8/12 xl:w-2/3 flex flex-col gap-4 sm:gap-6'>
 
-                    {/* Course Header */}
                     <div className='bg-white border border-gray-200 p-4 sm:p-6 rounded-xl shadow-sm'>
                         <h2 onClick={OpenCheat} className='text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2'>
                             {course.title.split(':')[0]}
@@ -225,7 +213,6 @@ export default function LearnPage() {
                             {course.description.slice(0, 85)}..
                         </p>
 
-                        {/* Progress Bar */}
                         <div className='w-full bg-gray-200 h-2 rounded-xl mt-2'>
                             <div
                                 className='bg-[#665bca] h-2 rounded-s-xl transition-all duration-300'
@@ -237,7 +224,6 @@ export default function LearnPage() {
                         </p>
                     </div>
 
-                    {/* Module Content */}
                     <div className='flex flex-col gap-4 sm:gap-6 bg-white border border-gray-200 p-4 sm:p-6 rounded-xl shadow-sm'>
                         <h3 className='text-lg sm:text-xl lg:text-2xl xl:text-3xl font-semibold text-gray-900 leading-tight'>
                             Module {currentModuleIndex + 1}: {currentModule?.title || 'Loading...'}
@@ -248,10 +234,8 @@ export default function LearnPage() {
                             onHasWatched90Percent={setHasWatched90Percent}
                         />
 
-                        {/* Navigation Buttons */}
                         <div className='flex flex-col sm:flex-row justify-between gap-3 sm:gap-4 mt-4'>
 
-                            {/* Previous Button */}
                             <button
                                 className='cursor-pointer py-3 px-4 sm:px-6 lg:px-8 rounded-lg border-2 border-[#e9e9e9] bg-[#e9e9e9] text-[#000] text-sm sm:text-base font-medium flex-1 disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:bg-gray-200 active:scale-95'
                                 onClick={goToPreviousModule}
@@ -261,7 +245,6 @@ export default function LearnPage() {
                                 Previous Module
                             </button>
 
-                            {/* Complete / Next Button */}
                             {isModuleCompleted() ? (
                                 !isLastModule() && (
                                     <button
@@ -291,7 +274,6 @@ export default function LearnPage() {
                                     {hasWatched90Percent ? 'Mark as Complete' : 'Watch More to Complete'}
                                 </button>)}
 
-                            {/* Certificate Button — renders immediately when isCompleted becomes true */}
                             {isCompleted && (
                                 <Link href={`/certificate/${courseId}`} className='sm:flex-1'>
                                     <button
@@ -307,7 +289,6 @@ export default function LearnPage() {
                     </div>
                 </div>
 
-                {/* Right Column - Module List Sidebar */}
                 <div className='w-full lg:w-4/12 xl:w-1/3'>
                     <ModuleList
                         modules={modules}
@@ -317,6 +298,9 @@ export default function LearnPage() {
                     />
                 </div>
             </main>
+               </> 
+    }
+           
         </div>
     );
 }

@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function Page() {
     return (
-        <div>
+        <>
             <div className="min-h-screen flex flex-col py-12 gap-12 items-center justify-center bg-gray-50">
                 <div className="bg-white p-8 rounded-lg shadow-lg max-w-3xl text-center">
                     <h1 className="text-2xl md:text-4xl font-bold text-gray-900 mb-4">Our Commitment to Credibility</h1>
@@ -36,15 +36,6 @@ export default function Page() {
                             </div>
 
                             <div className="border-l-4 border-[#665bca] pl-4">
-                                {/* <p className="text-lg text-gray-700">
-                                    <span className="font-bold text-[#665bca]">Mrs. Sayali Pradeep Ambavane</span>, Main Computer Science Lecturer at GPP and Programming in C instructor, endorsed Springboard during a conversation with our founder <span className="font-bold text-[#665bca]">Mr. Vaibhav Kamble</span> on February 5, 2026, stating: <em>&quot;Ok Springboard, ok chalel&quot;</em> in response to platform accessibility concerns.
-                                </p> */}
-                                {/* 
-                                <p className="text-lg text-gray-700">
-                                    <span className="font-bold text-[#665bca]">Mrs. Sayali Pradeep Ambavane</span>, Main Computer Science Lecturer at GPP and Programming in C instructor, had a talk with our founder <span className="font-bold text-[#665bca]">Mr. Vaibhav Kamble</span> on Thursday, February 5, 2026 at 11:29:55 AM {'{UTC+05:30 82°30′ E}'} and acknowledged the credibility of Springboard certificates with the words: <em>&quot;Mam ha platform use keIa tr chaIeI kay, Infosys madhe certificates sathi problems yeto &quot; — kay naav boIIas  -- vSpringboard  &quot;Ok vSpringboard ahey na, ok chalel&quot;</em>
-                                </p> */}
-
-
                                 <p className="text-lg text-gray-700 mb-3">
                                     <span className="font-bold text-[#665bca]">Mrs. Sayali Pradeep Ambavane</span>, Main Computer Science Lecturer at GPP and Theory and Practicals teacher for all batches in Programming in C, had a talk with our founder <span className="font-bold text-[#665bca]">Mr. Vaibhav Kamble</span> on Thursday, February 5, 2026 at 11:29:55 AM {'{UTC+05:30 82°30′ E}'} and acknowledged the credibility of Springboard certificates:
                                 </p>
@@ -67,6 +58,6 @@ export default function Page() {
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     )
 }

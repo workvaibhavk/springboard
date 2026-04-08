@@ -1,4 +1,3 @@
-// hooks/useYouTubePlayer.js
 "use client"
 
 import { useEffect, useState, useCallback, useRef } from 'react'
@@ -16,7 +15,6 @@ export function useYouTubePlayer(videoId, shouldInitialize = false) {
 
     const trackingIntervalRef = useRef(null);
 
-    // Load YouTube IFrame API
     useEffect(() => {
         if (!window.YT) {
             const tag = document.createElement('script');
@@ -26,15 +24,11 @@ export function useYouTubePlayer(videoId, shouldInitialize = false) {
         }
     }, []);
 
-
-
-    // Initialize YouTube Player
     useEffect(() => {
         if (!videoId || !window.YT || !shouldInitialize) {
             return;
         }
 
-        // Cleanup existing player
         if (player) {
             try {
                 player.destroy();
@@ -117,7 +111,6 @@ export function useYouTubePlayer(videoId, shouldInitialize = false) {
                         setVolume(100)
                     }
                     break;
-
             }
         }
 
@@ -256,10 +249,6 @@ export function useYouTubePlayer(videoId, shouldInitialize = false) {
         resetPlayer();
     }, [videoId, resetPlayer])
 
-
-
-
-    // Cleanup on unmount
     useEffect(() => {
         return () => {
             if (trackingIntervalRef.current) {
@@ -296,5 +285,3 @@ export function useYouTubePlayer(videoId, shouldInitialize = false) {
         playerLoading
     };
 }
-
-// y

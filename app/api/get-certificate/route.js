@@ -1,6 +1,5 @@
 import { supabaseAdmin as supabase } from '@/lib/supabase-admin'
 import { auth, clerkClient } from '@clerk/nextjs/server'
-// import { error } from 'console'
 
 export async function GET(request) {
     try {
@@ -62,7 +61,6 @@ export async function GET(request) {
             )
         }
 
-        // const clerkUser = await clerkClient.users.getUser(userId)
         const client = await clerkClient()
         const clerkUser = await client.users.getUser(userId)
 
@@ -102,7 +100,7 @@ export async function GET(request) {
                     user_id: userId,
                     course_id: courseId,
                     certificate_number: certificateNumber,
-                    user_name: userName, // to be updated later
+                    user_name: userName,
                 }])
                 .select()
                 .single()
@@ -132,11 +130,6 @@ export async function GET(request) {
             certificate = newCert
         }
 
-
-
-
-
-
         return Response.json({
             certificate: {
                 ...certificate,
@@ -144,7 +137,6 @@ export async function GET(request) {
             },
             course: course
         })
-
     }
 
     catch (error) {

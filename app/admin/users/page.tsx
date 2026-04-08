@@ -53,10 +53,8 @@ export default function Page() {
         try {
             setIsGeneratingPDF(true)
 
-            // Fetch certificate data for the specific user and course
             const response = await fetch(`/api/admin/get-user-certificate?userId=${userId}&courseId=${courseId}`)
 
-            // Check content type before parsing
             const contentType = response.headers.get('content-type');
             if (!contentType || !contentType.includes('application/json')) {
                 const text = await response.text();
@@ -73,19 +71,15 @@ export default function Page() {
                 return
             }
 
-            // Set certificate data to render the hidden component
             setCertificateData({
                 certificate: data.certificate,
                 course: data.course
             })
 
-            // Wait for the component to render
             await new Promise(resolve => setTimeout(resolve, 100))
 
-            // Generate PDF
             await generateCertificatePDF(data.certificate, data.course, 'admin-certificate')
 
-            // Clear certificate data
             setCertificateData(null)
         } catch (error) {
             console.error('Error downloading certificate:', error)
@@ -159,7 +153,6 @@ export default function Page() {
                 </table>
             </div>
 
-            {/* Hidden certificate renderer */}
             {certificateData && (
                 <div style={{ position: 'fixed', left: '-10000px', top: 0 }}>
                     <div id="admin-certificate">
@@ -171,7 +164,6 @@ export default function Page() {
                 </div>
             )}
 
-            {/* Modal */}
             {showModal && userDetails && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white p-6 rounded-lg shadow-lg w-11/12 md:w-2/3 max-h-[90vh] overflow-y-auto">
@@ -240,7 +232,6 @@ export default function Page() {
                                         </div>
                                     </div>
 
-                                    {/* Download Certificate Button for each course */}
                                     {enrollment.completed && (
                                         <button
                                             onClick={() => handleDownloadCertificate(selectedUser, enrollment.course_id)}

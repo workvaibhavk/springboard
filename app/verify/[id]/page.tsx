@@ -9,13 +9,11 @@ export default function Page() {
 
     const params = useParams();
     const certificateId = params.id
-    // const { user, isLoaded } = useUser();
     const [courseId, setCourseId] = useState('');
     const [username, setUsername] = useState('');
     const [duration, setDuration] = useState('');
     const [issuedAt, setIssuedAt] = useState('');
     const [loading, setLoading] = useState(true);
-    // // const [error, setError] = useState(null);
     const [courseName, setCourseName] = useState('');
 
     useEffect(() => {
@@ -46,7 +44,6 @@ export default function Page() {
             console.log("Response status:", response.status);
             console.log("Response ok:", response.ok);
 
-            // Check if response is JSON before parsing
             const contentType = response.headers.get("content-type");
             if (!contentType || !contentType.includes("application/json")) {
                 console.error("Response is not JSON. Content-Type:", contentType);
@@ -79,9 +76,6 @@ export default function Page() {
             console.log("Verification response processed successfully:", data);
         } catch (error) {
             console.error("Exception occurred while verifying certificate ownership:", error);
-            // console.error("Error name:", error.name);
-            // console.error("Error message:", error.message);
-            // console.error("Error stack:", error.stack);
         } finally {
             console.log("Setting loading state to false");
             setLoading(false);
@@ -97,7 +91,8 @@ export default function Page() {
                 : (
                     <div className='min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 py-12 px-4' >
 
-                        <div className='max-w-4xl mx-auto'>                        <Link
+                        <div className='max-w-4xl mx-auto'>    
+                        <Link
                             href="/"
                             className='inline-flex items-center font-medium mb-4 p-2 hover:bg-gray-100 text-[#665bca] hover:text-[#5548b8]rounded-lg w-fit'>
                             <ChevronLeft />
@@ -115,14 +110,11 @@ export default function Page() {
                                         <p className='text-lg text-gray-700'>Duration:</p>
                                         <h3 className='text-xl font-medium text-gray-800 mb-4'>{duration}</h3>
                                         <p className='text-gray-600'>Issued on: {new Date(issuedAt).toLocaleDateString()}</p>
-                                        {/* <p className='text-lg text-gray-700 mb-2'>Duration:</p> */}
-                                        {/* <h2 className='text-2xl font-semibold text-gray-900 mb-4'>{duration}</h2> */}
                                     </div>
                                 ) : (
                                     <p className='text-red-600 text-center'>Invalid certificate or you do not own this certificate.</p>
                                 )}
                             </div>
-
                         </div>
                     </div>
                 )}

@@ -1,4 +1,3 @@
-
 export interface Database {
     public: {
         Tables: {
@@ -13,7 +12,6 @@ export interface Database {
                     tags: string[];
                     created_at: string;
                     updated_at: string;
-                    // Add other course fields
                 };
                 Insert: Omit<Database['public']['Tables']['courses']['Row'], 'id' | 'created_at' | 'updated_at'>;
                 Update: Partial<Database['public']['Tables']['courses']['Insert']>;
@@ -29,12 +27,10 @@ export interface Database {
                     description: string | null;
                     created_at: string;
                     updated_at: string;
-                    // Add other module fields
                 };
                 Insert: Omit<Database['public']['Tables']['modules']['Row'], 'id' | 'created_at' | 'updated_at'>;
                 Update: Partial<Database['public']['Tables']['modules']['Insert']>;
             };
-            // Add other tables as needed
         };
     };
 }

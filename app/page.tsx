@@ -4,15 +4,13 @@ import Navbar from '@/page_components/Navbar'
 import Footer from '@/page_components/Footer'
 import Ctabtn from '@/page_components/landing/Ctabtn'
 import Authenticate from '@/page_components/auth'
-// import Authenticate from './authenticate/page'
 
 export default function Page() {
   return (
-    // <div className='overflow-x-hidden'>
     <div className='overflow-x-hidden bg-[#fff]'>
       <Authenticate />
       <Navbar />
-      {/* <section id='main' className='flex items-center w-10/12 m-auto py-90'> */}
+    
       <section id="main" className="flex flex-col h-[100%] md:flex-row items-center w-11/12 md:w-10/12 m-auto pt-24 pb-24 md:pt-32 md:pb-20 gap-8">
         <div className='w-100 md:w-11/18 flex flex-col gap-[30px] items-center md:items-start'>
           <h1 className='text-[42px] leading-[2.5rem] md:leading-[4rem]  md:text-7xl inter text-gray-900'>Master New Skills
@@ -20,17 +18,7 @@ export default function Page() {
           <p className='text-center md:text-start w-11/12 md:w-10/12 text-gray-700'>Join a global community of learners and experts. From foundational concepts to advanced mastery, discover tailored learning paths that empower you to grow at your own pace</p>
 
           <div className='flex gap-5'>
-            {/* <button className='bg-[#111111] hover:bg-gray-900 transition-colors rounded-full p-5 h-15 flex flex-wrap gap-4 w-auto items-center justify-center content-center cursor-pointer'>
-              <span className='text-white text-[17px]'> Get Started </span>
-              <div className='p-2 bg-white rounded-full'>
-                <MoveRight className="text-black" />
-              </div>
-            </button> */}
-
             <Ctabtn />
-
-
-
             <div className="hidden md:flex -space-x-2 items-center">
               <Avatar className='size-12 ring-2 ring-white'>
                 <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
@@ -81,7 +69,6 @@ export default function Page() {
               className='h-[100%]'
             />
           </div>
-
         </div>
 
         <div className='flex justify-center w-15/18 md:w-7/18'>
@@ -172,9 +159,7 @@ export default function Page() {
           </div>
         </div>
       </section>
-
       <Footer />
-
     </div >
   )
 }

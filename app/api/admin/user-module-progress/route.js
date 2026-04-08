@@ -34,24 +34,30 @@ export async function POST(request) {
 
         if (completionsError) {
             return Response.json(
-                { error: 'Failed to fetch module completions', details: completionsError.message, hint: completionsError.hint },
+                {
+                    error: 'Failed to fetch module completions',
+                    details: completionsError.message,
+                    hint: completionsError.hint
+                },
                 { status: 500 }
             );
         }
 
-        // const { data: sampleRow, error: sampleError } = await supabase
-        //     .from('user_progress')
-        //     .select('*')
-        //     .limit(1)
-        //     .single();
-
-
-        const { count: totalModules,
-            //  error: countError
-             } = await supabase
+        const { count: totalModules, error: countError } = await supabase
             .from('modules')
             .select('id', { count: 'exact', head: true })
             .eq('course_id', courseId);
+
+        if (!totalModules || countError) {
+            return Response.json(
+                {
+                    error: 'Cant get totalModules of Course',
+                    details: countError.message,
+                    hint: countError.hint
+                },
+                { status: 500 }
+            )
+        }
 
         const completedCount = moduleCompletions?.filter(m => m.completed).length ?? 0;
 

@@ -1,4 +1,3 @@
-//api/admin/get-user-certificate
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
 import { currentUser } from '@clerk/nextjs/server';
@@ -10,7 +9,6 @@ const supabase = createClient(
 
 export async function GET(request: NextRequest) {
     try {
-        // Check if the requester is an admin
         const user = await currentUser();
 
         if (!user) {
@@ -34,7 +32,6 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        // Fetch enrollment and check completion
         const { data: enrollment, error: enrollmentError } = await supabase
             .from('enrollments')
             .select('completed')
@@ -56,7 +53,6 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        // Fetch or generate certificate
         const certificateResult = await supabase
             .from('certificates')
             .select('*')
@@ -66,9 +62,7 @@ export async function GET(request: NextRequest) {
 
         let certificate = certificateResult.data;
 
-        // If certificate doesn't exist, generate it
         if (certificateResult.error || !certificate) {
-            // Get user details from Clerk
             const clerkResponse = await fetch(`https://api.clerk.com/v1/users/${targetUserId}`, {
                 headers: {
                     Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}`,
@@ -85,10 +79,8 @@ export async function GET(request: NextRequest) {
             const userData = await clerkResponse.json();
             const userName = `${userData.first_name || ''} ${userData.last_name || ''}`.trim() || 'Student';
 
-            // Generate certificate number
             const certificateNumber = `CERT-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
 
-            // Insert new certificate
             const insertResult = await supabase
                 .from('certificates')
                 .insert({
@@ -112,7 +104,6 @@ export async function GET(request: NextRequest) {
             certificate = insertResult.data;
         }
 
-        // Fetch course details
         const courseResult = await supabase
             .from('courses')
             .select('*')

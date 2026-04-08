@@ -11,10 +11,6 @@ import { Course, Module } from '@/types';
 import CAuthenticate from "@/page_components/cauth";
 import LoadingComponent from '@/page_components/loady'
 
-
-// import { Course, EnrollmentData, CourseEnrollment, Module } from '@/types';
-
-
 function parsePostgresArray(pgArray: string | string[] | null | undefined): string[] {
     if (!pgArray) return [];
     if (Array.isArray(pgArray)) return pgArray;
@@ -35,8 +31,6 @@ export default function CoursePreviewPage() {
     const [loading, setLoading] = useState(true);
     const [btnLoading, setBtnLoading] = useState(false);
     const { user, isLoaded } = useUser();
-
-
     const router = useRouter();
 
     useEffect(() => {
@@ -45,13 +39,9 @@ export default function CoursePreviewPage() {
             checkEnrollmentStatus();
         }
     }, [isLoaded, user]);
-    // }, [isLoaded, user, courseId]);
 
     const fetchCourseData = async () => {
         setLoading(true);
-
-        // const { userId } = await auth();
-
 
         const { data: courseData, error: courseError } = await supabase
             .from('courses')
@@ -83,20 +73,18 @@ export default function CoursePreviewPage() {
             setModules(modulesData);
         }
 
-        // In fetchCourseData function, replace the enrollment check with:
-
         if (user) {
             const { data: enrollmentData, error: enrollmentError } = await supabase
                 .from('enrollments')
                 .select('*')
-                .eq('user_id', user.id) // Make sure this matches what's stored in DB
+                .eq('user_id', user.id) 
                 .eq('course_id', courseId)
                 .maybeSingle();
 
-            console.log('Checking enrollment for user:', user.id); // 🔍 Add this
-            console.log('Course ID:', courseId); // 🔍 Add this
-            console.log('Enrollment data:', enrollmentData); // 🔍 Add this
-            console.log('Enrollment error:', enrollmentError); // 🔍 Add this
+            console.log('Checking enrollment for user:', user.id); 
+            console.log('Course ID:', courseId); 
+            console.log('Enrollment data:', enrollmentData); 
+            console.log('Enrollment error:', enrollmentError); 
 
             if (enrollmentData) {
                 console.log('User is enrolled!');
@@ -106,7 +94,6 @@ export default function CoursePreviewPage() {
                 setIsEnrolled(false);
             }
         }
-
         setLoading(false);
     }
 
@@ -148,7 +135,6 @@ export default function CoursePreviewPage() {
 
         catch (error) {
             console.error('Enrollment error:', error);
-            // alert(error.message || 'Failed to enroll. Please try again.');
         }
 
         finally {
@@ -157,7 +143,6 @@ export default function CoursePreviewPage() {
     }
 
     if (!user) return;
-
 
     const checkEnrollmentStatus = async () => {
 
@@ -186,18 +171,13 @@ export default function CoursePreviewPage() {
     return (
         <div className="min-h-screen bg-gray-50 py-12 px-0">
             <CAuthenticate />
-
             <div className="w-11/12 mx-auto">
-
                 {loading ? (
                     <LoadingComponent />
                 ) : course ? (
-
                     <div>
                         <Special />
-                        {/* Thumbnail and Header Section */}
                         <div className="flex flex-col md:flex-row gap-6 mb-6">
-                            {/* Thumbnail */}
                             <div className="md:w-2/5">
                                 <div className="aspect-ratio-16-9">
                                     <Image
@@ -210,27 +190,23 @@ export default function CoursePreviewPage() {
                                 </div>
                             </div>
 
-                            {/* Course Info */}
                             <div className="md:w-3/5">
                                 <p className="text-gray-600 mb-2 font-semibold">by {course.instructor}</p>
 
                                 <h1 className="text-2xl md:text-5xl font-bold mb-6">{course.title}</h1>
 
-                                {/* Course Stats */}
                                 <div className="flex gap-4 md:gap-6 text-sm mb-4 font-semibold capitalize">
                                     <span><Film className="inline mr-1 size-6 text-[#665bca]" /> {modules.length} Modules</span>
                                     <span><Clock className="inline mr-1 size-6 text-[#665bca]" /> {Math.floor(course.total_duration_seconds / 3600)}hr {Math.floor((course.total_duration_seconds % 3600) / 60)}min</span>
                                     <span><Zap className="inline mr-1 size-6 text-[#665bca]" /> {course.level}</span>
                                 </div>
 
-                                {/* Category Badge */}
                                 <div className="mb-3 hidden">
                                     <span className="inline-block bg-[#00159d] text-white text-sm font-semibold px-4 py-1 rounded-full">
                                         {course.category}
                                     </span>
                                 </div>
 
-                                {/* Tags */}
                                 <div className='flex gap-2 mb-2'>
                                     {parsePostgresArray(course.tags).slice(0, 3).map((tag, index) => (
                                         <span
@@ -242,8 +218,6 @@ export default function CoursePreviewPage() {
                                     ))}
                                 </div>
 
-
-                                {/* Enroll Button */}
                                 <div className="my-4">
                                     {isEnrolled ? (
                                         <Link href={`/learn/${courseId}`}>
@@ -251,14 +225,10 @@ export default function CoursePreviewPage() {
                                                 disabled={btnLoading}
                                                 className="w-full flex items-center justify-center md:w-auto px-8 py-3 bg-[#665bca]  text-white rounded-2xl font-semibold text-lg transition-colors cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed">
 
-
-
                                                 {btnLoading && (
                                                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#665bca]"></div>
                                                 )}
                                                 Continue Learning  <MoveRight className="inline ml-2" />
-
-
                                             </button>
                                         </Link>
                                     ) : (
@@ -271,15 +241,12 @@ export default function CoursePreviewPage() {
                                                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#665bca]"></div>
                                             )}
                                             Enroll Now <MoveRight className="inline ml-2" />
-
-
                                         </button>
                                     )}
                                 </div>
                             </div>
                         </div>
 
-                        {/* Description */}
                         {course.description && (
                             <div className="mb-10 bg-white px-6 md:px-12 py-6 rounded-2xl shadow-md">
                                 <h2 className="text-3xl font-bold py-2 mb-4">About this course</h2>
@@ -288,7 +255,6 @@ export default function CoursePreviewPage() {
                                 </p>
                             </div>
                         )}
-                        {/* Module List */}
                         <div className="mb-10">
                             <h2 className="text-3xl font-bold mb-8">
                                 <BookOpen className="inline mr-2 size-8 text-[#665bca]" /> Course Content <br /> ({modules.length} modules)</h2>
@@ -299,9 +265,7 @@ export default function CoursePreviewPage() {
                                         key={module.id}
                                         className="flex flex-col md:flex-row items-center gap-4 p-6 bg-white rounded-2xl border border-gray-200 hover:shadow-md transition-shadow"
                                     >
-                                        {/* Module Thumbnail */}
                                         <div className="flex-shrink-0">
-                                            {/* <div className="aspect-ratio-16-9"> */}
                                             <Image
                                                 src={module.thumbnail}
                                                 alt={module.title}
@@ -309,10 +273,8 @@ export default function CoursePreviewPage() {
                                                 height={720}
                                                 className="rounded-xl object-cover md:h-[99px] h-[165px] w-[355px] md:w-[176px]"
                                             />
-                                            {/* </div> */}
                                         </div>
 
-                                        {/* Module Info */}
                                         <div className="flex-grow">
                                             <p className="font-bold text-xl text-[#665bca] mb-1">
                                                 Lecture {module.order}
@@ -320,7 +282,6 @@ export default function CoursePreviewPage() {
                                                 {module.title}
                                             </p>
                                             <p className="text-sm text-gray-600 mt-1">
-                                                {/* {module.duration_seconds} */}
                                                 <Clock className="inline mr-1 size-4 text-gray-500" />
                                                 {Math.floor(module.duration_seconds / 60)} min {Math.floor(module.duration_seconds % 60)} sec
                                             </p>
@@ -329,24 +290,13 @@ export default function CoursePreviewPage() {
                                         <button
                                             className="hidden md:flex flex-shrink-0 size-14 text-[#665bca] bg-[#665bca2e]  items-center justify-center rounded-full p-3 hover:bg-[#665bca] hover:text-white cursor-pointer"
                                             onClick={() => router.push(`/learn/${courseId}`)}
-                                        // onClick={() => router.push(`/learn/${courseId}?module=${module.id}`)}
                                         >
                                             <Play className="size-4 text-2xl " fill='#665bca' />
                                         </button>
-
-
-
-
-
                                     </div>
                                 ))}
                             </div>
                         </div>
-
-
-
-
-
                     </div>
                 ) : (
                     <div className="text-center">
@@ -357,12 +307,10 @@ export default function CoursePreviewPage() {
                             className="inline-flex items-center text-[#665bca] hover:text-[#5548b8] mb-6 font-medium"
                         >
                             <ChevronLeft />
-
                             Back to Courses
                         </Link>
                     </div>
                 )}
-
             </div>
         </div>
     );

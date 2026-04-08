@@ -1,5 +1,3 @@
-// lib/supabase.ts (update your existing file)
-
 import { Database } from '@/types/supabase';
 import { createClient } from '@supabase/supabase-js';
 

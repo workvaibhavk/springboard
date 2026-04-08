@@ -7,7 +7,7 @@ import { InfoIcon, Menu, Search, X } from 'lucide-react';
 import { SignInButton, UserButton, useUser } from '@clerk/nextjs';
 import AdditionalInfoPage from "./addInfo";
 import { NavLinkProps, MobileNavLinkProps } from "@/types/index"
-
+ 
 const DNavbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
     const { isSignedIn } = useUser();
@@ -93,7 +93,6 @@ const DNavbar = () => {
                             >
                                 <UserButton
                                     afterSignOutUrl="/">
-
                                     <UserButton.UserProfilePage label="My Profile" labelIcon={<InfoIcon className="h-4 w-4" />} url="additional-info">
                                         <AdditionalInfoPage />
                                     </UserButton.UserProfilePage>

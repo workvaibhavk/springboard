@@ -1,7 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import { supabaseAdmin as supabase } from '@/lib/supabase-admin'
 
-
 export async function POST(request) {
     const { userId } = await auth()
 

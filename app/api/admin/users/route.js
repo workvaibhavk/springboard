@@ -1,4 +1,3 @@
-// api/admin/users
 import { clerkClient } from "@clerk/nextjs/server";
 
 export async function POST(request) {

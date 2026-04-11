@@ -37,14 +37,12 @@ export interface CourseEnrollment {
 export interface UserDataaaa {
     id: string;
     user_id: string;
-
     completed_at: string | null;
     courses: Course;
     userDetails: {
         course_id: string;
         enrolled_at: string;
         completed: boolean;
-
     }
 }
 
@@ -67,7 +65,7 @@ export interface EnrollmentData {
 export interface Certificate {
     id: string;
     user_id: string;
-    course_id: string;
+    course_id: string; 
     certificate_number: string;
     user_name: string;
     issued_at: string;
@@ -119,3 +117,14 @@ export interface MobileNavLinkProps {
     children: React.ReactNode;
     onClick: () => void;
 }
+
+export interface ToastProps {
+    message: string;
+    type: 'success' | 'error';
+    onClose: () => void;
+}
+
+export interface ApiErrorResponse {
+    error?: string;
+    message?: string;
+} 

@@ -10,7 +10,12 @@ import { NavLinkProps, MobileNavLinkProps } from "@/types/index"
  
 const DNavbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
-    const { isSignedIn } = useUser();
+    const { user, isLoaded, isSignedIn } = useUser();
+
+    if (!isLoaded) return null;
+
+    const role = user?.publicMetadata?.role;
+    const isAdmin = role === "admin" || role === "subadmin";
 
     const closeMenu = (): void => setIsMenuOpen(false);
 
@@ -46,7 +51,11 @@ const DNavbar = () => {
                     <div className='hidden md:flex font-semibold text-base space-x-8 lg:space-x-12'>
                         <NavLink href="/dashboard" aria-label="Go to dashboard">Home</NavLink>
                         <NavLink href="/courses" aria-label="Go to courses">Courses</NavLink>
-                        <NavLink href="/user" aria-label="Go to learning">My Learning</NavLink>
+                        <NavLink href="/user" aria-label="Go to learning">My Learning</NavLink> 
+                        {isAdmin && 
+                            <NavLink href="/subadmin/users" aria-label="Go to admin dashboard">Admin  Dashboard</NavLink>
+
+                        }
                     </div>
 
                     <div className='flex items-center space-x-4'>

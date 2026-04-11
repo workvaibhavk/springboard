@@ -57,11 +57,12 @@ export default function Page() {
             ) : (
                 <div className="min-h-screen space-y-6 w-11/12 mx-auto pt-6 pb-10">
                     <div>
-                        <h1 className="text-3xl font-bold mb-6 text-gray-800">
+                        <h1 className="text-4xl border-l-4 border-[#665bca] pl-4 font-bold mt-4 mb-8 ">
                             Continue Learning
                         </h1>
+                         {enrolledCourses.length <= 0 ? <CNotFound /> : 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                            {enrolledCourses.length <= 0 ? <CNotFound /> : enrolledCourses.map((enrollment) => {
+                          {enrolledCourses.map((enrollment) => {
                                 const course: Course = enrollment.courses;
                                 return (
                                     <div
@@ -117,16 +118,17 @@ export default function Page() {
                                                     Continue
                                                 </button>
                                             </Link>
-                                        </div>
+                                        </div> 
                                     </div>
                                 )
                             })}
                         </div>
+}
                     </div>
                     <div className=" my-10 pt-10 border-t border-gray-300">
-                        <h1 className="text-3xl font-bold mb-6 text-gray-800">
+                        <h1 className="text-4xl border-l-4 border-[#665bca] pl-4 font-bold mt-4 mb-8">
                             Completed Courses
-                        </h1>
+                        </h1> 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-2 gap-6">
                             {completedCourses.length <= 0 ? <CNotFound /> :
                                 completedCourses.map((enrollment) => {

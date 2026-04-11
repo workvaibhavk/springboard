@@ -21,8 +21,8 @@ const sanitiseColors = (root: HTMLElement) => {
 export const generateCertificatePDF = async (
     certificate: Certificate,
     course: Course,
-    elementId: string = 'certificate'
-): Promise<void> => {
+    elementId: string = 'certificate-infy'
+): Promise<void> => { 
     const html2canvas = (await import('html2canvas')).default;
     const { jsPDF } = await import('jspdf');
 

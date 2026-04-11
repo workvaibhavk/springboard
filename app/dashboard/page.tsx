@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import CNotFound from '@/page_components/conotfound'
 import LoadingComponent from '@/page_components/loady'
 import DNavbar from '@/page_components/DNavbar'
-import Special from '@/page_components/Special'
+// import Special from '@/page_components/Special'
 import Footer from '@/page_components/Footer'
 import { CircleDollarSign, CodeXml, Fingerprint, Sparkles, SplinePointer } from 'lucide-react'
 import { Course, CourseEnrollment, EnrollmentData } from "@/types";
@@ -85,7 +85,7 @@ export default function Page() {
             <ResAuthenticate />
             {!isLoaded || !user || loading ?
                 <LoadingComponent /> : <div>
-                    <Special />
+                    {/* <Special /> */}
                     <main className="">
                         <div className='h-[40vh] justify-center items-center flex flex-col gap-6 text-center w-11/12 md:w-10/12 mx-auto mt-32 mb-16'>
                             <h1 className=' text-4xl md:text-5xl capitalize font-medium md:font-semibold'>Which Skill To Conquer Today,  <span className='text-[#665bca] capitalize'> {user?.firstName} </span></h1>

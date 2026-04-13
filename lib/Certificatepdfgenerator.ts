@@ -64,6 +64,19 @@ export const generateCertificatePDF = async (
             img.style.width = '160px';
             img.style.paddingBottom = '2px';
         }
+        
+        //
+        
+        
+         if (img.alt === 'IvSpringboard') {
+            img.style.width = '250px';
+            // img.style.paddingBottom = '5px';
+        }
+        
+        if (img.alt === 'ISignature') {
+            img.style.width = '145px';
+            // img.style.paddingBottom = '2px';
+        }
     });
 
     sanitiseColors(clone);

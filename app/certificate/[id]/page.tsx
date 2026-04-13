@@ -6,7 +6,8 @@ import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import CertificateTemplate from "@/page_components/Certificatetemplate";
+// import CertificateTemplate from "@/page_components/Certificatetemplate";
+import BackToTopBtn from "@/page_components/backToTopBtn";
 import CertificateTemplateInfy from "@/page_components/CertificateTemplateInfy";
 import { generateCertificatePDF } from "@/lib/Certificatepdfgenerator";
 import LoadingComponent from "@/page_components/loady";
@@ -176,6 +177,7 @@ export default function Page() {
       />
 
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 py-12 px-4">
+        <BackToTopBtn />
         <div className="max-w-6xl mx-auto">
           <Link
             href={`/learn/${courseId}`}

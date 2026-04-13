@@ -1,7 +1,6 @@
 "use client";
-// import Special from '@/page_components/Special'
-import { supabase } from "@/lib/supabase";
 import { useUser } from "@clerk/nextjs";
+import BackToTopBtn from "@/page_components/backToTopBtn";
 import {
   BookOpen,
   ChevronLeft,
@@ -50,67 +49,54 @@ export default function CoursePreviewPage() {
     }
   }, [isLoaded, user]);
 
+  if (!user || !isLoaded) return;
+
   const fetchCourseData = async () => {
-    setLoading(true);
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `/api/get-course-details?courseId=${courseId}`,
+      );
 
-    const { data: courseData, error: courseError } = await supabase
-      .from("courses")
-      .select("*")
-      .eq("id", courseId)
-      .single();
-
-    if (courseError) {
-      console.error("Error fetching course:", courseError);
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `Server error: ${response.status}`);
+      }
+      const data = await response.json();
+      setCourse(data.course);
+      setModules(data.modules);
+      console.log("Course data:", data);
+    } catch (error) {
+      console.error("Failed fetching course data", error);
+    } finally {
       setLoading(false);
-      return;
-    } else {
-      setCourse(courseData);
-      console.log("Course data:", courseData);
     }
+  };
 
-    const { data: modulesData, error: modulesError } = await supabase
-      .from("modules")
-      .select("*")
-      .eq("course_id", courseId)
-      .order("order", { ascending: true });
+  const checkEnrollmentStatus = async () => {
+    try {
+      setBtnLoading(true);
+      const response = await fetch(
+        `/api/check-enrollment?courseId=${courseId}`,
+      );
+      const data = await response.json();
+      console.log("hii", data);
 
-    if (modulesError) {
-      console.error("Error fetching modules:", modulesError);
-    } else {
-      console.log("Modules data:", modulesData);
-      setModules(modulesData);
-    }
-
-    if (user) {
-      const { data: enrollmentData, error: enrollmentError } = await supabase
-        .from("enrollments")
-        .select("*")
-        .eq("user_id", user.id)
-        .eq("course_id", courseId)
-        .maybeSingle();
-
-      console.log("Checking enrollment for user:", user.id);
-      console.log("Course ID:", courseId);
-      console.log("Enrollment data:", enrollmentData);
-      console.log("Enrollment error:", enrollmentError);
-
-      if (enrollmentData) {
+      if (data.isEnrolled) {
         console.log("User is enrolled!");
         setIsEnrolled(true);
       } else {
-        console.log("User not enrolled!");
+        console.log("User not enrolled");
         setIsEnrolled(false);
       }
+    } catch (error) {
+      console.error("Error checking enrollment:", error);
+      setIsEnrolled(false);
+    } finally {
+      setBtnLoading(false);
     }
-    setLoading(false);
   };
-
   const handleEnroll = async () => {
-    if (!user) {
-      alert("Please sign in to enroll!");
-      return;
-    }
-
     if (isEnrolled) {
       router.push(`/learn/${courseId}`);
       return;
@@ -144,34 +130,9 @@ export default function CoursePreviewPage() {
     }
   };
 
-  if (!user) return;
-
-  const checkEnrollmentStatus = async () => {
-    try {
-      setBtnLoading(true);
-      const response = await fetch(
-        `/api/check-enrollment?courseId=${courseId}`,
-      );
-      const data = await response.json();
-      console.log("hii", data);
-
-      if (data.isEnrolled) {
-        console.log("User is enrolled!");
-        setIsEnrolled(true);
-      } else {
-        console.log("User not enrolled");
-        setIsEnrolled(false);
-      }
-    } catch (error) {
-      console.error("Error checking enrollment:", error);
-      setIsEnrolled(false);
-    } finally {
-      setBtnLoading(false);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-0">
+      <BackToTopBtn />
       <CAuthenticate />
       <div className="w-11/12 mx-auto">
         {loading ? (
@@ -197,9 +158,12 @@ export default function CoursePreviewPage() {
                   by {course.instructor}
                 </p>
 
-                <h1 className="text-2xl md:text-5xl font-bold mb-6">
-                  {course.title}
+                <h1 className="text-2xl md:text-5xl font-bold mb-2">
+                  {course?.title.split(":")[0]}
                 </h1>
+                <h2 className="text-xl md:text-2xl font-semibold mb-6">
+                  {course?.title.split(":")[1]}
+                </h2>
 
                 <div className="flex gap-4 md:gap-6 text-sm mb-4 font-semibold capitalize">
                   <span>

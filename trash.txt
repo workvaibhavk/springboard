@@ -30,7 +30,7 @@ export default function Special() {
                         </div>
                         Tap on Course Title to enable cheat
 
-                        <div className="">
+                        <div >
                             (9503984002 for queries)
                         </div>
                     </p>

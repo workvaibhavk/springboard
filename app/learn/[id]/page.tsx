@@ -4,6 +4,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
+import BackToTopBtn from "@/page_components/backToTopBtn";
 import VideoPlayer from "@/components/VideoPlayer";
 import ModuleList from "@/components/ModuleList";
 import LoadingComponent from "@/page_components/loady";
@@ -70,7 +71,7 @@ export default function LearnPage() {
     [],
   );
 
-  const [isCheatOpen, setIsCheatOpen] = useState<boolean>(false);
+  const [isCheatOpen, setIsCheatOpen] = useState<boolean>(true);
 
   const OpenCheat = () => {
     if (isCheatOpen) {
@@ -206,6 +207,7 @@ export default function LearnPage() {
       ) : (
         <>
           <DNavbar />
+          <BackToTopBtn />
           {/* <Special /> */}
           {toast && (
             <Toast

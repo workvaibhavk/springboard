@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { Certificate, Course, CourseEnrollment, ModuleProgress } from "@/types";
 import CertificateTemplateInfy from "@/page_components/CertificateTemplateInfy";
 import { generateCertificatePDF } from "@/lib/Certificatepdfgenerator";
+import BackToTopBtn from "@/page_components/backToTopBtn";
 import {
   DownloadIcon,
   ChevronDownIcon,
@@ -209,6 +210,7 @@ export default function Page() {
 
   return (
     <div className="p-8 rounded-lg shadow-md w-full">
+      <BackToTopBtn />
       <h1 className="text-3xl font-bold">Admin Users Page</h1>
       <p className="mt-4 text-gray-600">
         This is the admin users page. Here you can manage all the users of the

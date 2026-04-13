@@ -79,7 +79,7 @@ export default function CertificateTemplateInfy({
 
             <Image
               src="/infy.png"
-              alt="vSpringboard"
+              alt="IvSpringboard"
               width={288}
               height={51}
               className="object-contain mx-auto"
@@ -99,7 +99,7 @@ export default function CertificateTemplateInfy({
                 <div className="max-w-lg">
                   <Image
                     src="/sign.png"
-                    alt="vSpringboard"
+                    alt="ISignature"
                     width={150}
                     height={68}
                     className="object-contain mx-auto"
@@ -112,8 +112,8 @@ export default function CertificateTemplateInfy({
                     className="text-[12px] leading-none text-gray-600"
                   >
                     Satheesha B. Nanjappa <br /> Senior Vice President and Head{" "}
-                    <br className="" /> Education, Training and Assesment{" "}
-                    <br className="" /> Infosys Limited
+                    <br /> Education, Training and Assesment <br /> Infosys
+                    Limited
                   </p>
                 </div>
               </div>

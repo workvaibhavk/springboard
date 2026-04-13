@@ -96,23 +96,19 @@ export default function VideoPlayer({ currentModule, onHasWatched90Percent }) {
   return (
     <div
       id="player-container"
-      className="group relative w-full aspect-video bg-black overflow-hidden rounded-xl cursor-default"
+      onClick={togglePlayPause}
+      className="group relative w-full aspect-video bg-black overflow-hidden rounded-xl"
     >
-      <div
-        className="absolute inset-0 z-10 bg-black/20"
-        onClick={togglePlayPause}
-      >
-        {isPlaying ? null : (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <button
-              onClick={togglePlayPause}
-              className="x w-20 h-20 flex items-center justify-center bg-gray-600 hover:bg-gray-700 rounded-full transition-all transform hover:scale-110"
-            >
-              <PlayIcon size={40} fill="white" className="text-white ml-1" />
-            </button>
-          </div>
-        )}
-      </div>
+      {/* {isPlaying ? null : (
+        <div className="absolute inset-0 flex items-center justify-center ">
+          <button
+            onClick={togglePlayPause}
+            className="x w-20 h-20 flex items-center justify-center bg-gray-600 hover:bg-gray-700 rounded-full transition-all transform hover:scale-110"
+          >
+            <PlayIcon size={40} fill="white" className="text-white ml-1" />
+          </button>
+        </div>
+      )} */}
 
       <div
         id="youtube-player"
@@ -120,7 +116,7 @@ export default function VideoPlayer({ currentModule, onHasWatched90Percent }) {
         style={{ display: showPlayer ? "block" : "none" }}
       />
 
-      {playerLoading && (
+      {showPlayer && playerLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-black z-10">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white" />
         </div>
@@ -160,6 +156,7 @@ export default function VideoPlayer({ currentModule, onHasWatched90Percent }) {
           opacity: 0,
           pointerEvents: showPlayer ? "auto" : "none",
         }}
+        onClick={(e) => e.stopPropagation()} // 👈 add this
         onMouseEnter={(e) =>
           showPlayer && (e.currentTarget.style.opacity = "1")
         }
@@ -174,6 +171,9 @@ export default function VideoPlayer({ currentModule, onHasWatched90Percent }) {
             max={duration || 100}
             value={currentTime}
             onChange={handleSeek}
+            style={{
+              background: `linear-gradient(to right, #665bcaa8 ${watchedPercentage}%, rgba(255, 255, 255, 0.3) ${watchedPercentage}%)`,
+            }}
             className="w-full h-1.5 bg-white/30 rounded-lg appearance-none cursor-pointer accent-white hover:h-2 transition-all"
           />
         </div>

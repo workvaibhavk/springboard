@@ -11,7 +11,7 @@
 
 //     return (
 //         <div className="w-full flex justify-center px-4 py-3 bg-green-50 border-b border-green-200">
-//             {isAdmin ? ( 
+//             {isAdmin ? (
 //                 <Link
 //                     href="/subadmin/users"
 //                     className="flex items-center gap-3 bg-white border border-green-300 px-6 py-3 rounded-xl shadow-sm hover:shadow-md transition-all duration-300"
@@ -29,7 +29,7 @@
 //                         </div>
 //                         Tap on Course Title to enable cheat
 
-//                         <div className="">
+//                         <div >
 //                             (9503984002 for queries)
 //                         </div>
 //                     </p>

@@ -1,4 +1,5 @@
 "use client";
+import { Metadata } from "next";
 import { useUser } from "@clerk/nextjs";
 import BackToTopBtn from "@/page_components/backToTopBtn";
 import {
@@ -14,9 +15,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Course, Module } from "@/types";
+import { Course, Module, Props } from "@/types";
 import CAuthenticate from "@/page_components/cauth";
 import LoadingComponent from "@/page_components/loady";
+import { supabase } from "@/lib/supabase";
 
 function parsePostgresArray(
   pgArray: string | string[] | null | undefined,
@@ -29,6 +31,41 @@ function parsePostgresArray(
     .split(",")
     .map((item) => item.trim())
     .filter((item) => item.length > 0); // Remove empty strings
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { data: course } = (await supabase
+    .from("courses")
+    .select("title, description, thumbnail_url")
+    .eq("id", params.id)
+    // .single();
+    .single()) as { data: Course | null };
+
+  if (!course) {
+    return { title: "Course Not Found | vSpringboard" };
+  }
+
+  return {
+    title: `${course.title} | vSpringboard`,
+    description:
+      course.description ||
+      `Learn ${course.title} on vSpringboard. Build your developer skills with hands-on projects.`,
+    openGraph: {
+      title: course.title,
+      description: course.description,
+      images: [course.thumbnail_url || "/default-og-image.png"],
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: course.title,
+      description: course.description,
+      images: [course.thumbnail_url || "/default-og-image.png"],
+    },
+    alternates: {
+      canonical: `https://vspringboard.vercel.app/course/${params.id}`,
+    },
+  };
 }
 
 export default function CoursePreviewPage() {
@@ -72,6 +109,22 @@ export default function CoursePreviewPage() {
       setLoading(false);
     }
   };
+  // <script
+  //   type="application/ld+json"
+  //   dangerouslySetInnerHTML={{
+  //     __html: JSON.stringify({
+  //       "@context": "https://schema.org",
+  //       "@type": "Course",
+  //       name: course.title,
+  //       description: course.description,
+  //       provider: {
+  //         "@type": "Organization",
+  //         name: "vSpringboard",
+  //         sameAs: "https://vspringboard.vercel.app",
+  //       },
+  //     }),
+  //   }}
+  // />;
 
   const checkEnrollmentStatus = async () => {
     try {

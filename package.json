@@ -7,9 +7,8 @@
     "dev:fix": "npx kill-port 3000 || true && next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "postbuild": "next-sitemap"
-  },
+    "lint": "eslint"
+    },
   "dependencies": {
     "@clerk/nextjs": "^6.36.5",
     "@fortawesome/fontawesome-svg-core": "^7.1.0",

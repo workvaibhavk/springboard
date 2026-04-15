@@ -5,12 +5,12 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "i.ytimg",
+        hostname: "i.ytimg.com",
         pathname: "/**",
       },
       {
         protocol: "https",
-        hostname: "img.clerk",
+        hostname: "img.clerk.com",
         pathname: "/**",
       },
     ],
@@ -18,16 +18,18 @@ const nextConfig: NextConfig = {
 
   // Explicit Turbopack config (prevents the error)
   turbopack: {},
-// productionBrowserSourceMaps: true
+  // productionBrowserSourceMaps: true
 
-async redirects() {
-  return [{
-    source: '/:path*',
-    has: [{ type: 'host', value: 'www.vspringboard.vercel.app' }],
-    destination: 'https://vspringboard.vercel.app/:path*',
-    permanent: true,
-  }]
-}
+  async redirects() {
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "www.vspringboard.vercel.app" }],
+        destination: "https://vspringboard.vercel.app/:path*",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

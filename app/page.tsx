@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Navbar from "@/page_components/Navbar";
@@ -6,9 +7,78 @@ import BackToTopBtn from "@/page_components/backToTopBtn";
 import Ctabtn from "@/page_components/landing/Ctabtn";
 import Authenticate from "@/page_components/auth";
 
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "vSpringboard | Master New Skills Online",
+    description:
+      "Join 42,000+ learners on vSpringboard. Discover tailored courses in tech, design, and more — learn at your own pace with expert instructors.",
+    keywords: [
+      "online learning",
+      "skill development",
+      "courses",
+      "vSpringboard",
+      "e-learning",
+    ],
+    openGraph: {
+      title: "vSpringboard | Master New Skills Online",
+      description:
+        "Join 42,000+ learners on vSpringboard. Discover tailored courses and grow at your own pace.",
+      url: "https://vspringboard.vercel.app",
+      siteName: "vSpringboard",
+      images: [
+        {
+          url: "https://vspringboard.vercel.app/og-image.png", // create a proper OG image
+          width: 1200,
+          height: 630,
+          alt: "vSpringboard — Online Learning Platform",
+        },
+      ],
+      type: "website",
+      locale: "en_US",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "vSpringboard | Master New Skills Online",
+      description:
+        "Join 42,000+ learners on vSpringboard. Discover tailored courses and grow at your own pace.",
+      images: ["https://vspringboard.vercel.app/og-image.png"],
+      // creator: "@yourTwitterHandle", // add if you have one
+    },
+    alternates: {
+      canonical: "https://vspringboard.vercel.app",
+    },
+    metadataBase: new URL("https://vspringboard.vercel.app"),
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+      },
+    },
+  };
+}
+
 export default function Page() {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "vSpringboard",
+    url: "https://vspringboard.vercel.app",
+    description: "Online learning platform for skill development",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: "https://vspringboard.vercel.app/courses?q={search_term_string}",
+      "query-input": "required name=search_term_string",
+    },
+  };
   return (
     <div className="overflow-x-hidden bg-[#fff]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Authenticate />
       <Navbar />
       <BackToTopBtn />

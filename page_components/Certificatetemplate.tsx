@@ -5,7 +5,7 @@ import { Certificate, Course } from '@/types';
 interface CertificateTemplateProps {
     certificate: Certificate;
     course: Course;
-}
+} 
 
 export default function CertificateTemplate({ certificate, course }: CertificateTemplateProps) {
     return (

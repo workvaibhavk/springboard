@@ -21,8 +21,8 @@ const sanitiseColors = (root: HTMLElement) => {
 export const generateCertificatePDF = async (
     certificate: Certificate,
     course: Course,
-    elementId: string = 'certificate'
-): Promise<void> => {
+    elementId: string = 'certificate-infy'
+): Promise<void> => { 
     const html2canvas = (await import('html2canvas')).default;
     const { jsPDF } = await import('jspdf');
 
@@ -63,6 +63,19 @@ export const generateCertificatePDF = async (
         if (img.alt === 'Signature') {
             img.style.width = '160px';
             img.style.paddingBottom = '2px';
+        }
+        
+        //
+        
+        
+         if (img.alt === 'IvSpringboard') {
+            img.style.width = '250px';
+            // img.style.paddingBottom = '5px';
+        }
+        
+        if (img.alt === 'ISignature') {
+            img.style.width = '145px';
+            // img.style.paddingBottom = '2px';
         }
     });
 

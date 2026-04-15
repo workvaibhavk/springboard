@@ -56,7 +56,7 @@ const Footer = () => {
                             <Link href="#" className="text-gray-300 hover:text-white transition-colors duration-200 text-sm">Careers</Link>
                             <Link href="#" className="text-gray-300 hover:text-white transition-colors duration-200 text-sm">Blog</Link>
                             <Link href="#" className="text-gray-300 hover:text-white transition-colors duration-200 text-sm">Contact</Link>
-                            <Link href="/credibility" className="text-gray-400 hover:text-white transition-colors duration-200">Credibility</Link>
+                           
                         </div>
 
                         <div className='flex flex-col space-y-4 min-w-[140px]'>
@@ -77,6 +77,7 @@ const Footer = () => {
                         <Link href="/privacy" className="text-gray-400 hover:text-white transition-colors duration-200">Privacy Policy</Link>
                         <Link href="/terms" className="text-gray-400 hover:text-white transition-colors duration-200">Terms of Service</Link>
                         <Link href="/cookies" className="text-gray-400 hover:text-white transition-colors duration-200">Cookie Policy</Link>
+                         <Link href="/credibility" className="text-gray-400 hover:text-white transition-colors duration-200">Credibility</Link>
                     </div>
                 </div>
             </div>

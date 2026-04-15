@@ -1,9 +1,6 @@
 import { supabase } from '@/lib/supabase';
 import type { Course, Module, ProgressData } from '@/types/learning';
-interface ApiErrorResponse {
-    error?: string;
-    message?: string;
-}
+import { ApiErrorResponse } from '@/types'
 
 class CourseApiError extends Error {
     status?: number;

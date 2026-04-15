@@ -1,5 +1,3 @@
-// types/course.ts
-
 export type DifficultyLevel = 'beginner' | 'intermediate' | 'advanced';
 
 export type CourseCategory =

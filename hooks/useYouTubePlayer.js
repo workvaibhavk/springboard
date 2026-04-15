@@ -19,8 +19,7 @@ export function useYouTubePlayer(videoId, shouldInitialize = false) {
         if (!window.YT) {
             const tag = document.createElement('script');
             tag.src = 'https://www.youtube.com/iframe_api';
-            const firstScriptTag = document.getElementsByTagName('script')[0];
-            firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
+            document.head.appendChild(tag);
         }
     }, []);
 
@@ -207,7 +206,7 @@ export function useYouTubePlayer(videoId, shouldInitialize = false) {
             player.seekTo(newTime, true);
         } else {
             console.log('⏭️ Please watch the video. Fast-forwarding is disabled.');
-            // player.seekTo(newTime, true);
+            player.seekTo(newTime, true);
         }
     }, [player]);
 

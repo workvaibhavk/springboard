@@ -16,7 +16,7 @@ import {
   Sparkles,
   SplinePointer,
 } from "lucide-react";
-import { Course, CourseEnrollment, EnrollmentData } from "@/types";
+import { Course, CourseEnrollment, EnrollmentData, Card } from "@/types";
 import Link from "next/link";
 import ResAuthenticate from "@/page_components/resauth";
 
@@ -93,6 +93,14 @@ export default function Page() {
     fetchFeaturedCourses();
   }, [user, isLoaded]);
 
+  const categories = [
+    { name: "Design", icon: SplinePointer },
+    { name: "Cyber Security", icon: Fingerprint },
+    { name: "Business", icon: CircleDollarSign },
+    { name: "Artificial Intelligence", icon: Sparkles },
+    { name: "Programming", icon: CodeXml },
+  ];
+
   return (
     <>
       <DNavbar />
@@ -105,43 +113,27 @@ export default function Page() {
           {/* <Special /> */}
           <main>
             <div className="h-[40vh] justify-center items-center flex flex-col gap-6 text-center w-11/12 md:w-10/12 mx-auto mt-32 mb-16">
-              <h1 className=" text-4xl md:text-5xl capitalize font-medium md:font-semibold">
+              <h1 className=" text-4xl md:text-5xl capitalize font-semibold pt-0">
                 Which Skill To Conquer Today,{" "}
-                <span className="text-[#665bca] capitalize">
-                  {" "}
-                  {user?.firstName}{" "}
-                </span>
+                <span className="text-[#665bca]"> {user?.firstName} </span>
               </h1>
 
-              <p className="w-9/12 md:w-6/12 text-gray-600">
+              <p className="w-10/12 md:w-6/12 text-gray-600">
                 Join a global community of learners and experts. From
                 foundational concepts to advanced mastery, discover tailored
                 learning paths that empower you to grow at your own pace
               </p>
 
-              <div className=" grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6 mb-16 grid-flow-dense">
-                <div className=" flex gap-2 bg-[#E9E9E9] py-1 px-3 rounded-3xl  items-center justify-center text-[#000000d4] ">
-                  <SplinePointer width={20} height={20} />
-                  <span className="font-medium text-sm">Design</span>
-                </div>
-                <div className="flex gap-2 bg-[#E9E9E9] py-1 px-3 rounded-3xl  items-center justify-center text-[#000000d4] ">
-                  <Fingerprint width={20} height={20} />
-                  <span className="font-medium text-sm">Cyber Security</span>
-                </div>
-                <div className="flex gap-2 bg-[#E9E9E9] py-1 px-3 rounded-3xl  items-center justify-center text-[#000000d4] ">
-                  <CircleDollarSign width={20} height={20} />
-                  <span className="font-medium text-sm">Business</span>
-                </div>
-                <div className="flex gap-2 bg-[#E9E9E9] py-1 px-3 rounded-3xl  items-center justify-center text-[#000000d4] ">
-                  <Sparkles width={20} height={20} />
-                  <span className="font-medium text-sm">
-                    Artificial Intelligence
-                  </span>
-                </div>
-                <div className="flex gap-2 bg-[#E9E9E9] py-1 px-3 rounded-3xl  items-center justify-center text-[#000000d4] ">
-                  <CodeXml width={20} height={20} />
-                  <span className="font-medium text-sm">Programming</span>
-                </div>
+              <div className="flex flex-wrap justify-center gap-3 md:gap-4 mb-16 ">
+                {categories.map((card: Card) => (
+                  <div
+                    key={card.name}
+                    className=" flex gap-2 bg-[#E9E9E9] py-1 px-3 rounded-3xl  items-center justify-center text-[#000000d4] "
+                  >
+                    <card.icon width={20} height={20} />
+                    <span className="font-medium text-sm">{card.name}</span>
+                  </div>
+                ))}
               </div>
             </div>
 

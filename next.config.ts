@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  allowedDevOrigins: ["192.168.0.104", "localhost:3000"],
+
   images: {
     remotePatterns: [
       {
@@ -15,6 +17,12 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+
+  // experimental: {
+  //   // If you're trying to fix Server Action origin issues:
+  //   serverActions: {
+  //   },
+  // },
 
   // Explicit Turbopack config (prevents the error)
   turbopack: {},

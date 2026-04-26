@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 import CAuthenticate from "@/page_components/cauth";
 import LoadingComponent from "@/page_components/loady";
 import { Course, Module } from "@/types";
+import Back from "./Back";
 
 function parsePostgresArray(
   pgArray: string | string[] | null | undefined,
@@ -148,7 +149,7 @@ export default function CoursePreviewPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-0">
+    <div className="min-h-screen bg-gray-50 py-10 px-0">
       <BackToTopBtn />
       <CAuthenticate />
       <div className="w-11/12 mx-auto">
@@ -156,6 +157,8 @@ export default function CoursePreviewPage() {
           <LoadingComponent />
         ) : course ? (
           <div>
+            <Back href="/courses">Back to courses</Back>
+
             {/* <Special /> */}
             <div className="flex flex-col md:flex-row gap-6 mb-6">
               <div className="md:w-2/5">
@@ -175,26 +178,26 @@ export default function CoursePreviewPage() {
                   by {course.instructor}
                 </p>
 
-                <h1 className="text-2xl md:text-5xl font-bold mb-2">
-                  {course?.title.split(":")[0]}
+                <h1 className="text-3xl leading-none md:text-5xl font-bold mb-2">
+                  <b>{course?.title.split(":")[0]}</b>
                 </h1>
-                <h2 className="text-xl md:text-2xl font-semibold mb-6">
+                <h2 className="text-xl md:text-2xl leading-none font-semibold mb-6">
                   {course?.title.split(":")[1]}
                 </h2>
 
                 <div className="flex gap-4 md:gap-6 text-sm mb-4 font-semibold capitalize">
-                  <span>
-                    <Film className="inline mr-1 size-6 text-[#665bca]" />{" "}
+                  <span className="rounded-md border border-gray-600 px-3 py-2">
+                    <Film className="inline mr-1 size-5 text-[#665bca]" />{" "}
                     {modules.length} Modules
                   </span>
-                  <span>
-                    <Clock className="inline mr-1 size-6 text-[#665bca]" />{" "}
+                  <span className="rounded-md border border-gray-600 px-3 py-2">
+                    <Clock className="inline mr-1 size-5 text-[#665bca]" />{" "}
                     {Math.floor(course.total_duration_seconds / 3600)}hr{" "}
                     {Math.floor((course.total_duration_seconds % 3600) / 60)}min
                   </span>
-                  <span>
-                    <Zap className="inline mr-1 size-6 text-[#665bca]" />{" "}
-                    {course.level}
+                  <span className="rounded-md border border-gray-600 px-3 py-2">
+                    <Zap className="inline mr-1 size-5 text-[#665bca]" />{" "}
+                    {course.level == "intermediate" ? "medium" : course.level}
                   </span>
                 </div>
 
@@ -217,7 +220,7 @@ export default function CoursePreviewPage() {
                     ))}
                 </div>
 
-                <div className="my-4">
+                <div className="my-4 flex items-center justify-cente gap-4">
                   {isEnrolled ? (
                     <Link href={`/learn/${courseId}`}>
                       <button
@@ -236,19 +239,21 @@ export default function CoursePreviewPage() {
                       disabled={btnLoading}
                       className="w-full flex items-center justify-center md:w-auto px-8 py-3 bg-[#665bca]  text-white rounded-2xl font-semibold text-lg transition-colors cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed"
                     >
-                      {btnLoading && (
+                      {btnLoading ? (
                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#665bca]"></div>
-                      )}
-                      Enroll Now <MoveRight className="inline ml-2" />
+                      ) : <>    Enroll Now <MoveRight className="inline ml-2" /> </> 
+                       }
                     </button>
                   )}
+
+                  <span className="">Free to enroll</span>
                 </div>
               </div>
             </div>
 
             {course.description && (
               <div className="mb-10 bg-white px-6 md:px-12 py-6 rounded-2xl shadow-md">
-                <h2 className="text-3xl font-bold py-2 mb-4">
+                <h2 className="text-3xl font-bold py-2 mb-4 capitalize">
                   About this course
                 </h2>
                 <p className="text-lg text-gray-700">
@@ -259,8 +264,11 @@ export default function CoursePreviewPage() {
             )}
             <div className="mb-10">
               <h2 className="text-3xl font-bold mb-8">
-                <BookOpen className="inline mr-2 size-8 text-[#665bca]" />{" "}
-                Course Content <br /> ({modules.length} modules)
+                Course Content
+                <span className="text-xl font-semibold ">
+                  {" - "}
+                  {modules.length} modules{" "}
+                </span>
               </h2>
 
               <div className="space-y-4">
@@ -280,10 +288,10 @@ export default function CoursePreviewPage() {
                     </div>
 
                     <div className="flex-grow">
-                      <p className="font-bold text-xl text-[#665bca] mb-1">
+                      <p className="font-semibold text-lg text-[#665bca]">
                         Lecture {module.order}
                       </p>{" "}
-                      <p className="font-semibold text-lg text-gray-900">
+                      <p className="font-bold text-xl text-gray-900">
                         {module.title}
                       </p>
                       <p className="text-sm text-gray-600 mt-1">

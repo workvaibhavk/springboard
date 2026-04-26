@@ -1,16 +1,21 @@
 import { Metadata } from "next";
 import { Course, Props } from "@/types";
-import { supabase } from "@/lib/supabase";
+import { supabaseAdmin as supabase } from "@/lib/supabase-admin";
 import CoursePreviewPage from "@/page_components/CoursePage";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { data: course } = (await supabase
+  const { Id } = await params;
+  console.log("Generating metadata for course ID:", Id);
+  const { data: course, error: courseError } = (await supabase
     .from("courses")
     .select("title, description, thumbnail_url")
-    .eq("id", params.id)
-    .single()) as { data: Course | null };
+    .eq("id", Id)
+    .single()) as { data: Course | null; error: Error | null };
 
-  if (!course) {
+  console.log("Course data for metadata:", course);
+
+  if (!course || courseError) {
+    console.error("Error fetching course data:", courseError);
     return {
       title: "Course Not Found | vSpringboard",
       robots: { index: false },
@@ -37,7 +42,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       images: image,
     },
     alternates: {
-      canonical: `https://vspringboard.vercel.app/course/${params.id}`,
+      canonical: `https://vspringboard.vercel.app/course/${Id}`,
     },
   };
 }

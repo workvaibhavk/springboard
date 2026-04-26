@@ -2,7 +2,7 @@ import { supabase } from "@/lib/supabase";
 import { Course } from "@/types";
 
 export default async function sitemap() {
-  const baseUrl = "vspringboard.vercel.app";
+  const baseUrl = "https://vspringboard.vercel.app";
 
   const { data: courses } = await supabase
     .from("courses")

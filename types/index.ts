@@ -25,7 +25,7 @@ export interface Module {
 }
 
 export interface Props {
-  params: { id: string };
+  params: Promise<{ Id: string }>;
 }
 
 export interface CourseEnrollment {
@@ -131,4 +131,9 @@ export interface ToastProps {
 export interface ApiErrorResponse {
   error?: string;
   message?: string;
+}
+
+export interface Card {
+  name: string;
+  icon: React.FC<{ width: number; height: number }>;
 }

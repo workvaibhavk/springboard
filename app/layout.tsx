@@ -27,10 +27,10 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html className="bg-[#fff]" lang="en" suppressHydrationWarning>
-        <meta
-          name="google-site-verification"
-          content="srD7ijcCDigxyOM90GocIsgc0wetQJy4WwQS2g2YJE8"
-        />
+        {/* <meta */}
+        {/* name="google-site-verification" */}
+        {/* content="srD7ijcCDigxyOM90GocIsgc0wetQJy4WwQS2g2YJE8" */}
+        {/* /> */}
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
           suppressHydrationWarning

@@ -78,6 +78,11 @@ export default function Page() {
         },
         body: JSON.stringify({ featuredCourseIds: Featured }),
       });
+      if (!response.ok) {
+        console.warn(`Server responded with ${response.status}`);
+        setFeaturedCourses([]);
+        return;
+      }
       const data = await response.json();
       console.log("Featured Courses:", data);
       setFeaturedCourses(data.featuredCourses);
@@ -142,9 +147,9 @@ export default function Page() {
                 Featured Courses
               </h2>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {featuredCourses.length > 0 ? (
-                  featuredCourses.map((course) => {
+              {featuredCourses.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {featuredCourses.map((course) => {
                     return (
                       <div
                         key={course.id}
@@ -223,11 +228,11 @@ export default function Page() {
                         </div>
                       </div>
                     );
-                  })
-                ) : (
-                  <CNotFound />
-                )}
-              </div>
+                  })}
+                </div>
+              ) : (
+                <CNotFound />
+              )}
 
               <h2 className="text-4xl border-l-4 border-[#665bca] pl-4 font-bold mt-20 mb-8">
                 Enrolled Courses

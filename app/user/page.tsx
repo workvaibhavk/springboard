@@ -42,6 +42,14 @@ export default function Page() {
     try {
       setLoading(true);
       const response = await fetch("/api/get-user-courses-data");
+
+      if (!response.ok) {
+        console.warn(`Server responded with ${response.status}`);
+        setEnrolledCourses([]);
+        setCompletedCourses([]);
+        return;
+      }
+
       const data: EnrollmentData = await response.json();
       console.log("Enrolled Courses:", data);
       setEnrolledCourses(data.userInprogressCourses);
@@ -154,11 +162,11 @@ export default function Page() {
             <h1 className="text-4xl border-l-4 border-[#665bca] pl-4 font-bold mt-4 mb-8">
               Completed Courses
             </h1>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-2 gap-6">
-              {completedCourses.length <= 0 ? (
-                <CNotFound />
-              ) : (
-                completedCourses.map((enrollment) => {
+            {completedCourses.length <= 0 ? (
+              <CNotFound />
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-2 gap-6">
+                {completedCourses.map((enrollment) => {
                   const course = enrollment.courses;
                   return (
                     <div
@@ -235,9 +243,9 @@ export default function Page() {
                       </div>
                     </div>
                   );
-                })
-              )}
-            </div>
+                })}
+              </div>
+            )}
           </div>
         </div>
       )}

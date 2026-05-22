@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import { ClerkProvider } from "@clerk/nextjs";
+import GoogleAnalytics from "../page_components/GoogleAnalytics";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,6 +32,7 @@ export default function RootLayout({
         {/* name="google-site-verification" */}
         {/* content="srD7ijcCDigxyOM90GocIsgc0wetQJy4WwQS2g2YJE8" */}
         {/* /> */}
+        {/* <head > */} {/* </head> */}
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
           suppressHydrationWarning
@@ -41,6 +43,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
+            <GoogleAnalytics />
             {children}
           </ThemeProvider>
         </body>

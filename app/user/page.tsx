@@ -61,6 +61,19 @@ export default function Page() {
     }
   };
 
+  const [payLink,setPayLink] = useState("https://culturepay.vercel.app/")
+
+  useEffect(()=>{
+fetch("/api/get-enrollment")
+.then((res) => res.json())
+.then((data) => {
+  if (data.enrollmentNo){
+    // setPayLink(`https://culturepay.vercel.app/?enr=${data.enrollmentNo}`)
+        setPayLink(`https://culturepay.vercel.app/?enr=${data.enrollmentNo}`)
+  }
+})
+  },[])
+
   return (
     <div>
       <DNavbar />
@@ -69,6 +82,34 @@ export default function Page() {
         <LoadingComponent />
       ) : (
         <div className="min-h-screen space-y-6 w-11/12 mx-auto pt-6 pb-10">
+
+<div className="flex md:flex-row flex-col bg-black justify-around items-center py-6 px-4 rounded-2xl">
+  <div className="flex justify-around items-center py-6 px-4 rounded-2xl">
+  <Image src="/cpay.jpeg" width={200} height={200} alt="CPay" className="max-w-24"/>
+  
+  <div className=""></div>
+  
+  <div className="text-[#fff] font-bold text-sm md:text-xl flex justify-center flex-col text-center">
+    <p className="opacity-50">Computer Networks</p>
+    <p className="opacity-50">RJ45 Payment</p>
+    <p className="text-green-600">5.68 Rs</p>
+  </div>
+    </div>
+
+  
+  <div className="">
+    <Link 
+      href={payLink} 
+      className="relative inline-block overflow-hidden bg-[#111111] text-white rounded-full px-6 py-3 transition-all duration-300 cursor-pointer text-[20px] font-medium group"
+    >
+      <span className="relative z-10">Pay through Culture Pay?</span>
+      
+      {/* Fixed Overlay */}
+      <span className="absolute inset-0 w-full h-full -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out bg-gradient-to-r from-transparent via-white/20 to-transparent"></span>
+    </Link>
+  </div>
+</div>
+
           <div>
             <h1 className="text-4xl border-l-4 border-[#665bca] pl-4 font-bold mt-4 mb-8 ">
               Continue Learning

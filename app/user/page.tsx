@@ -1,5 +1,6 @@
 "use client";
 
+import CAuthenticate from "@/page_components/cauth";
 import DNavbar from "@/page_components/DNavbar";
 import BackToTopBtn from "@/page_components/backToTopBtn";
 import Footer from "@/page_components/Footer";
@@ -77,6 +78,7 @@ fetch("/api/get-enrollment")
   return (
     <div>
       <DNavbar />
+      <CAuthenticate />
       <BackToTopBtn />
       {loading ? (
         <LoadingComponent />
@@ -100,9 +102,9 @@ fetch("/api/get-enrollment")
   <div className="">
     <Link 
       href="https://rzp.io/rzp/BOmZyI0"
-      className="relative inline-block overflow-hidden bg-[#111111] text-white rounded-full px-6 py-3 transition-all duration-300 cursor-pointer text-[20px] font-medium group"
+      className="relative inline-block overflow-hidden bg-[#4e4e4e] font-semibold border-2 border-black text-white rounded-full px-6 py-3 transition-all duration-300 cursor-pointer text-[20px] font-medium group"
     >
-      <span className="relative z-10">Pay through Culture Pay?</span>
+      <span className="relative z-10">Pay Online</span>
       
       {/* Fixed Overlay */}
       <span className="absolute inset-0 w-full h-full -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out bg-gradient-to-r from-transparent via-white/20 to-transparent"></span>

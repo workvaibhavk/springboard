@@ -119,7 +119,7 @@ fetch("/api/get-enrollment")
     </Link>
   </div>
 
- {paymentStatus == "success" ? <p className="bg-green-600 rounded-xl"> Payment Successful </p> : <p className="bg-red-600 rounded-md"> Payment Due </p>
+ {paymentStatus == "success" ? <p className="bg-green-600 rounded-xl"> Payment Successful </p> : <p className="bg-red-600 rounded-md"> Payment Due </p> }
 </div>
 
           <div>

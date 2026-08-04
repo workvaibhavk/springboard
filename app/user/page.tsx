@@ -121,7 +121,30 @@ fetch("/api/get-enrollment")
     </Link>
   </div>
 
- {paymentStatus == "success" ? <p className="bg-green-600 rounded-xl"> Payment Successful </p> : <p className="bg-red-600 rounded-md"> Payment Due </p> }
+ <div className="mt-4">
+  {paymentStatus === "success" ? (
+    <div className="inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 text-green-700 font-semibold border border-green-300">
+      <span>✅</span>
+      <span>Payment Successful</span>
+    </div>
+  ) : paymentStatus === "pending" ? (
+    <div className="inline-flex items-center gap-2 rounded-full bg-yellow-100 px-4 py-2 text-yellow-700 font-semibold border border-yellow-300">
+      <span>⏳</span>
+      <span>Payment Pending</span>
+    </div>
+  ) : paymentStatus === "failed" ? (
+    <div className="inline-flex items-center gap-2 rounded-full bg-red-100 px-4 py-2 text-red-700 font-semibold border border-red-300">
+      <span>❌</span>
+      <span>Payment Failed</span>
+    </div>
+  ) : (
+    <div className="inline-flex items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-gray-700 font-semibold border border-gray-300">
+      <span>💳</span>
+      <span>Payment Due</span>
+    </div>
+  )}
+</div>
+  
 </div>
 
           <div>

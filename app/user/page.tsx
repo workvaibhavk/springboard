@@ -85,7 +85,7 @@ fetch("/api/get-enrollment")
 
 <div className="flex md:flex-row flex-col bg-black justify-around items-center py-6 px-4 rounded-2xl">
   <div className="flex justify-around items-center py-6 px-4 rounded-2xl">
-  <Image src="/Cpay.jpeg" width={200} height={200} alt="CPay" className="max-w-24"/>
+  <Image src="/cpay.jpeg" width={200} height={200} alt="CPay" className="max-w-24"/>
   
   <div className=""></div>
   

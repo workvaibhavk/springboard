@@ -35,6 +35,14 @@ export default function Page() {
     [],
   );
 
+  useEffect(()=> {
+if(!isLoaded || !user) return;
+
+    if (isLoaded && user){
+      const paymentStatus = user.publicMetadata.payment;
+    }
+  },[isLoaded, user]);
+
   useEffect(() => {
     fetchEnrolledCourses();
   }, [user, isLoaded]);
@@ -110,6 +118,8 @@ fetch("/api/get-enrollment")
       <span className="absolute inset-0 w-full h-full -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out bg-gradient-to-r from-transparent via-white/20 to-transparent"></span>
     </Link>
   </div>
+
+ {paymentStatus == "success" ? <p className="bg-green-600 rounded-xl"> Payment Successful </p> : <p className="bg-red-600 rounded-md"> Payment Due </p>
 </div>
 
           <div>

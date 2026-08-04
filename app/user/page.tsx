@@ -27,6 +27,7 @@ function parsePostgresArray(
 
 export default function Page() {
   const { user, isLoaded } = useUser();
+  const [paymentStatus, setPaymentStatus] = useState("");
   const [loading, setLoading] = useState(true);
   const [enrolledCourses, setEnrolledCourses] = useState<CourseEnrollment[]>(
     [],
@@ -39,7 +40,8 @@ export default function Page() {
 if(!isLoaded || !user) return;
 
     if (isLoaded && user){
-      const paymentStatus = user.publicMetadata.payment;
+      const paymentStat = user.publicMetadata.payment;
+    setPaymentStatus(paymentStat);
     }
   },[isLoaded, user]);
 

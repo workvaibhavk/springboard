@@ -165,3 +165,93 @@ footer * {
 .ytp-show-cards-title {
   display: none !important;
 }
+
+/* Container styling */
+.payment-container {
+  min-height: 100vh;
+  background-color: #000000;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem; /* 24px */
+  padding: 1.5rem; /* 24px */
+}
+
+/* Logo styling */
+.payment-logo {
+  width: 16rem; /* 256px */
+  height: auto;
+}
+
+/* Heading styling */
+.payment-title {
+  font-size: 1.5rem; /* 24px */
+  line-height: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Input field styling */
+.payment-input {
+  background-color: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 9999px;
+  padding: 0.75rem 1.5rem; /* 12px 24px */
+  width: 18rem; /* 288px */
+  color: #ffffff;
+  outline: none;
+  transition: border-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.payment-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.payment-input:focus {
+  border-color: #ffffff;
+}
+
+/* Action button styling */
+.payment-button {
+  background-color: #ffffff;
+  color: #000000;
+  font-weight: 600;
+  padding: 0.75rem 2rem; /* 12px 32px */
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.payment-button:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.payment-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Base status badge styling */
+.payment-status {
+  font-weight: 600;
+  border-radius: 9999px;
+  padding: 0.25rem 1rem; /* 4px 16px */
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.25rem;
+}
+
+/* Success variant */
+.payment-status-success {
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Error variant */
+.payment-status-error {
+  color: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}

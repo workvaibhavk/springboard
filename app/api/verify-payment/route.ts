@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
-import { razorpay } from "@/lib/razorpay";
+import { getRazorpayInstance } from "@/lib/razorpay";
 import { supabaseAdmin as supabase } from "@/lib/supabase-admin"; // ⚠️ CHECK THIS PATH
 
 export async function POST(req: NextRequest) {
+  const razorpay = getRazorpayInstance();
   const {
     razorpay_order_id,
     razorpay_payment_id,
@@ -24,16 +25,16 @@ export async function POST(req: NextRequest) {
   const isValid = expectedSignature === razorpay_signature;
 
   if (!isValid) {
-    await supabase
-      .from("payments")
+    (await supabase
+      .from("payments") as any)
       .update({ payment_status: "failed" })
       .eq("razorpay_order_id", razorpay_order_id);
 
     return NextResponse.json({ success: false, error: "Invalid signature" }, { status: 400 });
   }
 
-  const { error } = await supabase
-    .from("payments")
+  const { error } = (await supabase  
+    .from("payments") as any)
     .update({
       payment_status: "paid",
       payment_mode: "upi",

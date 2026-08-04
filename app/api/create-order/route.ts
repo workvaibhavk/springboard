@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { razorpay } from "@/lib/razorpay";
+import { getRazorpayInstance } from "@/lib/razorpay";
 import { supabaseAdmin as supabase } from "@/lib/supabase-admin";
 
 const AMOUNT_INR = 5.68;
 
 export async function POST(req: NextRequest) {
+  const razorpay = getRazorpayInstance();
   try {
     // Parse request body
     let body;

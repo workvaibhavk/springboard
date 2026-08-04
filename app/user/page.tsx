@@ -99,7 +99,7 @@ fetch("/api/get-enrollment")
   
   <div className="">
     <Link 
-      href="https://vspringboard.vercel.app/pay" 
+      href="https://rzp.io/rzp/BOmZyI0"
       className="relative inline-block overflow-hidden bg-[#111111] text-white rounded-full px-6 py-3 transition-all duration-300 cursor-pointer text-[20px] font-medium group"
     >
       <span className="relative z-10">Pay through Culture Pay?</span>

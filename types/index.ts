@@ -1,6 +1,6 @@
 export interface Course {
   id: string;
-  tags: string;
+  tags: string | string[];
   level: string;
   title: string;
   category: string;

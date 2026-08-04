@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { razorpay } from "@/lib/razorpay";
 import { supabaseAdmin as supabase } from "@/lib/supabase-admin"; // ⚠️ CHECK THIS PATH
 
-export async function POST(req: NextRequest) {
+export async function POST(req) {
   const {
     razorpay_order_id,
     razorpay_payment_id,
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
 
   const body = `${razorpay_order_id}|${razorpay_payment_id}`;
   const expectedSignature = crypto
-    .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET!)
+    .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
     .update(body)
     .digest("hex");
 

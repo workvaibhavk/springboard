@@ -5,7 +5,7 @@ export interface Course {
     thumbnailUrl?: string | null;
     level?: 'beginner' | 'intermediate' | 'advanced';
     category?: string;
-    tags?: string[];
+    tags?: string[] | string;
     created_at?: string;
     updated_at?: string;
 }

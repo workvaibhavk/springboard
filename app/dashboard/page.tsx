@@ -34,10 +34,16 @@ function parsePostgresArray(
 }
 
 const Featured = [
-  "5fd8166e-6daf-48a7-8d2b-208df0c94953",
-  "9bda6221-0975-419c-b78e-727083b48382",
-  "26e07fe1-d15d-4eee-a954-69f4c549cb52",
-  "5b1bfba6-107e-44f3-ba84-48b21c5f8531",
+  // "5fd8166e-6daf-48a7-8d2b-208df0c94953",
+  // "9bda6221-0975-419c-b78e-727083b48382",
+  // "26e07fe1-d15d-4eee-a954-69f4c549cb52",
+  // "5b1bfba6-107e-44f3-ba84-48b21c5f8531",
+
+  "7ade97f6-745c-4fd0-ae12-82962e801c74",
+  "c853bd90-1154-4978-9225-e24aa96435a4",
+  "bda2772e-f70d-4efa-8924-b488943bcaea",
+  "6cc3471d-a7eb-4502-932c-3facc0127d0a",
+  "36556fc4-3047-498a-992e-640ca55ccce0"
 ];
 
 export default function Page() {

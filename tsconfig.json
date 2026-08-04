@@ -36,7 +36,7 @@
     "app/api/add-course/route.js",
     ".next/dev/types/**/*.ts",
     "page_components/conotfound.jsx"
-, "app/api/verify-payment/route.js"  ],
+, "app/api/verify-payment/route.ts"  ],
   "exclude": [
     "node_modules"
   ]

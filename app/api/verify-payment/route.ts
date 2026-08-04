@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
-import { razorpay } from "@/lib/razorpay";
+import { getRazorpayInstance } from "@/lib/razorpay";
 import { supabaseAdmin as supabase } from "@/lib/supabase-admin"; // ⚠️ CHECK THIS PATH
 
 export async function POST(req: NextRequest) {
+  const razorpay = getRazorpayInstance();
   const {
     razorpay_order_id,
     razorpay_payment_id,

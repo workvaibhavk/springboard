@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
       amount: AMOUNT_INR,
       payment_status: "created",
       razorpay_order_id: order.id,
-    });
+    }as any);
 
     if (error) {
       console.error("Supabase insert failed:", error);

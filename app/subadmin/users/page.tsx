@@ -5,7 +5,7 @@ import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Certificate, Course, CourseEnrollment } from "@/types";
-import CertificateTemplate from "@/page_components/Certificatetemplate";
+import CertificateTemplateInfy from "@/page_components/CertificateTemplateInfy";
 import { generateCertificatePDF } from "@/lib/Certificatepdfgenerator";
 import { DownloadIcon } from "lucide-react";
 import BackToTopBtn from "@/page_components/backToTopBtn";
@@ -91,7 +91,7 @@ export default function Page() {
       await generateCertificatePDF(
         data.certificate,
         data.course,
-        "admin-certificate",
+        "certificate-infy",
       );
 
       setCertificateData(null);
@@ -214,11 +214,8 @@ export default function Page() {
             </tbody>
           </table>
         </div>
-
-        {certificateData && (
-          <div style={{ position: "fixed", left: "-10000px", top: 0 }}>
-            <div id="admin-certificate">
-              <CertificateTemplate
+">
+              <CertificateTemplateInfy
                 certificate={certificateData.certificate}
                 course={certificateData.course}
               />
@@ -378,4 +375,4 @@ export default function Page() {
       </div>
     </div>
   );
-}
+                        }

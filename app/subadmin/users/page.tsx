@@ -214,7 +214,7 @@ export default function Page() {
             </tbody>
           </table>
         </div>
-">
+
               <CertificateTemplateInfy
                 certificate={certificateData.certificate}
                 course={certificateData.course}

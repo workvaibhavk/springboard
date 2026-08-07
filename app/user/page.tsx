@@ -150,6 +150,12 @@ fetch("/api/get-enrollment")
 </div>
 
           <div>
+
+            <h1 className="text-4xl border-l-4 border-[#665bca] pl-4 font-bold mt-4 mb-8 ">
+              Sample Certificate 
+            </h1>
+
+            <Image src="samplecert.jpg" alt="Sample Certificate " width={948} height={664} />
             <h1 className="text-4xl border-l-4 border-[#665bca] pl-4 font-bold mt-4 mb-8 ">
               Continue Learning
             </h1>

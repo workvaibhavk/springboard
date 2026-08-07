@@ -215,6 +215,9 @@ export default function Page() {
           </table>
         </div>
 
+        {certificateData && (
+          <div className="hidden">
+            <div id="certificate-infy">
               <CertificateTemplateInfy
                 certificate={certificateData.certificate}
                 course={certificateData.course}

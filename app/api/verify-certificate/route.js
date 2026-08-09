@@ -96,7 +96,12 @@ export async function GET(request) {
             username,
             duration,
             issuedAt: issuedDate,
-        })
+        },
+    {
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+        },
+    })
 
     } catch (error) {
         console.error('[GET /api/verify] Unexpected error in handler:', error)

@@ -58,16 +58,26 @@ const Navbar = () => {
         </div>
 
         <div className="hidden md:block">
-          {isSignedIn ? (
-            <UserButton afterSignOutUrl="/" />
-          ) : (
-            <SignInButton mode="modal" forceRedirectUrl="/authenticate">
-              <button className="relative overflow-hidden bg-[#111111] text-white rounded-full px-6 py-3 transition-all duration-300 cursor-pointer text-[15px] font-medium group">
-                <span className="relative z-10">Get Started</span>
-                <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out bg-gradient-to-r from-transparent via-white/30 to-transparent"></span>
-              </button>
-            </SignInButton>
-          )}
+          
+{isSignedIn ? (
+  <UserButton afterSignOutUrl="/" />
+) : (
+  <div className="flex flex-col items-center">
+    <SignInButton mode="modal" forceRedirectUrl="/authenticate">
+      <button className="relative overflow-hidden bg-[#111111] text-white rounded-full px-6 py-3 transition-all duration-300 cursor-pointer text-[15px] font-medium group">
+        <span className="relative z-10">Get Started</span>
+        <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out bg-gradient-to-r from-transparent via-white/30 to-transparent"></span>
+      </button>
+    </SignInButton>
+
+    <Link
+      href="/check-mail"
+      className="mt-2 text-sm text-gray-500 hover:text-gray-300"
+    >
+      Forgot which email you used?
+    </Link>
+  </div>
+)}
         </div>
 
         <button

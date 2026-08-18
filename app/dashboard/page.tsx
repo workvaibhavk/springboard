@@ -19,6 +19,7 @@ import {
 import { Course, CourseEnrollment, EnrollmentData, Card } from "@/types";
 import Link from "next/link";
 import ResAuthenticate from "@/page_components/resauth";
+type PaymentStatus = "success" | "pending" | "failed" | "";
 
 function parsePostgresArray(
   pgArray: string | string[] | null | undefined,
@@ -49,6 +50,7 @@ const Featured = [
 export default function Page() {
   const { user, isLoaded } = useUser();
   const [loading, setLoading] = useState(true);
+   const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>("");
   const [enrolledCourses, setEnrolledCourses] = useState<CourseEnrollment[]>(
     [],
   );
@@ -99,6 +101,15 @@ export default function Page() {
     }
   };
 
+  useEffect(()=> {
+if(!isLoaded || !user) return;
+
+    if (isLoaded && user){
+      const paymentStat = user.publicMetadata?.payment as PaymentStatus;
+    setPaymentStatus(paymentStat);
+    }
+  },[isLoaded, user]);
+
   useEffect(() => {
     fetchEnrolledCourses();
     fetchFeaturedCourses();
@@ -135,17 +146,57 @@ export default function Page() {
                 learning paths that empower you to grow at your own pace
               </p>
 
-              <div className="flex flex-wrap justify-center gap-3 md:gap-4 mb-16 ">
-                {categories.map((card: Card) => (
-                  <div
-                    key={card.name}
-                    className=" flex gap-2 bg-[#E9E9E9] py-1 px-3 rounded-3xl  items-center justify-center text-[#000000d4] "
-                  >
-                    <card.icon width={20} height={20} />
-                    <span className="font-medium text-sm">{card.name}</span>
-                  </div>
-                ))}
-              </div>
+              <div className="flex md:flex-row flex-col bg-black justify-around items-center py-6 px-4 rounded-2xl">
+  <div className="flex justify-around items-center py-6 px-4 rounded-2xl">
+  <Image src="/cpay.jpeg" width={200} height={200} alt="CPay" className="max-w-24"/>
+  
+  <div className=""></div>
+  
+  <div className="text-[#fff] font-bold text-sm md:text-xl flex justify-center flex-col text-center">
+    <p className="opacity-50">Computer Networks</p>
+    <p className="opacity-50">RJ45 Payment</p>
+    <p className="text-green-600">5.68 Rs</p>
+  </div>
+    </div>
+
+  
+  <div className="">
+    <Link 
+      href="https://rzp.io/rzp/BOmZyI0"
+      className="relative inline-block overflow-hidden bg-[#4e4e4e] font-semibold border-2 border-black text-white rounded-full px-6 py-3 transition-all duration-300 cursor-pointer text-[20px] font-medium group"
+    >
+      <span className="relative z-10">Pay Online</span>
+      
+      {/* Fixed Overlay */}
+      <span className="absolute inset-0 w-full h-full -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out bg-gradient-to-r from-transparent via-white/20 to-transparent"></span>
+    </Link>
+  </div>
+
+ <div className="mt-4">
+  {paymentStatus === "success" ? (
+    <div className="inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 text-green-700 font-semibold border border-green-300">
+      <span>✅</span>
+      <span>Payment Successful</span>
+    </div>
+  ) : paymentStatus === "pending" ? (
+    <div className="inline-flex items-center gap-2 rounded-full bg-yellow-100 px-4 py-2 text-yellow-700 font-semibold border border-yellow-300">
+      <span>⏳</span>
+      <span>Payment Pending</span>
+    </div>
+  ) : paymentStatus === "failed" ? (
+    <div className="inline-flex items-center gap-2 rounded-full bg-red-100 px-4 py-2 text-red-700 font-semibold border border-red-300">
+      <span>❌</span>
+      <span>Payment Failed</span>
+    </div>
+  ) : (
+    <div className="inline-flex items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-gray-700 font-semibold border border-gray-300">
+      <span>💳</span>
+      <span>Payment Due</span>
+    </div>
+  )}
+</div>
+  
+</div>
             </div>
 
             <section className="w-11/12 md:w-11/12 m-auto">

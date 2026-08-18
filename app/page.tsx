@@ -27,7 +27,7 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: "vSpringboard",
       images: [
         {
-          url: "https://vspringboard.vercel.app/og-imagee.png", // create a proper OG image
+          url: "https://vspringboard.vercel.app/og-image.jpg", // create a proper OG image
           width: 1200,
           height: 630,
           alt: "vSpringboard — Online Learning Platform",
@@ -41,7 +41,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title: "vSpringboard | Master New Skills Online",
       description:
         "Join 42,000+ learners on vSpringboard. Discover tailored courses and grow at your own pace.",
-      images: ["https://vspringboard.vercel.app/og-imagee.png"],
+      images: ["https://vspringboard.vercel.app/og-image.jpg"],
       // creator: "@yourTwitterHandle", // add if you have one
     },
     alternates: {

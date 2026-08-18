@@ -146,7 +146,7 @@ if(!isLoaded || !user) return;
                 learning paths that empower you to grow at your own pace
               </p>
 
-              <div className="flex md:flex-row flex-col bg-black justify-around items-center py-6 px-4 rounded-2xl">
+              <div className="flex md:flex-row flex-col bg-black justify-around items-center py-6 px-4 rounded-2xl mb-6">
   <div className="flex justify-around items-center py-6 px-4 rounded-2xl">
   <Image src="/cpay.jpeg" width={200} height={200} alt="CPay" className="max-w-24"/>
   

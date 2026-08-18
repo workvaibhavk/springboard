@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     siteName: "vSpringboard",
     images: [
       {
-        url: "https://vspringboard.vercel.app/og-imagee.png",
+        url: "https://vspringboard.vercel.app/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "vSpringboard — Online Learning Platform",
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     title: "vSpringboard | Master New Skills Online",
     description:
       "Join 42,000+ learners on vSpringboard. Discover tailored courses and grow at your own pace.",
-    images: ["https://vspringboard.vercel.app/og-imagee.png"],
+    images: ["https://vspringboard.vercel.app/og-image.jpg"],
   },
 
   alternates: {

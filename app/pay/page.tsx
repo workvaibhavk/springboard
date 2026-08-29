@@ -89,7 +89,7 @@ export default function Home() {
       rzp.open();
     } catch (err) {
       console.error(err);
-      alert("Something went wrong", err);
+      alert("Something went wrong" + JSON.stringify(err));
     } finally {
       setLoading(false);
     }

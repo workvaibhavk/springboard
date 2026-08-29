@@ -113,7 +113,7 @@ fetch("/api/get-enrollment")
   
   <div className="">
     <Link 
-      href="https://rzp.io/rzp/BOmZyI0"
+      href={payLink}
       className="relative inline-block overflow-hidden bg-[#4e4e4e] font-semibold border-2 border-black text-white rounded-full px-6 py-3 transition-all duration-300 cursor-pointer text-[20px] font-medium group"
     >
       <span className="relative z-10">Pay Online</span>

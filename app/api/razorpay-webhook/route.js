@@ -7,15 +7,25 @@ export async function POST(req) {
   const signature = req.headers.get("x-razorpay-signature");
 
   const expectedSignature = crypto
-    .createHmac("sha256", process.env.RAZORPAY_WEBHOOK_SECRET)
-    .update(rawBody)
-    .digest("hex");
+  .createHmac("sha256", process.env.RAZORPAY_WEBHOOK_SECRET)
+  .update(rawBody)
+  .digest("hex");
 
-  if (signature !== expectedSignature) {
-    return NextResponse.json({ error: "Invalid webhook signature" }, { status: 400 });
-  }
+const sigValid =
+  signature &&
+  signature.length === expectedSignature.length &&
+  crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature));
 
-  const payload = JSON.parse(rawBody);
+if (!sigValid) {
+  return NextResponse.json({ error: "Invalid webhook signature" }, { status: 400 });
+}
+
+  let payload;
+try {
+  payload = JSON.parse(rawBody);
+} catch {
+  return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+}
   const event = payload.event;
 
   if (event === "payment.captured") {
